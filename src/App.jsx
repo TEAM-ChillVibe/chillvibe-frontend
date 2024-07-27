@@ -1,32 +1,56 @@
 import Router from './Router';
-import { createTheme, ThemeProvider } from '@mui/material';
+import { createTheme, CssBaseline, ThemeProvider } from '@mui/material';
 import { BrowserRouter } from 'react-router-dom';
+import Footer from './components/layout/Footer';
+import TopBar from './components/layout/TopBar';
+import TopButton from './components/common/TopButton';
 
 function App() {
   const theme = createTheme({
     palette: {
       primary: {
-        main: '#007BFF',
+        // main: '#007BFF',
+        main: '#333',
       },
       secondary: {
         main: '#D8A1F0',
         light: '#F3E5F5',
         contrastText: '#FFFFFF',
       },
-      background: {
-        default: '#000000',
+      // background: {
+      //   default: '#000000',
+      // },
+      // text: {
+      //   primary: '#FFFFFF',
+      // },
+    },
+    typography: {
+      fontFamily: 'Roboto, Arial, sans-serif',
+      h1: {
+        fontSize: '2rem',
       },
-      text: {
-        primary: '#FFFFFF',
+      h2: {
+        fontSize: '1.5rem',
+      },
+      body1: {
+        fontSize: '1rem',
+      },
+      body2: {
+        fontSize: '0.875rem',
       },
     },
+    spacing: 8,
   });
 
   return (
     <div className="App">
       <ThemeProvider theme={theme}>
+        <CssBaseline /> {/*공통 테마 적용*/}
         <BrowserRouter>
+          <TopBar />
           <Router />
+          <Footer />
+          <TopButton />
         </BrowserRouter>
       </ThemeProvider>
     </div>

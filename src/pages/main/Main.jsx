@@ -1,10 +1,11 @@
-import { Button } from '@mui/material';
+import { Typography } from '@mui/material';
+import BaseContainer from '../../components/layout/BaseContainer';
 
 function Main() {
   return (
-    <div>
-      <Button>button test</Button>
-    </div>
+    <BaseContainer>
+      <Typography>Main page</Typography>
+    </BaseContainer>
   );
 }
 
