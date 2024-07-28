@@ -3,7 +3,7 @@ import { createTheme, CssBaseline, ThemeProvider } from '@mui/material';
 import { BrowserRouter } from 'react-router-dom';
 import Footer from './components/layout/Footer';
 import TopBar from './components/layout/TopBar';
-import TopButton from './components/common/TopButton';
+import TopButton from './components/common/Button/TopButton';
 
 function App() {
   const theme = createTheme({
@@ -37,6 +37,12 @@ function App() {
       },
       body2: {
         fontSize: '0.875rem',
+      },
+      body3: {
+        fontSize: '0.75rem',
+      },
+      title: {
+        fontSize: '2rem',
       },
     },
     spacing: 8,
