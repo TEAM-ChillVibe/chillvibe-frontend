@@ -3,7 +3,7 @@ import FavoriteIcon from '@mui/icons-material/Favorite';
 import albumSample from './albumSample.jpeg';
 
 function PostListItem({ post }) {
-  const { title, date, trackCount, hashtags, user, likes } = post;
+  const { title, createAt, trackCount, hashtags, user, likes } = post;
 
   return (
     <Box
@@ -25,6 +25,7 @@ function PostListItem({ post }) {
           order: 1,
         }}
       >
+        {/* 이미지 소스 수정 필요 */}
         <img
           src={albumSample}
           alt={'Track img'}
@@ -44,7 +45,7 @@ function PostListItem({ post }) {
           {title}
         </Typography>
         <Typography variant="body3" color="text.secondary" sx={{ mb: 1 }}>
-          {date}
+          {createAt}
         </Typography>
         <Typography variant="body2" sx={{ mb: 1 }}>
           트랙 {trackCount}개
