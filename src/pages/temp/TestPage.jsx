@@ -1,4 +1,4 @@
-import { Box, Grid, Typography } from '@mui/material';
+import { Box, Card, Grid, Typography } from '@mui/material';
 import BaseContainer from '../../components/layout/BaseContainer';
 import UserProfile from '../../components/common/UserProfile';
 import TrackListItem from '../../components/common/TrackListItem';
@@ -39,12 +39,6 @@ function TestPage() {
   const postList = [
     {
       id: 1,
-      images: [
-        './albumSample.jpeg',
-        'https://example.com/image2.jpg',
-        'https://example.com/image3.jpg',
-        'https://example.com/image4.jpg',
-      ],
       title: '여름밤 드라이브 플레이리스트',
       date: '2024년 7월 25일',
       trackCount: 15,
@@ -57,10 +51,6 @@ function TestPage() {
     },
     {
       id: 2,
-      images: [
-        'https://example.com/image5.jpg',
-        'https://example.com/image6.jpg',
-      ],
       title: '집중력 향상을 위한 클래식 음악',
       date: '2024년 7월 20일',
       trackCount: 8,
@@ -82,6 +72,10 @@ function TestPage() {
       >
         사용자 프로필
       </Typography>
+      <Card sx={{ width: '100%' }}>
+        <UserProfile {...user} />
+      </Card>
+
       <UserProfile {...user} />
 
       {/*트랙 리스트*/}

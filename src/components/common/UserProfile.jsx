@@ -7,20 +7,22 @@ function UserProfile({ nickname, introduction, hashtags }) {
         display: 'flex',
         alignItems: 'center',
         m: 2,
+        p: 1,
         width: '100%',
       }}
     >
       <Avatar
         sx={{
-          width: 80,
-          height: 80,
-          m: 2,
+          width: 90,
+          height: 90,
+          mr: 3,
         }}
       />
       <Box
         sx={{
           display: 'flex',
           flexDirection: 'column',
+          gap: 0.5,
         }}
       >
         <Typography variant="h2">{nickname}</Typography>
