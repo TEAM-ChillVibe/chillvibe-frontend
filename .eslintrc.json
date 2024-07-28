@@ -4,10 +4,11 @@
       "jsx": true
     }
   },
-  "extends": [
-    "react-app",
-    "prettier"
-  ],
+  "extends": ["react-app", "prettier"],
+  "plugins": ["prettier"],
+  "rules": {
+    "prettier/prettier": ["error", { "endOfLine": "auto" }]
+  },
   "plugins": ["prettier"],
   "rules": {
     "prettier/prettier": ["error"],
