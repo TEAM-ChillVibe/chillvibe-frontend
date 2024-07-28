@@ -7,11 +7,7 @@
   "extends": ["react-app", "prettier"],
   "plugins": ["prettier"],
   "rules": {
-    "prettier/prettier": ["error", { "endOfLine": "auto" }]
-  },
-  "plugins": ["prettier"],
-  "rules": {
-    "prettier/prettier": ["error"],
+    "prettier/prettier": ["error", { "endOfLine": "auto" }],
     "react/prop-types": "off",
     "no-console": "warn",
     "no-unused-vars": "warn"
