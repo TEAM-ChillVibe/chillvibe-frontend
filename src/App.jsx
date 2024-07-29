@@ -2,15 +2,17 @@ import Router from './Router';
 import { createTheme, CssBaseline, ThemeProvider } from '@mui/material';
 import { BrowserRouter } from 'react-router-dom';
 import Footer from './components/layout/Footer';
-import TopBar from './components/layout/TopBar';
+import TopBar from './components/layout/TopBar/TopBar';
 import TopButton from './components/common/Button/TopButton';
 
 function App() {
   const theme = createTheme({
     palette: {
+      // 임시값
       primary: {
-        // main: '#007BFF',
-        main: '#333',
+        main: '#007BFF',
+        // main: '#333',
+        light: '#999',
       },
       secondary: {
         main: '#D8A1F0',
