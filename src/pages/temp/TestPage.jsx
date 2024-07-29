@@ -1,11 +1,62 @@
-import { Box, Card, Grid, Typography } from '@mui/material';
+import { Box, Button, Card, Grid, Typography } from '@mui/material';
 import BaseContainer from '../../components/layout/BaseContainer';
 import UserProfile from '../../components/common/UserProfile';
 import TrackListItem from '../../components/common/TrackListItem';
 import PostListItem from '../../components/common/PostListItem';
 import PostListItemMini from '../../components/common/PostListItemMini';
+import { useState } from 'react';
+import SimpleModal from '../../components/common/modal/SimpleModal';
+import FormModal from '../../components/common/modal/FormModal';
 
 function TestPage() {
+  // 모달 테스트
+  const [simpleModalOpen, setSimpleModalOpen] = useState(false);
+  const [inputModalOpen, setInputModalOpen] = useState(false);
+
+  const [formFields, setFormFields] = useState([
+    {
+      label: 'Email',
+      type: 'email',
+      value: '',
+      onChange: e => handleChange(e, 'email'),
+    },
+    {
+      label: 'Password',
+      type: 'password',
+      value: '',
+      onChange: e => handleChange(e, 'password'),
+    },
+  ]);
+
+  const handleOpenSimpleModal = () => setSimpleModalOpen(true);
+  const handleCloseSimpleModal = () => setSimpleModalOpen(false);
+
+  const handleOpenInputModal = () => setInputModalOpen(true);
+  const handleCloseInputModal = () => setInputModalOpen(false);
+
+  const handleChange = (e, fieldName) => {
+    setFormFields(fields =>
+      fields.map(field =>
+        field.label.toLowerCase() === fieldName
+          ? { ...field, value: e.target.value }
+          : field,
+      ),
+    );
+  };
+
+  const handlePrimaryClick = () => {
+    // Primary button action
+
+    handleCloseInputModal();
+  };
+  const handleSecondaryClick = () => {
+    // Secondary button action
+
+    handleCloseInputModal();
+  };
+
+  //
+
   const user = {
     nickname: 'Julie Han',
     introduction: 'testing userprofile now',
@@ -77,6 +128,34 @@ function TestPage() {
       </Card>
 
       <UserProfile {...user} />
+
+      <Box sx={{ width: '100%' }}>
+        {/* 모달(Simple) */}
+        <Button onClick={handleOpenSimpleModal}>Open Simple Modal</Button>
+        <SimpleModal
+          open={simpleModalOpen}
+          onClose={handleCloseSimpleModal}
+          title="Simple Modal Title"
+          description="This is a simple modal description."
+          primaryButtonText="Confirm"
+          secondaryButtonText="Cancel"
+          onPrimaryClick={handlePrimaryClick}
+          onSecondaryClick={handleCloseSimpleModal}
+        />
+        {/* 모달(Input) */}
+        <Button onClick={handleOpenInputModal}>Open Input Modal</Button>
+        <FormModal
+          open={inputModalOpen}
+          onClose={handleCloseInputModal}
+          title="Input Modal Title"
+          description="Please fill in the details below..."
+          formFields={formFields}
+          primaryButtonText="Submit"
+          secondaryButtonText="Cancel"
+          onPrimaryClick={handleCloseInputModal}
+          onSecondaryClick={handleSecondaryClick}
+        />
+      </Box>
 
       {/*트랙 리스트*/}
       <Typography variant="title">Tracklist</Typography>
