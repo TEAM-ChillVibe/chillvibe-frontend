@@ -1,13 +1,26 @@
 import { Suspense, lazy } from 'react';
-import { CircularProgress } from '@mui/material';
+import { Box, CircularProgress } from '@mui/material';
 import { Route, Routes } from 'react-router-dom';
-import TestPage from './pages/temp/TestPage';
 
 const Main = lazy(() => import('./pages/main/Main'));
+const TestPage = lazy(() => import('./pages/temp/TestPage'));
 
 const Router = () => {
   return (
-    <Suspense fallback={<CircularProgress color="secondary" />}>
+    <Suspense
+      fallback={
+        <Box
+          sx={{
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            height: '100vh',
+          }}
+        >
+          <CircularProgress color="secondary" />
+        </Box>
+      }
+    >
       <Routes>
         <Route path="/" element={<Main />} />
         <Route path="/test" element={<TestPage />} />
