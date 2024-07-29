@@ -4,10 +4,10 @@ import SearchIcon from '@mui/icons-material/Search';
 const Search = styled('div')(({ theme }) => ({
   position: 'relative',
   display: 'flex',
-  alignItems: 'center', // 아이콘과 입력 필드 수직 정렬
+  alignItems: 'center',
   width: 'auto',
   borderRadius: 4,
-  backgroundColor: 'rgba(255, 255, 255, 0.2)', // 투명한 흰색 배경
+  backgroundColor: 'rgba(255, 255, 255, 0.2)',
   marginLeft: theme.spacing(1),
 }));
 

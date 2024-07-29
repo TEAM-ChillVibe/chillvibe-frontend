@@ -6,12 +6,12 @@ import { useState } from 'react';
 
 const RoundedButton = styled(Button)(({ theme }) => ({
   textTransform: 'none',
-  padding: theme.spacing(0.3, 1.5), // 버튼 내부의 패딩 조정 (가로/세로)
-  borderRadius: '50px', // 버튼의 양옆을 동그랗게 만듭니다
-  color: '#000', // 텍스트 색상
+  padding: theme.spacing(0.3, 1.5),
+  borderRadius: '50px',
+  color: '#000',
   backgroundColor: '#fff',
   '&:hover': {
-    backgroundColor: theme.palette.primary.light, // 호버 시 배경색
+    backgroundColor: theme.palette.primary.light,
   },
 }));
 
