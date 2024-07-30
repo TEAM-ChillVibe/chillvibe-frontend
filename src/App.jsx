@@ -4,6 +4,7 @@ import { BrowserRouter } from 'react-router-dom';
 import Footer from './components/layout/Footer';
 import TopBar from './components/layout/TopBar/TopBar';
 import TopButton from './components/common/Button/TopButton';
+import MusicPlayer from './components/common/MusicPlayer/MusicPlayer';
 
 function App() {
   const theme = createTheme({
@@ -59,6 +60,7 @@ function App() {
           <Router />
           <Footer />
           <TopButton />
+          <MusicPlayer />
         </BrowserRouter>
       </ThemeProvider>
     </div>

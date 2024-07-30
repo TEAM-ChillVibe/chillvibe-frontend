@@ -68,22 +68,30 @@ function TestPage() {
       id: 1,
       title: 'Dynamite',
       artist: 'BTS',
-      albumCover: 'https://example.com/dynamite.jpg',
+      albumCover:
+        'https://i.scdn.co/image/ab67616d0000b273668914e625d75e5fe3f1da51',
       duration: '3:19',
+      audioSrc:
+        'https://p.scdn.co/mp3-preview/98e266fea9df84fa3e5ca84934c513211e89489b?cid=cfe923b2d660439caf2b557b21f31221',
     },
     {
       id: 2,
       title: 'Butter',
       artist: 'BTS',
-      albumCover: 'https://example.com/butter.jpg',
+      albumCover:
+        'https://i.scdn.co/image/ab67616d0000b273240447f2da1433d8f4303596',
       duration: '2:44',
+      audioSrc:
+        'https://p.scdn.co/mp3-preview/4d63fe1638aa41592706f835bd076443b09d8afa?cid=cfe923b2d660439caf2b557b21f31221',
     },
     {
       id: 3,
       title: 'Permission to Dance',
       artist: 'BTS',
-      albumCover: 'https://example.com/ptd.jpg',
-      duration: '4:03',
+      albumCover:
+        'https://i.scdn.co/image/ab67616d0000b273a7e481899b7e0396f93d10b8',
+      duration: '3:07',
+      audioSrc: null,
     },
   ];
 
