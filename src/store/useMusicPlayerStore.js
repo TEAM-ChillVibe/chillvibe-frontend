@@ -26,12 +26,19 @@ const useMusicPlayerStore = create((set, get) => ({
   playTrack: track => {
     const { audioRef } = get();
 
+    // audioSrc가 null인 경우 알림창을 띄우고 함수 종료
+    if (!track.audioSrc) {
+      alert('미리듣기를 지원하지 않는 트랙입니다.');
+      return;
+    }
+
     // 클린업 함수
     const cleanup = () => {
       audioRef.pause();
       audioRef.src = '';
       audioRef.ontimeupdate = null;
       audioRef.removeEventListener('loadedmetadata', onDurationChange);
+      audioRef.removeEventListener('ended', onEnded);
       clearInterval(intervalId);
     };
 
@@ -65,6 +72,12 @@ const useMusicPlayerStore = create((set, get) => ({
       set({ duration });
     };
 
+    // 재생 종료시 처리
+    const onEnded = () => {
+      set({ isPlaying: false, currentTime: 0 });
+      audioRef.currentTime = 0;
+    };
+
     audioRef.ontimeupdate = () => {
       set({ currentTime: audioRef.currentTime });
     };
@@ -80,6 +93,8 @@ const useMusicPlayerStore = create((set, get) => ({
     audioRef.addEventListener('loadedmetadata', () => {
       onDurationChange(audioRef.duration);
     });
+
+    audioRef.addEventListener('ended', onEnded);
 
     // return () => {
     //   clearInterval(intervalId);
@@ -135,6 +150,7 @@ const useMusicPlayerStore = create((set, get) => ({
       audioRef.play().catch(error => {
         set({ isPlaying: false });
       });
+      set({ isVisible: true });
     }
     set({ isPlaying: !isPlaying });
   },
