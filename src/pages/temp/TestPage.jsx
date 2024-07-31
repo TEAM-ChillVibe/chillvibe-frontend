@@ -10,22 +10,21 @@ import FormModal from '../../components/common/modal/FormModal';
 import DropdownModal from '../../components/common/modal/DropdownModal';
 
 function TestPage() {
-  // 모달 테스트
+  // HANDLE FUNCTIONS ================================================
+  // Modal - Simple
   const [simpleModalOpen, setSimpleModalOpen] = useState(false);
-  const [formModalOpen, setFormModalOpen] = useState(false);
-  const [dropdownModalOpen, setDropdownModalOpen] = useState(false);
-  const [selectedValue, setSelectedValue] = useState('');
 
   const handleOpenSimpleModal = () => setSimpleModalOpen(true);
   const handleCloseSimpleModal = () => setSimpleModalOpen(false);
 
+  // Modal - Form
+  const [formModalOpen, setFormModalOpen] = useState(false);
+
   const handleOpenFormModal = () => setFormModalOpen(true);
   const handleCloseFormModal = () => setFormModalOpen(false);
 
-  const handleOpenDropdownModal = () => setDropdownModalOpen(true);
-  const handleCloseDropdownModal = () => setDropdownModalOpen(false);
-
-  const handleChange = (e, fieldName) => {
+  const handleFormChange = (e, fieldName) => {
+    // 상태 업데이트
     setFormFields(fields =>
       fields.map(field =>
         field.label.toLowerCase() === fieldName
@@ -35,15 +34,31 @@ function TestPage() {
     );
   };
 
-  const handleDropdownChange = event => {
-    setSelectedValue(event.target.value);
-  };
+  const [formFields, setFormFields] = useState([
+    {
+      label: 'Email', // 필드 이름
+      type: 'email', // 입력 유형
+      value: '', // 초기값
+      onChange: e => handleFormChange(e, 'email'), // 입력 값이 변경될 때 호출
+    },
+    {
+      label: 'Password',
+      type: 'password',
+      value: '',
+      onChange: e => handleFormChange(e, 'password'),
+    },
+  ]);
 
-  const handlePrimaryClick = () => {
-    // Primary button action
-  };
-  const handleSecondaryClick = () => {
-    // Secondary button action
+  // Modal - Dropdown
+  const [dropdownModalOpen, setDropdownModalOpen] = useState(false);
+  const [selectedValue, setSelectedValue] = useState('');
+
+  const handleOpenDropdownModal = () => setDropdownModalOpen(true);
+  const handleCloseDropdownModal = () => setDropdownModalOpen(false);
+
+  const handleDropdownChange = event => {
+    // 현재 선택된 값 설정
+    setSelectedValue(event.target.value);
   };
 
   const options = [
@@ -51,28 +66,16 @@ function TestPage() {
     { value: 'option2', label: 'Option 2' },
   ];
 
-  const [formFields, setFormFields] = useState([
-    {
-      label: 'Email',
-      type: 'email',
-      value: '',
-      onChange: e => handleChange(e, 'email'),
-    },
-    {
-      label: 'Password',
-      type: 'password',
-      value: '',
-      onChange: e => handleChange(e, 'password'),
-    },
-  ]);
-  //
+  // Temp data =======================================================
 
+  // User Profile
   const user = {
     nickname: 'Julie Han',
     introduction: 'testing userprofile now',
     hashtags: ['#tag1', '#tag2', '#tag3'],
   };
 
+  // Track List
   const musicList = [
     {
       id: 1,
@@ -105,6 +108,7 @@ function TestPage() {
     },
   ];
 
+  // Post List
   const postList = [
     {
       id: 1,
@@ -134,7 +138,7 @@ function TestPage() {
 
   return (
     <BaseContainer>
-      {/*사용자 프로필*/}
+      {/* 사용자 프로필 */}
       <Typography
         variant="title"
         sx={{ textAlign: 'left', alignSelf: 'flex-start', ml: 2 }}
@@ -147,12 +151,13 @@ function TestPage() {
 
       <UserProfile {...user} />
 
+      <Typography variant="title">Modals</Typography>
       <Box sx={{ width: '100%' }}>
         {/* 모달(Simple) */}
         <Button
-          onClick={handleOpenSimpleModal}
-          variant="contained"
-          sx={{ mr: 1 }}
+          onClick={handleOpenSimpleModal} // 버튼 클릭 시 동작하는 함수
+          variant="contained" // 버튼 스타일
+          sx={{ mr: 1 }} // 오른쪽 여백
         >
           Open Simple Modal
         </Button>
@@ -161,10 +166,10 @@ function TestPage() {
           onClose={handleCloseSimpleModal}
           title="Simple Modal Title"
           description="This is a simple modal description."
-          primaryButtonText="Confirm"
-          secondaryButtonText="Cancel"
-          onPrimaryClick={handleCloseSimpleModal}
-          onSecondaryClick={handleCloseSimpleModal}
+          primaryButtonText="Confirm" // 확인 버튼 텍스트 설정
+          secondaryButtonText="Cancel" // 취소 버튼 텍스트 설정
+          onPrimaryClick={handleCloseSimpleModal} // 확인 클릭 시 동작 함수
+          onSecondaryClick={handleCloseSimpleModal} // 취소 클릭 시 동작 함수
         />
         {/* 모달(form) */}
         <Button
@@ -179,7 +184,7 @@ function TestPage() {
           onClose={handleCloseFormModal}
           title="Form Modal Title"
           description="Please fill in the details below..."
-          formFields={formFields}
+          formFields={formFields} // 사용자가 입력해야 하는 필드 리스트
           primaryButtonText="Submit"
           secondaryButtonText="Cancel"
           onPrimaryClick={handleCloseFormModal}
@@ -198,9 +203,9 @@ function TestPage() {
           onClose={handleCloseDropdownModal}
           title="Select an Option"
           description="Please choose one of the following options:"
-          options={options}
-          selectedValue={selectedValue}
-          onChange={handleChange}
+          options={options} // 드롭다운 선택 값 리스트
+          selectedValue={selectedValue} // 선택된 값
+          onChange={handleDropdownChange} // 선택 값이 변경되는 경우
           primaryButtonText="Confirm"
           secondaryButtonText="Cancel"
           onPrimaryClick={handleCloseDropdownModal}
@@ -208,36 +213,36 @@ function TestPage() {
         ></DropdownModal>
       </Box>
 
-      {/*트랙 리스트*/}
+      {/* 트랙 리스트 */}
       <Typography variant="title">Tracklist</Typography>
       <Box sx={{ width: '100%' }}>
+        {/* list 배열 처리, 컴포넌트의 props로 데이터 전달 */}
         {musicList.map(music => (
           <TrackListItem key={music.id} music={music} />
         ))}
       </Box>
 
-      {/*게시글 리스트*/}
+      {/* 게시글 리스트 */}
       <Typography variant="title">Posts</Typography>
       <Box sx={{ width: '100%' }}>
+        {/* list 배열 처리, 컴포넌트의 props로 데이터 전달 */}
         {postList.map(post => (
           <PostListItem key={post.id} post={post} />
         ))}
       </Box>
 
-      {/*게시글 리스트 mini (메인페이지용) */}
+      {/* 게시글 리스트 mini (메인페이지용) */}
       <Typography variant="title">Posts for mainpage</Typography>
       <Grid container spacing={2}>
-        {' '}
         {postList.map(post => (
           <Grid item xs={6} key={post.id}>
-            {' '}
             {/* 각 아이템이 50% 차지 */}
             <PostListItemMini post={post} />
           </Grid>
         ))}
       </Grid>
 
-      {/*empty box*/}
+      {/* empty box for scroll test */}
       <Box
         sx={{
           height: '1000px',
