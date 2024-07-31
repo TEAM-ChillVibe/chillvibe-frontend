@@ -1,5 +1,5 @@
 import { Box, Chip, Typography } from '@mui/material';
-import albumSample from './albumSample.jpeg';
+import albumSample from '../albumSample.jpeg';
 
 function PostListItemMini({ post }) {
   const { title, hashtags, user } = post;

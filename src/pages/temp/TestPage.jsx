@@ -1,9 +1,9 @@
 import { Box, Button, Card, Grid, Typography } from '@mui/material';
 import BaseContainer from '../../components/layout/BaseContainer';
 import UserProfile from '../../components/common/UserProfile';
-import TrackListItem from '../../components/common/TrackListItem';
-import PostListItem from '../../components/common/PostListItem';
-import PostListItemMini from '../../components/common/PostListItemMini';
+import TrackListItem from '../../components/common/ListItem/TrackListItem';
+import PostListItem from '../../components/common/ListItem/PostListItem';
+import PostListItemMini from '../../components/common/ListItem/PostListItemMini';
 import { useState } from 'react';
 import SimpleModal from '../../components/common/modal/SimpleModal';
 import FormModal from '../../components/common/modal/FormModal';

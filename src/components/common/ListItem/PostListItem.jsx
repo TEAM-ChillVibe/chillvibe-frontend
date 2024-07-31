@@ -1,6 +1,6 @@
 import { Avatar, Box, Chip, Typography } from '@mui/material';
 import FavoriteIcon from '@mui/icons-material/Favorite';
-import albumSample from './albumSample.jpeg';
+import albumSample from '../albumSample.jpeg';
 
 function PostListItem({ post }) {
   const { title, createAt, trackCount, hashtags, user, likes } = post;

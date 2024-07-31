@@ -3,7 +3,7 @@ import { Box } from '@mui/material';
 import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
 import Avatar from '@mui/material/Avatar';
-import useMusicPlayerStore from '../../store/useMusicPlayerStore';
+import useMusicPlayerStore from '../../../store/useMusicPlayerStore';
 import { Pause, PlayArrow, PlaylistAdd } from '@mui/icons-material';
 
 function TrackListItem({ music }) {
