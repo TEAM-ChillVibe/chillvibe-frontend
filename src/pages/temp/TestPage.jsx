@@ -8,6 +8,7 @@ import { useState } from 'react';
 import SimpleModal from '../../components/common/modal/SimpleModal';
 import FormModal from '../../components/common/modal/FormModal';
 import DropdownModal from '../../components/common/modal/DropdownModal';
+import PlaylistListItemMini from '../../components/common/ListItem/PlaylistListItemMini';
 
 function TestPage() {
   // HANDLE FUNCTIONS ================================================
@@ -136,6 +137,25 @@ function TestPage() {
     },
   ];
 
+  // Playlist List
+  const playlists = [
+    {
+      id: 1,
+      title: 'Summer Hits 2024',
+      trackCount: 15,
+    },
+    {
+      id: 2,
+      title: 'Chill Vibes',
+      trackCount: 30,
+    },
+    {
+      id: 3,
+      title: 'Workout Beats',
+      trackCount: 20,
+    },
+  ];
+
   return (
     <BaseContainer>
       {/* 사용자 프로필 */}
@@ -238,6 +258,16 @@ function TestPage() {
           <Grid item xs={6} key={post.id}>
             {/* 각 아이템이 50% 차지 */}
             <PostListItemMini post={post} />
+          </Grid>
+        ))}
+      </Grid>
+
+      {/* 플레이리스트 리스트 mini */}
+      <Typography variant="title">Playlists</Typography>
+      <Grid container spacing={2}>
+        {playlists.map(playlist => (
+          <Grid item xs={6} key={playlist.id}>
+            <PlaylistListItemMini playlist={playlist} />
           </Grid>
         ))}
       </Grid>
