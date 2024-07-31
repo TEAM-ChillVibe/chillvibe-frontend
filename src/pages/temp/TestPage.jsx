@@ -7,11 +7,49 @@ import PostListItemMini from '../../components/common/PostListItemMini';
 import { useState } from 'react';
 import SimpleModal from '../../components/common/modal/SimpleModal';
 import FormModal from '../../components/common/modal/FormModal';
+import DropdownModal from '../../components/common/modal/DropdownModal';
 
 function TestPage() {
   // 모달 테스트
   const [simpleModalOpen, setSimpleModalOpen] = useState(false);
-  const [inputModalOpen, setInputModalOpen] = useState(false);
+  const [formModalOpen, setFormModalOpen] = useState(false);
+  const [dropdownModalOpen, setDropdownModalOpen] = useState(false);
+  const [selectedValue, setSelectedValue] = useState('');
+
+  const handleOpenSimpleModal = () => setSimpleModalOpen(true);
+  const handleCloseSimpleModal = () => setSimpleModalOpen(false);
+
+  const handleOpenFormModal = () => setFormModalOpen(true);
+  const handleCloseFormModal = () => setFormModalOpen(false);
+
+  const handleOpenDropdownModal = () => setDropdownModalOpen(true);
+  const handleCloseDropdownModal = () => setDropdownModalOpen(false);
+
+  const handleChange = (e, fieldName) => {
+    setFormFields(fields =>
+      fields.map(field =>
+        field.label.toLowerCase() === fieldName
+          ? { ...field, value: e.target.value }
+          : field,
+      ),
+    );
+  };
+
+  const handleDropdownChange = event => {
+    setSelectedValue(event.target.value);
+  };
+
+  const handlePrimaryClick = () => {
+    // Primary button action
+  };
+  const handleSecondaryClick = () => {
+    // Secondary button action
+  };
+
+  const options = [
+    { value: 'option1', label: 'Option 1' },
+    { value: 'option2', label: 'Option 2' },
+  ];
 
   const [formFields, setFormFields] = useState([
     {
@@ -27,34 +65,6 @@ function TestPage() {
       onChange: e => handleChange(e, 'password'),
     },
   ]);
-
-  const handleOpenSimpleModal = () => setSimpleModalOpen(true);
-  const handleCloseSimpleModal = () => setSimpleModalOpen(false);
-
-  const handleOpenInputModal = () => setInputModalOpen(true);
-  const handleCloseInputModal = () => setInputModalOpen(false);
-
-  const handleChange = (e, fieldName) => {
-    setFormFields(fields =>
-      fields.map(field =>
-        field.label.toLowerCase() === fieldName
-          ? { ...field, value: e.target.value }
-          : field,
-      ),
-    );
-  };
-
-  const handlePrimaryClick = () => {
-    // Primary button action
-
-    handleCloseInputModal();
-  };
-  const handleSecondaryClick = () => {
-    // Secondary button action
-
-    handleCloseInputModal();
-  };
-
   //
 
   const user = {
@@ -139,7 +149,13 @@ function TestPage() {
 
       <Box sx={{ width: '100%' }}>
         {/* 모달(Simple) */}
-        <Button onClick={handleOpenSimpleModal}>Open Simple Modal</Button>
+        <Button
+          onClick={handleOpenSimpleModal}
+          variant="contained"
+          sx={{ mr: 1 }}
+        >
+          Open Simple Modal
+        </Button>
         <SimpleModal
           open={simpleModalOpen}
           onClose={handleCloseSimpleModal}
@@ -147,22 +163,49 @@ function TestPage() {
           description="This is a simple modal description."
           primaryButtonText="Confirm"
           secondaryButtonText="Cancel"
-          onPrimaryClick={handlePrimaryClick}
+          onPrimaryClick={handleCloseSimpleModal}
           onSecondaryClick={handleCloseSimpleModal}
         />
-        {/* 모달(Input) */}
-        <Button onClick={handleOpenInputModal}>Open Input Modal</Button>
+        {/* 모달(form) */}
+        <Button
+          onClick={handleOpenFormModal}
+          variant="contained"
+          sx={{ mr: 1 }}
+        >
+          Open Form Modal
+        </Button>
         <FormModal
-          open={inputModalOpen}
-          onClose={handleCloseInputModal}
-          title="Input Modal Title"
+          open={formModalOpen}
+          onClose={handleCloseFormModal}
+          title="Form Modal Title"
           description="Please fill in the details below..."
           formFields={formFields}
           primaryButtonText="Submit"
           secondaryButtonText="Cancel"
-          onPrimaryClick={handleCloseInputModal}
-          onSecondaryClick={handleSecondaryClick}
+          onPrimaryClick={handleCloseFormModal}
+          onSecondaryClick={handleCloseFormModal}
         />
+        {/* 모달(dropdown) */}
+        <Button
+          onClick={handleOpenDropdownModal}
+          variant="contained"
+          sx={{ mr: 1 }}
+        >
+          Open Dropdown Modal
+        </Button>
+        <DropdownModal
+          open={dropdownModalOpen}
+          onClose={handleCloseDropdownModal}
+          title="Select an Option"
+          description="Please choose one of the following options:"
+          options={options}
+          selectedValue={selectedValue}
+          onChange={handleChange}
+          primaryButtonText="Confirm"
+          secondaryButtonText="Cancel"
+          onPrimaryClick={handleCloseDropdownModal}
+          onSecondaryClick={handleCloseDropdownModal}
+        ></DropdownModal>
       </Box>
 
       {/*트랙 리스트*/}
