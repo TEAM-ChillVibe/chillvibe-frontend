@@ -36,6 +36,9 @@ function PostListItemMini({ post }) {
           display: 'flex',
           flexDirection: 'column',
           order: 2,
+
+          alignItems: 'flex-start',
+          justifyContent: 'center',
         }}
       >
         <Typography variant="subtitle1" component="div" noWrap>

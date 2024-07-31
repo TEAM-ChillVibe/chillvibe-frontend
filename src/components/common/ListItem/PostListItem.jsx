@@ -39,6 +39,8 @@ function PostListItem({ post }) {
           flexDirection: 'column',
           py: 0.5,
           order: 2,
+          alignItems: 'flex-start',
+          justifyContent: 'center',
         }}
       >
         <Typography variant="subtitle1" component="div" noWrap>
