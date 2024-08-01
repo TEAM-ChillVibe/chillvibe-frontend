@@ -9,7 +9,6 @@ function PlaylistListItemMini({ playlist }) {
       sx={{
         display: 'flex',
         width: '100%',
-        px: 2,
         py: 2,
         flexWrap: 'wrap',
       }}

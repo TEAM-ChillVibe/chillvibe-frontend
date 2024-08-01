@@ -2,7 +2,7 @@ import { Avatar, Box, Chip, Typography } from '@mui/material';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import albumSample from '../albumSample.jpeg';
 
-function PostListItem({ post }) {
+function MyPostListItem({ post }) {
   const { title, createdAt, trackCount, hashtags, user, likes } = post;
 
   return (
@@ -45,9 +45,6 @@ function PostListItem({ post }) {
         <Typography variant="subtitle1" component="div" noWrap>
           {title}
         </Typography>
-        <Typography variant="body3" color="text.secondary" sx={{ mb: 1 }}>
-          {createdAt}
-        </Typography>
         <Typography variant="body2" sx={{ mb: 1 }}>
           트랙 {trackCount}개
         </Typography>
@@ -67,29 +64,27 @@ function PostListItem({ post }) {
           order: 3,
         }}
       >
-        <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
-          <Box
-            sx={{
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'flex-end',
-            }}
-          >
-            <Avatar
-              alt={user.name}
-              src={user.avatar}
-              sx={{ width: 32, height: 32, mb: 1 }}
-            />
-            <Typography variant="body2">{user.name}</Typography>
+        <Box
+          sx={{
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'flex-end',
+            justifyContent: 'center',
+            mb: 1,
+            height: '100%',
+          }}
+        >
+          <Typography variant="body3" color="text.secondary" sx={{ mb: 2 }}>
+            {createdAt}
+          </Typography>
+          <Box sx={{ display: 'flex', alignItems: 'center' }}>
+            <FavoriteIcon sx={{ fontSize: 14, mr: 0.5 }} />
+            <Typography variant="body2">{likes.toLocaleString()}</Typography>
           </Box>
-        </Box>
-        <Box sx={{ display: 'flex', alignItems: 'center' }}>
-          <FavoriteIcon sx={{ fontSize: 14, mr: 0.5 }} />
-          <Typography variant="body2">{likes.toLocaleString()}</Typography>
         </Box>
       </Box>
     </Box>
   );
 }
 
-export default PostListItem;
+export default MyPostListItem;

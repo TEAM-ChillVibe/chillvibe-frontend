@@ -40,6 +40,9 @@ export const theme = createTheme({
     title: {
       fontSize: '2rem',
     },
+    subtitleMypage: {
+      fontSize: '1.6rem',
+    },
   },
   spacing: 8,
 });
