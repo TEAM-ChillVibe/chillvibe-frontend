@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import BaseContainer from '../../components/layout/BaseContainer';
 import { Box, Button, Tab, Tabs, Typography } from '@mui/material';
 import UserProfile from '../../components/common/UserProfile';
@@ -8,10 +8,24 @@ import MyLikedPost from './tabs/MyLikedPost';
 import MyComment from './tabs/MyComment';
 
 const MyPage = () => {
-  const [currentTab, setCurrentTab] = useState(0);
+  const [currentTab, setCurrentTab] = useState(() => {
+    // 페이지 로드 시 상태를 로컬 스토리지에서 가져오기
+    const savedTab = localStorage.getItem('currentTab');
+    return savedTab ? parseInt(savedTab, 10) : 0;
+  });
   const handleTabChange = (event, newValue) => {
     setCurrentTab(newValue);
+    // 탭 변경 시 로컬 스토리지에 저장
+    localStorage.setItem('currentTab', newValue);
   };
+
+  useEffect(() => {
+    // 컴포넌트 마운트 시 로컬 스토리지에서 탭 상태를 가져옴
+    const savedTab = localStorage.getItem('currentTab');
+    if (savedTab) {
+      setCurrentTab(parseInt(savedTab, 10));
+    }
+  }, []);
 
   const user = {
     id: 1,
