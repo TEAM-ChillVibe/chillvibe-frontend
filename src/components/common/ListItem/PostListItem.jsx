@@ -1,9 +1,15 @@
 import { Avatar, Box, Chip, Typography } from '@mui/material';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import albumSample from '../albumSample.jpeg';
+import { useNavigate } from 'react-router-dom';
 
 function PostListItem({ post }) {
-  const { title, createdAt, trackCount, hashtags, user, likes } = post;
+  const { id, title, createdAt, trackCount, hashtags, user, likes } = post;
+  const navigate = useNavigate();
+
+  const handleNavigateToPost = () => {
+    navigate(`/post/${id}`);
+  };
 
   return (
     <Box
@@ -15,6 +21,7 @@ function PostListItem({ post }) {
       }}
     >
       <Box
+        onClick={handleNavigateToPost}
         sx={{
           width: 120,
           height: 120,
@@ -22,6 +29,7 @@ function PostListItem({ post }) {
           borderRadius: 1,
           overflow: 'hidden',
           order: 1,
+          cursor: 'pointer',
         }}
       >
         {/* 이미지 소스 수정 필요 */}
@@ -42,7 +50,12 @@ function PostListItem({ post }) {
           justifyContent: 'center',
         }}
       >
-        <Typography variant="subtitle1" component="div" noWrap>
+        <Typography
+          variant="subtitle1"
+          onClick={handleNavigateToPost}
+          sx={{ cursor: 'pointer' }}
+          noWrap
+        >
           {title}
         </Typography>
         <Typography variant="body3" color="text.secondary" sx={{ mb: 1 }}>

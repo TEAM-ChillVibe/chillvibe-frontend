@@ -10,6 +10,7 @@ const MyLikedPost = () => {
       trackCount: 15,
       hashtags: ['#팝', '#여름', '#드라이브'],
       user: {
+        id: 7,
         name: 'Alice',
         avatar: 'https://example.com/alice.jpg',
       },
@@ -22,6 +23,7 @@ const MyLikedPost = () => {
       trackCount: 8,
       hashtags: ['#클래식', '#집중', '#공부'],
       user: {
+        id: 8,
         name: 'Bob',
         avatar: 'https://example.com/bob.jpg',
       },
@@ -34,6 +36,7 @@ const MyLikedPost = () => {
       trackCount: 12,
       hashtags: ['#편안', '#주말', '#아침'],
       user: {
+        id: 9,
         name: 'Charlie',
         avatar: 'https://example.com/charlie.jpg',
       },
@@ -46,6 +49,7 @@ const MyLikedPost = () => {
       trackCount: 10,
       hashtags: ['#운동', '#비트', '#에너지'],
       user: {
+        id: 10,
         name: 'David',
         avatar: 'https://example.com/david.jpg',
       },
@@ -58,6 +62,7 @@ const MyLikedPost = () => {
       trackCount: 20,
       hashtags: ['#여름', '#휴가', '#바다'],
       user: {
+        id: 11,
         name: 'Eva',
         avatar: 'https://example.com/eva.jpg',
       },
@@ -70,6 +75,7 @@ const MyLikedPost = () => {
       trackCount: 16,
       hashtags: ['#겨울', '#따뜻함', '#저녁'],
       user: {
+        id: 12,
         name: 'Frank',
         avatar: 'https://example.com/frank.jpg',
       },
@@ -82,6 +88,7 @@ const MyLikedPost = () => {
       trackCount: 14,
       hashtags: ['#발라드', '#감성', '#로맨스'],
       user: {
+        id: 13,
         name: 'Grace',
         avatar: 'https://example.com/grace.jpg',
       },
@@ -94,6 +101,7 @@ const MyLikedPost = () => {
       trackCount: 18,
       hashtags: ['#재즈', '#블루스', '#즉흥'],
       user: {
+        id: 14,
         name: 'Henry',
         avatar: 'https://example.com/henry.jpg',
       },
@@ -106,6 +114,7 @@ const MyLikedPost = () => {
       trackCount: 22,
       hashtags: ['#활력', '#일상', '#에너지'],
       user: {
+        id: 15,
         name: 'Ivy',
         avatar: 'https://example.com/ivy.jpg',
       },
@@ -118,6 +127,7 @@ const MyLikedPost = () => {
       trackCount: 9,
       hashtags: ['#집중', '#연구', '#조용함'],
       user: {
+        id: 16,
         name: 'Jack',
         avatar: 'https://example.com/jack.jpg',
       },

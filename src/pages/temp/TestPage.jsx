@@ -71,6 +71,7 @@ function TestPage() {
 
   // User Profile
   const user = {
+    id: 1,
     nickname: 'Julie Han',
     introduction: 'testing userprofile now',
     hashtags: ['#tag1', '#tag2', '#tag3'],
@@ -118,6 +119,7 @@ function TestPage() {
       trackCount: 15,
       hashtags: ['#팝', '#여름', '#드라이브'],
       user: {
+        id: 2,
         name: 'Alice',
         avatar: 'https://example.com/alice.jpg',
       },
@@ -130,6 +132,7 @@ function TestPage() {
       trackCount: 8,
       hashtags: ['#클래식', '#집중', '#공부'],
       user: {
+        id: 3,
         name: 'Bob',
         avatar: 'https://example.com/bob.jpg',
       },
@@ -166,10 +169,10 @@ function TestPage() {
         사용자 프로필
       </Typography>
       <Card sx={{ width: '100%' }}>
-        <UserProfile {...user} />
+        <UserProfile user={user} />
       </Card>
 
-      <UserProfile {...user} />
+      <UserProfile user={user} />
 
       <Typography variant="title">Modals</Typography>
       <Box sx={{ width: '100%' }}>

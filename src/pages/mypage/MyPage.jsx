@@ -14,6 +14,7 @@ const MyPage = () => {
   };
 
   const user = {
+    id: 1,
     nickname: 'Julie Han',
     introduction: 'testing mypage profile',
     hashtags: ['#tag1', '#tag2', '#tag3'],
@@ -31,7 +32,7 @@ const MyPage = () => {
           mb: 2,
         }}
       >
-        <UserProfile {...user} />
+        <UserProfile user={user} />
         <Button
           variant="outlined"
           href="/edit-profile"
@@ -48,7 +49,7 @@ const MyPage = () => {
           value={currentTab}
           onChange={handleTabChange}
           aria-label="my-page-tabs"
-          varient="fullWidth"
+          variant="fullWidth"
           scrollButtons="auto"
         >
           <Tab label="Playlists" sx={{ flex: 1 }} />

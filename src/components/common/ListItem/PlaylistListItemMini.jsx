@@ -1,8 +1,14 @@
 import { Box, Typography } from '@mui/material';
 import albumSample from '../albumSample.jpeg';
+import { useNavigate } from 'react-router-dom';
 
 function PlaylistListItemMini({ playlist }) {
-  const { title, imageUrl, trackCount } = playlist;
+  const { id, title, imageUrl, trackCount } = playlist;
+  const navigate = useNavigate();
+
+  const handleNavigateToPlaylist = () => {
+    navigate(`playlist/${id}`); // '/my-page/playlist/{id}'로 이동
+  };
 
   return (
     <Box
@@ -11,7 +17,9 @@ function PlaylistListItemMini({ playlist }) {
         width: '100%',
         py: 2,
         flexWrap: 'wrap',
+        cursor: 'pointer', // 클릭 가능 표시
       }}
+      onClick={handleNavigateToPlaylist} // 클릭 시 페이지 이동
     >
       <Box
         sx={{
