@@ -1,116 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import styled from 'styled-components';
 import BaseContainer from '../../components/layout/BaseContainer';
 import axios from 'axios';
-
-const CommentSectionWrapper = styled.div`
-  background-color: #1c1c1c;
-  padding: 20px;
-  border-radius: 10px;
-  margin-top: 20px;
-  color: white;
-  font-family: 'Arial', sans-serif;
-  width: 100%;
-  margin-left: auto;
-  margin-right: auto;
-  max-width: 1200px;
-`;
-
-const CommentWrapper = styled.div`
-  background-color: #2a2a2a;
-  padding: 15px;
-  border-radius: 5px;
-  margin-bottom: 10px;
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-`;
-
-const CommentAvatar = styled.img`
-  width: 55px;
-  height: 55px;
-  border-radius: 50%;
-  margin-right: 30px;
-`;
-
-const CommentDetails = styled.div`
-  display: flex;
-  flex-direction: column;
-  flex-grow: 1;
-`;
-
-const CommentHeader = styled.div`
-  display: flex;
-  align-items: center;
-  margin-bottom: 10px;
-`;
-
-const CommentAuthor = styled.div`
-  font-size: 18px;
-  font-weight: bold;
-  margin-top: 5px;
-`;
-
-const CommentDate = styled.div`
-  font-size: 12px;
-  color: #888;
-  margin-top: 4px;
-`;
-
-const CommentContent = styled.div`
-  font-size: 15px;
-  line-height: 1;
-`;
-
-const CommentActions = styled.div`
-  display: flex;
-  align-items: center;
-`;
-
-const ActionButton = styled.button`
-  background-color: transparent;
-  border: none;
-  color: #888;
-  cursor: pointer;
-  margin-left: 10px;
-
-  &:hover {
-    color: white;
-  }
-`;
-
-const CommentInput = styled.textarea`
-  width: 100%;
-  height: 80px;
-  padding: 10px;
-  border-radius: 5px;
-  border: 1px solid #444;
-  background-color: #333;
-  color: white;
-  resize: none;
-  margin-bottom: 10px;
-  font-size: 14px;
-
-  &:focus {
-    outline: none;
-    border-color: #777;
-  }
-`;
-
-const CommentButton = styled.button`
-  background-color: #4caf50;
-  color: white;
-  border: none;
-  padding: 10px 20px;
-  border-radius: 5px;
-  cursor: pointer;
-  font-size: 14px;
-
-  &:hover {
-    background-color: #45a049;
-  }
-`;
+import {
+  Avatar,
+  Box,
+  Button,
+  Paper,
+  TextField,
+  Typography,
+} from '@mui/material';
+import { Delete, Edit } from '@mui/icons-material';
+import IconButton from '@mui/material/IconButton';
 
 const Comment = () => {
   const { postId } = useParams(); // URL에서 postId를 가져옴
@@ -228,72 +129,99 @@ const Comment = () => {
 
   // 이메일 일부 표시
   const getMaskedEmail = email => {
-    if (!email) return '';
+    if (!email) {
+      return '';
+    }
     const atIndex = email.indexOf('@');
     return `${email.slice(0, Math.min(4, atIndex))}***`;
   };
 
   return (
     <BaseContainer>
-      <CommentSectionWrapper>
-        <h2>Comments</h2>
+      <Box sx={{ width: '100%' }}>
+        <Typography variant="h5" sx={{ pb: 2 }}>
+          Comments
+        </Typography>
         {comments.map(comment => (
-          <CommentWrapper key={comment.id}>
-            <CommentAvatar src={comment.userProfileUrl} alt="Profile" />
-            <CommentDetails>
-              <CommentHeader>
-                <div>
-                  <CommentAuthor>
+          <Paper key={comment.id} sx={{ p: 2, mb: 2 }}>
+            <Box sx={{ display: 'flex', alignItems: 'flex-start' }}>
+              <Avatar
+                src={comment.userProfileUrl}
+                alt="Profile"
+                sx={{ width: 55, height: 55, mr: 2 }}
+              />
+              <Box sx={{ flexGrow: 1 }}>
+                <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
+                  <Typography variant="h6">
                     {comment.userNickname} ({getMaskedEmail(comment.userEmail)})
-                  </CommentAuthor>
-                </div>
-              </CommentHeader>
-              {editingCommentId === comment.id ? (
-                <>
-                  <CommentInput
-                    value={editingContent}
-                    onChange={handleEditChange}
-                  />
-                  <CommentButton onClick={handleEditSubmit}>
-                    Update
-                  </CommentButton>
-                </>
-              ) : (
-                <>
-                  <CommentContent>{comment.content}</CommentContent>
-                  <CommentDate>
-                    {new Date(comment.modifiedAt).toLocaleString()}
-                    {comment.createdAt !== comment.modifiedAt && (
-                      <span style={{ marginLeft: '10px', color: '#888' }}>
-                        수정됨
-                      </span>
-                    )}
-                  </CommentDate>
-                </>
-              )}
-            </CommentDetails>
-            {console.log('Comment User ID:', comment.userId)}
-            {comment.userId == userId && ( // 댓글 작성자와 현재 사용자가 동일한 경우에만 버튼 표시
-              <CommentActions>
-                <ActionButton
-                  onClick={() => handleEdit(comment.id, comment.content)}
+                  </Typography>
+                </Box>
+                {editingCommentId === comment.id ? (
+                  <>
+                    <TextField
+                      multiline
+                      fullWidth
+                      row={4}
+                      variant="outlined"
+                      value={editingContent}
+                      onChange={handleEditChange}
+                      sx={{ mb: 2 }}
+                    />
+                    <Button variant="contained" onClick={handleEditSubmit}>
+                      Update
+                    </Button>
+                  </>
+                ) : (
+                  <>
+                    <Typography variant="body1" paragraph>
+                      {comment.content}
+                    </Typography>
+                    <Typography variant="caption" color="textSecondary">
+                      {new Date(comment.modifiedAt).toLocaleString()}
+                      {comment.createdAt !== comment.modifiedAt && (
+                        <span style={{ marginLeft: '10px' }}>수정됨</span>
+                      )}
+                    </Typography>
+                  </>
+                )}
+              </Box>
+              {comment.userId == userId && ( // 댓글 작성자와 현재 사용자가 동일한 경우에만 버튼 표시
+                <Box
+                  sx={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                  }}
                 >
-                  Edit
-                </ActionButton>
-                <ActionButton onClick={() => handleDelete(comment.id)}>
-                  Delete
-                </ActionButton>
-              </CommentActions>
-            )}
-          </CommentWrapper>
+                  <IconButton
+                    onClick={() => handleEdit(comment.id, comment.content)}
+                  >
+                    <Edit />
+                  </IconButton>
+                  <IconButton onClick={() => handleDelete(comment.id)}>
+                    <Delete />
+                  </IconButton>
+                </Box>
+              )}
+            </Box>
+          </Paper>
         ))}
-        <CommentInput
+        <TextField
+          multiline
+          fullWidth
+          rows={4}
+          variant="outlined"
           placeholder="Write a new comment"
           value={newComment}
           onChange={handleNewCommentChange}
+          sx={{ mb: 2 }}
         />
-        <CommentButton onClick={handleCommentSubmit}>Submit</CommentButton>
-      </CommentSectionWrapper>
+        <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+          <Button variant="contained" onClick={handleCommentSubmit} sx={{}}>
+            Submit
+          </Button>
+        </Box>
+      </Box>
     </BaseContainer>
   );
 };
