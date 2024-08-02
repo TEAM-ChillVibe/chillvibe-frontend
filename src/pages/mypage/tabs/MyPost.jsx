@@ -3,6 +3,7 @@ import { Box, Button, Pagination, Typography } from '@mui/material';
 import MyPostListItem from '../../../components/common/ListItem/MyPostListItem';
 
 const MyPost = () => {
+  // Post List
   const postList = [
     {
       id: 1,
@@ -138,7 +139,9 @@ const MyPost = () => {
         }}
       >
         <Typography variant="subtitleMypage">My Posts</Typography>
-        <Button variant="contained">새 게시글</Button>
+        <Button variant="contained" href="/new-post">
+          새 게시글
+        </Button>
       </Box>
       <Box sx={{ width: '100%', my: 2 }}>
         {/* list 배열 처리, 컴포넌트의 props로 데이터 전달 */}

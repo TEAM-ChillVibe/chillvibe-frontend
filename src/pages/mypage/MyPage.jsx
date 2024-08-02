@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import BaseContainer from '../../components/layout/BaseContainer';
 import { Box, Button, Tab, Tabs, Typography } from '@mui/material';
-import SimpleModal from '../../components/common/modal/SimpleModal';
 import UserProfile from '../../components/common/UserProfile';
 import MyPlaylist from './tabs/MyPlaylist';
 import MyPost from './tabs/MyPost';
@@ -35,6 +34,7 @@ const MyPage = () => {
         <UserProfile {...user} />
         <Button
           variant="outlined"
+          href="/edit-profile"
           sx={{
             minWidth: '100px',
             whiteSpace: 'nowrap',

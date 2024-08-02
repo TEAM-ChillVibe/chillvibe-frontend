@@ -1,8 +1,23 @@
 import { Box, Button, Grid, Pagination, Typography } from '@mui/material';
 import PlaylistListItemMini from '../../../components/common/ListItem/PlaylistListItemMini';
 import { useState } from 'react';
+import FormModal from '../../../components/common/modal/FormModal';
 
 const MyPlaylist = () => {
+  // modal state
+  const [open, setOpen] = useState(false);
+
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
+
+  const handlePrimaryClick = () => {
+    handleClose();
+  };
+
+  const handleSecondaryClick = () => {
+    handleClose();
+  };
+
   // Playlist List
   const playlists = [
     { id: 1, title: 'Summer Hits 2024', trackCount: 15 },
@@ -43,7 +58,29 @@ const MyPlaylist = () => {
         }}
       >
         <Typography variant="subtitleMypage">My Playlists</Typography>
-        <Button variant="contained">새 재생목록</Button>
+        <Box>
+          <Button variant="contained" onClick={handleOpen}>
+            새 재생목록
+          </Button>
+          <FormModal
+            open={open}
+            onClose={handleClose}
+            title="New Playlist"
+            description={`새 재생목록의 제목을 정해주세요!\n재생목록 생성 후, 검색창을 통해 음악을 추가할 수 있습니다.`}
+            formFields={[
+              {
+                label: 'Title of playlist',
+                type: 'text',
+                value: '',
+                onChange: () => {},
+              },
+            ]}
+            primaryButtonText="저장"
+            secondaryButtonText="취소"
+            onPrimaryClick={handlePrimaryClick}
+            onSecondaryClick={handleSecondaryClick}
+          />
+        </Box>
       </Box>
       <Box sx={{ width: '100%', my: 2 }}>
         <Grid container>
