@@ -46,11 +46,6 @@ const CommentHeader = styled.div`
   margin-bottom: 10px;
 `;
 
-const CommentAuthorDateWrapper = styled.div`
-  display: flex;
-  align-items: center;
-`;
-
 const CommentAuthor = styled.div`
   font-size: 18px;
   font-weight: bold;
@@ -87,6 +82,7 @@ const ActionButton = styled.button`
 
 const CommentInput = styled.textarea`
   width: 100%;
+  height: 80px;
   padding: 10px;
   border-radius: 5px;
   border: 1px solid #444;
@@ -122,11 +118,17 @@ const Comment = () => {
   const [newComment, setNewComment] = useState('');
   const [editingCommentId, setEditingCommentId] = useState(null);
   const [editingContent, setEditingContent] = useState('');
+  const [userId, setUserId] = useState(null);
 
   const token =
-    'eyJhbGciOiJIUzI1NiJ9.eyJjYXRlZ29yeSI6ImFjY2VzcyIsInN1YiI6IjIiLCJlbWFpbCI6InNqQGV4YW1wbGUuY29tIiwiaWF0IjoxNzIyNTYzOTAwLCJleHAiOjE3MjI1NjYwNjB9._cuxvBC02Lu0NnJ6OrP6veP24ua4h0uvUyoye29sQ-4';
+    'eyJhbGciOiJIUzI1NiJ9.eyJjYXRlZ29yeSI6ImFjY2VzcyIsInN1YiI6IjEiLCJlbWFpbCI6InRlc3RAZXhhbXBsZS5jb20iLCJpYXQiOjE3MjI1NzA4ODAsImV4cCI6MTcyMjU3MzA0MH0.f4KzeDrKOdVWUSR-7FWZXCyAMgqmQSlNjVco4-vF2I4';
 
   useEffect(() => {
+    // 토큰 디코딩하여 사용자 ID 가져오기
+    const decodedToken = JSON.parse(atob(token.split('.')[1]));
+    setUserId(decodedToken.sub); // sub => 사용자 ID 나타냄
+    console.log('Decoded User ID:', decodedToken.sub);
+
     // 댓글 데이터를 가져오는 함수 (API 요청)
     axios
       .get(`http://localhost:8080/api/comments/byPost?postId=1`)
@@ -188,11 +190,19 @@ const Comment = () => {
         },
       )
       .then(response => {
-        setComments(
-          comments.map(comment =>
-            comment.id === editingCommentId ? response.data : comment,
-          ),
-        );
+        setComments(prevComments => {
+          const updatedComments = prevComments.map(comment =>
+            comment.id == editingCommentId
+              ? {
+                  ...comment,
+                  content: response.data.content,
+                  modifiedAt: response.data.modifiedAt,
+                }
+              : comment,
+          );
+          console.log('Updated Comments:', updatedComments);
+          return updatedComments;
+        });
         setEditingCommentId(null);
         setEditingContent('');
       })
@@ -262,16 +272,19 @@ const Comment = () => {
                 </>
               )}
             </CommentDetails>
-            <CommentActions>
-              <ActionButton
-                onClick={() => handleEdit(comment.id, comment.content)}
-              >
-                Edit
-              </ActionButton>
-              <ActionButton onClick={() => handleDelete(comment.id)}>
-                Delete
-              </ActionButton>
-            </CommentActions>
+            {console.log('Comment User ID:', comment.userId)}
+            {comment.userId == userId && ( // 댓글 작성자와 현재 사용자가 동일한 경우에만 버튼 표시
+              <CommentActions>
+                <ActionButton
+                  onClick={() => handleEdit(comment.id, comment.content)}
+                >
+                  Edit
+                </ActionButton>
+                <ActionButton onClick={() => handleDelete(comment.id)}>
+                  Delete
+                </ActionButton>
+              </CommentActions>
+            )}
           </CommentWrapper>
         ))}
         <CommentInput
