@@ -25,11 +25,12 @@ const FormModal = ({
           top: '50%',
           left: '50%',
           transform: 'translate(-50%, -50%)',
-          width: 400,
+          width: 'auto',
           bgcolor: 'background.paper',
           borderRadius: 1,
           boxShadow: 24,
-          p: 4,
+          py: 4,
+          px: 6,
         }}
       >
         <Typography
@@ -42,7 +43,13 @@ const FormModal = ({
         </Typography>
         <Typography
           id="input-modal-description"
-          sx={{ display: 'flex', justifyContent: 'center', mt: 2 }}
+          sx={{
+            display: 'flex',
+            justifyContent: 'center',
+            mt: 2,
+            whiteSpace: 'pre-line', // 줄바꿈을 문자열에 포함
+            textAlign: 'center',
+          }}
         >
           {description}
         </Typography>
