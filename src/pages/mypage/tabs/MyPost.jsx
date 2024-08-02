@@ -123,9 +123,9 @@ const MyPost = () => {
   };
 
   // Calculate the indices of the items to display
-  const startIndex = (page - 1) * itemsPerPage;
-  const endIndex = startIndex + itemsPerPage;
-  const currentPosts = postList.slice(startIndex, endIndex);
+  // const startIndex = (page - 1) * itemsPerPage;
+  // const endIndex = startIndex + itemsPerPage;
+  // const currentPosts = postList.slice(startIndex, endIndex);
 
   return (
     <Box sx={{ width: '100%' }}>

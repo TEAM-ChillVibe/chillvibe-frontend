@@ -28,9 +28,9 @@ const MyPlaylist = () => {
   };
 
   // Calculate the indices of the items to display
-  const startIndex = (page - 1) * itemsPerPage;
-  const endIndex = startIndex + itemsPerPage;
-  const currentPlaylists = playlists.slice(startIndex, endIndex);
+  // const startIndex = (page - 1) * itemsPerPage;
+  // const endIndex = startIndex + itemsPerPage;
+  // const currentPlaylists = playlists.slice(startIndex, endIndex);
 
   return (
     <Box sx={{ width: '100%' }}>

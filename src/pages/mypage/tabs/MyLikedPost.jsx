@@ -1,6 +1,5 @@
 import { useState } from 'react';
-import { Box, Button, Pagination, Typography } from '@mui/material';
-import MyPostListItem from '../../../components/common/ListItem/MyPostListItem';
+import { Box, Pagination, Typography } from '@mui/material';
 import PostListItem from '../../../components/common/ListItem/PostListItem';
 
 const MyLikedPost = () => {
@@ -136,9 +135,9 @@ const MyLikedPost = () => {
   };
 
   // Calculate the indices of the items to display
-  const startIndex = (page - 1) * itemsPerPage;
-  const endIndex = startIndex + itemsPerPage;
-  const currentPosts = postList.slice(startIndex, endIndex);
+  // const startIndex = (page - 1) * itemsPerPage;
+  // const endIndex = startIndex + itemsPerPage;
+  // const currentPosts = postList.slice(startIndex, endIndex);
 
   return (
     <Box sx={{ width: '100%' }}>
