@@ -16,8 +16,8 @@ const FormModal = ({
     <Modal
       open={open}
       onClose={onClose}
-      aria-labelledby="input-modal-title"
-      aria-describedby="input-modal-description"
+      aria-labelledby="form-modal-title"
+      aria-describedby="form-modal-description"
     >
       <Box
         sx={{
@@ -34,15 +34,14 @@ const FormModal = ({
         }}
       >
         <Typography
-          id="input-modal-title"
-          variant="h6"
-          component="h2"
+          id="form-modal-title"
+          variant="modalTitle"
           sx={{ display: 'flex', justifyContent: 'center' }}
         >
           {title}
         </Typography>
         <Typography
-          id="input-modal-description"
+          id="form-modal-description"
           sx={{
             display: 'flex',
             justifyContent: 'center',

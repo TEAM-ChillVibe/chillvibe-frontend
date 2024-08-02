@@ -33,15 +33,20 @@ const SimpleModal = ({
       >
         <Typography
           id="simple-modal-title"
-          variant="h6"
-          component="h2"
+          variant="modalTitle"
           sx={{ display: 'flex', justifyContent: 'center' }}
         >
           {title}
         </Typography>
         <Typography
-          id="simple-modal-description"
-          sx={{ display: 'flex', justifyContent: 'center', mt: 3 }}
+          id="form-modal-description"
+          sx={{
+            display: 'flex',
+            justifyContent: 'center',
+            mt: 2,
+            whiteSpace: 'pre-line', // 줄바꿈을 문자열에 포함
+            textAlign: 'center',
+          }}
         >
           {description}
         </Typography>

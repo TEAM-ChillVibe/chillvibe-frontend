@@ -43,6 +43,9 @@ export const theme = createTheme({
     subtitleMypage: {
       fontSize: '1.6rem',
     },
+    modalTitle: {
+      fontSize: '1.6rem',
+    },
   },
   spacing: 8,
 });
