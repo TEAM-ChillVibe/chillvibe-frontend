@@ -11,6 +11,10 @@ function PostListItem({ post }) {
     navigate(`/post/${id}`);
   };
 
+  const handleNavigateToUserPage = () => {
+    navigate(`/user/${user.id}`);
+  };
+
   return (
     <Box
       sx={{
@@ -82,10 +86,12 @@ function PostListItem({ post }) {
       >
         <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
           <Box
+            onClick={handleNavigateToUserPage}
             sx={{
               display: 'flex',
               flexDirection: 'column',
               alignItems: 'flex-end',
+              cursor: 'pointer',
             }}
           >
             <Avatar
