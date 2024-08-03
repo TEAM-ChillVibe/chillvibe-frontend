@@ -105,7 +105,7 @@ const AuthButtons = ({ user }) => {
   return (
     <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, pl: 1 }}>
       <Link
-        to="/sign-up"
+        to="/signup"
         style={{
           textDecoration: 'none',
           color: '#fff',

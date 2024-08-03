@@ -8,23 +8,24 @@ const Login = () => {
   const [password, setPassword] = useState('');
   const navigate = useNavigate();
 
+  // 회원가입 버튼 액션
   const handleSignup = () => {
     navigate('/signup');
   };
 
+  // 로그인 버튼 액션
   const handleSubmit = event => {
     event.preventDefault();
     // 로그인 정보를 서버로 전송하는 로직 추가
   };
 
+  // 입력 여부 확인 (버튼 활성화용)
   const isFormValid = email && password;
 
   return (
     <BaseContainer>
       <Typography variant="title">Login</Typography>
       <Box
-        component="form"
-        onSubmit={handleSubmit}
         sx={{
           width: '60%',
           minWidth: '300px',
@@ -33,40 +34,45 @@ const Login = () => {
           flexDirection: 'column',
           alignItems: 'center',
           justifyContent: 'center',
-          gap: 2,
           m: '0 auto',
           p: 2,
         }}
       >
-        <TextField
-          label="Email"
-          fullWidth
-          type="email"
-          required
-          value={email}
-          onChange={e => setEmail(e.target.value)}
-        />
-        <TextField
-          label="Password"
-          fullWidth
-          type="password"
-          required
-          value={password}
-          onChange={e => setPassword(e.target.value)}
-        />
-        <Box sx={{ width: '100%', display: 'flex', mt: 4, gap: 2 }}>
-          <Button variant="outlined" onClick={handleSignup} sx={{ flex: 1 }}>
-            Sign Up
-          </Button>
-          <Button
-            type="submit"
-            variant="contained"
-            sx={{ flex: 1 }}
-            disabled={!isFormValid}
-          >
-            Login
-          </Button>
-        </Box>
+        <form onSubmit={handleSubmit}>
+          {/* 회원정보 입력 필드 */}
+          <TextField
+            label="이메일"
+            fullWidth
+            type="email"
+            required
+            value={email}
+            onChange={e => setEmail(e.target.value)}
+            margin="normal"
+          />
+          <TextField
+            label="비밀번호"
+            fullWidth
+            type="password"
+            required
+            value={password}
+            onChange={e => setPassword(e.target.value)}
+            margin="normal"
+          />
+          {/* 버튼 */}
+          <Box sx={{ width: '100%', display: 'flex', mt: 6, gap: 2 }}>
+            <Button variant="outlined" onClick={handleSignup} sx={{ flex: 1 }}>
+              회원가입
+            </Button>
+            <Button
+              type="submit"
+              variant="contained"
+              sx={{ flex: 1 }}
+              disabled={!isFormValid}
+            >
+              로그인
+            </Button>
+          </Box>
+        </form>
       </Box>
     </BaseContainer>
   );
