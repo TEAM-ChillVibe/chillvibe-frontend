@@ -7,10 +7,8 @@ import {
   Button,
   Checkbox,
   Divider,
-  FormControl,
   FormControlLabel,
   FormGroup,
-  Paper,
   TextField,
   Typography,
 } from '@mui/material';
