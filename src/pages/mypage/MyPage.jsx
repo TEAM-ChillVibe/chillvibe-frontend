@@ -8,6 +8,7 @@ import MyLikedPost from './tabs/MyLikedPost';
 import MyComment from './tabs/MyComment';
 
 const MyPage = () => {
+  // 탭 상태 관리
   const [currentTab, setCurrentTab] = useState(() => {
     // 페이지 로드 시 상태를 로컬 스토리지에서 가져오기
     const savedTab = localStorage.getItem('currentTab');
@@ -18,14 +19,6 @@ const MyPage = () => {
     // 탭 변경 시 로컬 스토리지에 저장
     localStorage.setItem('currentTab', newValue);
   };
-
-  useEffect(() => {
-    // 컴포넌트 마운트 시 로컬 스토리지에서 탭 상태를 가져옴
-    const savedTab = localStorage.getItem('currentTab');
-    if (savedTab) {
-      setCurrentTab(parseInt(savedTab, 10));
-    }
-  }, []);
 
   const user = {
     id: 1,

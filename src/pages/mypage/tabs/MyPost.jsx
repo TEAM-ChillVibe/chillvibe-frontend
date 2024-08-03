@@ -2,6 +2,9 @@ import { useState } from 'react';
 import { Box, Button, Pagination, Typography } from '@mui/material';
 import MyPostListItem from '../../../components/common/ListItem/MyPostListItem';
 
+// 페이지네이션 단위 고정값
+const itemsPerPage = 6;
+
 const MyPost = () => {
   // Post List
   const postList = [];
@@ -118,7 +121,6 @@ const MyPost = () => {
 
   // Pagination
   const [page, setPage] = useState(1);
-  const itemsPerPage = 6;
 
   const handlePageChange = (event, newPage) => {
     setPage(newPage);
