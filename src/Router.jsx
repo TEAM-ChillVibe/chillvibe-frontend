@@ -6,6 +6,7 @@ const Main = lazy(() => import('./pages/main/Main'));
 const TestPage = lazy(() => import('./pages/temp/TestPage'));
 const MyPage = lazy(() => import('./pages/mypage/MyPage'));
 const Comment = lazy(() => import('./pages/comment/Comment'));
+const Login = lazy(() => import('./pages/login/Login'));
 
 const Router = () => {
   return (
@@ -28,6 +29,7 @@ const Router = () => {
         <Route path="/test" element={<TestPage />} />
         <Route path="/my-page" element={<MyPage />} />
         <Route path="/comment" element={<Comment />} />
+        <Route path="/login" element={<Login />} />
       </Routes>
     </Suspense>
   );
