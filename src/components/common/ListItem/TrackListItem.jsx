@@ -6,7 +6,7 @@ import Avatar from '@mui/material/Avatar';
 import useMusicPlayerStore from '../../../store/useMusicPlayerStore';
 import { Pause, PlayArrow, PlaylistAdd } from '@mui/icons-material';
 import { useState } from 'react';
-import DropdownModal from '../modal/DropdownModal';
+import DropdownModal from '../Modal/DropdownModal';
 
 function TrackListItem({ music }) {
   const { title, artist, albumCover, duration, audioSrc } = music;

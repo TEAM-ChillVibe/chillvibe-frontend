@@ -5,9 +5,9 @@ import TrackListItem from '../../components/common/ListItem/TrackListItem';
 import PostListItem from '../../components/common/ListItem/PostListItem';
 import PostListItemMini from '../../components/common/ListItem/PostListItemMini';
 import { useState } from 'react';
-import SimpleModal from '../../components/common/modal/SimpleModal';
-import FormModal from '../../components/common/modal/FormModal';
-import DropdownModal from '../../components/common/modal/DropdownModal';
+import SimpleModal from '../../components/common/Modal/SimpleModal';
+import FormModal from '../../components/common/Modal/FormModal';
+import DropdownModal from '../../components/common/Modal/DropdownModal';
 import PlaylistListItemMini from '../../components/common/ListItem/PlaylistListItemMini';
 
 function TestPage() {

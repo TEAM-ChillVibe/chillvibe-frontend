@@ -1,7 +1,7 @@
 import { Box, Button, Grid, Pagination, Typography } from '@mui/material';
 import PlaylistListItemMini from '../../../components/common/ListItem/PlaylistListItemMini';
 import { useState } from 'react';
-import FormModal from '../../../components/common/modal/FormModal';
+import FormModal from '../../../components/common/Modal/FormModal';
 
 const MyPlaylist = () => {
   // modal state
