@@ -1,5 +1,5 @@
 import { Box, Button, TextField, Typography } from '@mui/material';
-import BaseContainer from '../../components/layout/BaseContainer';
+import BaseContainer from '../../../components/layout/BaseContainer';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 

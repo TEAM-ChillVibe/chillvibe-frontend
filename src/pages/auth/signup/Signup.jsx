@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import BaseContainer from '../../components/layout/BaseContainer';
+import BaseContainer from '../../../components/layout/BaseContainer';
 import {
   Avatar,
   Box,

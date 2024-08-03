@@ -6,8 +6,8 @@ const Main = lazy(() => import('./pages/main/Main'));
 const TestPage = lazy(() => import('./pages/temp/TestPage'));
 const MyPage = lazy(() => import('./pages/mypage/MyPage'));
 const Comment = lazy(() => import('./pages/comment/Comment'));
-const Login = lazy(() => import('./pages/login/Login'));
-const Signup = lazy(() => import('./pages/signup/Signup'));
+const Login = lazy(() => import('./pages/auth/login/Login'));
+const Signup = lazy(() => import('./pages/auth/signup/Signup'));
 
 const Router = () => {
   return (
