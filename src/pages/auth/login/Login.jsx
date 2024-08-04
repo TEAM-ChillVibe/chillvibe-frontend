@@ -2,6 +2,7 @@ import { Box, Button, TextField, Typography } from '@mui/material';
 import BaseContainer from '../../../components/layout/BaseContainer';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { axiosWithoutToken } from '../../../axios';
 
 const Login = () => {
   const [email, setEmail] = useState('');
@@ -14,9 +15,33 @@ const Login = () => {
   };
 
   // 로그인 버튼 액션
-  const handleSubmit = event => {
+  const handleSubmit = async event => {
     event.preventDefault();
     // 로그인 정보를 서버로 전송하는 로직 추가
+    try {
+      // 로그인 요청
+      const response = await axiosWithoutToken.post('/login', {
+        email,
+        password,
+      });
+
+      // 서버로부터 받은 access 토큰을 localStorage에 저장
+      const accessToken = response.headers['authorization'];
+      if (accessToken) {
+        localStorage.setItem('access', accessToken.replace('Bearer ', '')); // 'Bearer '를 제거하고 저장
+      }
+
+      // 로그인 후 리다이렉트
+      alert('로그인 완료');
+      navigate('/');
+    } catch (error) {
+      // 로그인 실패 시 에러 처리
+      if (error.response) {
+        alert('로그인 실패. 이메일 또는 비밀번호를 확인하세요.');
+      } else {
+        alert('서버와의 연결에 문제가 발생했습니다.');
+      }
+    }
   };
 
   // 입력 여부 확인 (버튼 활성화용)
