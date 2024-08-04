@@ -1,5 +1,7 @@
+import React, { useState } from 'react';
 import { InputBase, styled } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
+import { useNavigate } from 'react-router-dom';
 
 const Search = styled('div')(({ theme }) => ({
   position: 'relative',
@@ -38,13 +40,31 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 }));
 
 const SearchBox = () => {
+  const navigate = useNavigate();
+  const [searchQuery, setSearchQuery] = useState('');
+
+  const handleSearch = () => {
+    if (searchQuery.trim()) {
+      navigate(`/search?q=${encodeURIComponent(searchQuery.trim())}`);
+    }
+  };
+
+  const handleKeyPress = event => {
+    if (event.key === 'Enter') {
+      handleSearch();
+    }
+  };
+
   return (
     <Search>
       <StyledInputBase
         placeholder="Search..."
         inputProps={{ 'aria-label': 'search' }}
+        value={searchQuery}
+        onChange={e => setSearchQuery(e.target.value)}
+        onKeyPress={handleKeyPress}
       />
-      <SearchIconWrapper>
+      <SearchIconWrapper onClick={handleSearch}>
         <SearchIcon />
       </SearchIconWrapper>
     </Search>

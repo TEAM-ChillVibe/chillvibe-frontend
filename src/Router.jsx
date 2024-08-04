@@ -9,6 +9,7 @@ const Comment = lazy(() => import('./pages/comment/Comment'));
 const Login = lazy(() => import('./pages/auth/login/Login'));
 const Signup = lazy(() => import('./pages/auth/signup/Signup'));
 const EditProfile = lazy(() => import('./pages/mypage/EditProfile'));
+const Search = lazy(() => import('./pages/search/SearchPage'));
 
 const Router = () => {
   return (
@@ -34,6 +35,7 @@ const Router = () => {
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/edit-profile" element={<EditProfile />} />
+        <Route path="/search" element={<Search />} />
       </Routes>
     </Suspense>
   );
