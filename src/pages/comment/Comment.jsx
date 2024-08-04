@@ -22,7 +22,7 @@ const Comment = () => {
   const [userId, setUserId] = useState(null);
 
   const token =
-    'eyJhbGciOiJIUzI1NiJ9.eyJjYXRlZ29yeSI6ImFjY2VzcyIsInN1YiI6IjEiLCJlbWFpbCI6InRlc3RAZXhhbXBsZS5jb20iLCJpYXQiOjE3MjI3ODYxNDQsImV4cCI6MTcyMjc4ODMwNH0.O_WbGXD7H0zBPcBihl8l0eqzbSHWxgpV4UjSo5a_jHA';
+    'eyJhbGciOiJIUzI1NiJ9.eyJjYXRlZ29yeSI6ImFjY2VzcyIsInN1YiI6IjEiLCJlbWFpbCI6InRlc3RAZXhhbXBsZS5jb20iLCJpYXQiOjE3MjI3ODg0NDQsImV4cCI6MTcyMjc5MDYwNH0.Yz8U0zMBF5E82SrNHlJ5YLfefFh8PBhrsxOJSp2N0s4';
 
   useEffect(() => {
     // 토큰 디코딩하여 사용자 ID 가져오기

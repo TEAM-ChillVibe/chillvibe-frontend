@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import axios from 'axios';
 import { Typography, Box, Avatar, Pagination } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
 
 const CommentSectionWrapper = styled(Box)`
   background-color: #fff;
@@ -61,9 +62,10 @@ const MyComment = () => {
   const [userId] = useState(1); // 하드코딩된 userId를 사용
   const [page, setPage] = useState(1);
   const itemsPerPage = 6;
+  const navigate = useNavigate();
 
   const token =
-    'eyJhbGciOiJIUzI1NiJ9.eyJjYXRlZ29yeSI6ImFjY2VzcyIsInN1YiI6IjEiLCJlbWFpbCI6InRlc3RAZXhhbXBsZS5jb20iLCJpYXQiOjE3MjI3ODYxNDQsImV4cCI6MTcyMjc4ODMwNH0.O_WbGXD7H0zBPcBihl8l0eqzbSHWxgpV4UjSo5a_jHA';
+    'eyJhbGciOiJIUzI1NiJ9.eyJjYXRlZ29yeSI6ImFjY2VzcyIsInN1YiI6IjEiLCJlbWFpbCI6InRlc3RAZXhhbXBsZS5jb20iLCJpYXQiOjE3MjI3ODg0NDQsImV4cCI6MTcyMjc5MDYwNH0.Yz8U0zMBF5E82SrNHlJ5YLfefFh8PBhrsxOJSp2N0s4';
 
   useEffect(() => {
     axios
@@ -83,6 +85,10 @@ const MyComment = () => {
 
   const handlePageChange = (event, newPage) => {
     setPage(newPage);
+  };
+
+  const handleCommentClick = postId => {
+    navigate(`/api/posts/${postId}`); // 해당 게시글 페이지로 이동
   };
 
   const startIndex = (page - 1) * itemsPerPage;
@@ -108,7 +114,10 @@ const MyComment = () => {
         ) : (
           <>
             {currentComments.map(comment => (
-              <CommentWrapper key={comment.id}>
+              <CommentWrapper
+                key={comment.id}
+                onClick={() => handleCommentClick(comment.postId)}
+              >
                 <Avatar
                   src={comment.userProfileUrl}
                   alt={comment.userNickname}
