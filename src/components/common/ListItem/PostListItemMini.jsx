@@ -4,7 +4,7 @@ import HashtagChips from '../HashtagChips';
 import { fetchHashtagsOfPost } from '../../../api/hashtag/hashtagApi';
 
 function PostListItemMini({ post }) {
-  const { id, title, hashtags, user } = post;
+  const { id, title, user } = post;
 
   return (
     <Box

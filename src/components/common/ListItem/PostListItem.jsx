@@ -6,7 +6,7 @@ import HashtagChips from '../HashtagChips';
 import { fetchHashtagsOfPost } from '../../../api/hashtag/hashtagApi';
 
 function PostListItem({ post }) {
-  const { id, title, createdAt, trackCount, hashtags, user, likes } = post;
+  const { id, title, createdAt, trackCount, user, likes } = post;
   const navigate = useNavigate();
 
   const handleNavigateToPost = () => {
