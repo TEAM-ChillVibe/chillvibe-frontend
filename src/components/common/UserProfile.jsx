@@ -3,12 +3,16 @@ import { useNavigate } from 'react-router-dom';
 import HashtagChips from './HashtagChips';
 
 function UserProfile({ user }) {
-  const { id, nickname, introduction, hashtags } = user;
+  const { id, nickname, profileUrl, introduction, hashtags } = user;
 
   const navigate = useNavigate();
 
   const handleNavigateToUserPage = () => {
     navigate(`/user/${id}`); // 절대경로 유저프로필로 이동
+  };
+
+  const handleChipClick = tagId => {
+    navigate(`/all-tags/${tagId}`);
   };
 
   return (
@@ -23,6 +27,7 @@ function UserProfile({ user }) {
     >
       <Avatar
         onClick={handleNavigateToUserPage}
+        src={profileUrl}
         sx={{
           width: 90,
           height: 90,
@@ -49,7 +54,7 @@ function UserProfile({ user }) {
         <Typography variant="body2" color="text.secondary">
           {introduction}
         </Typography>
-        <HashtagChips hashtags={hashtags} />
+        <HashtagChips hashtags={hashtags} onChipClick={handleChipClick} />
       </Box>
     </Box>
   );
