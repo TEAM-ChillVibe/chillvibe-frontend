@@ -1,17 +1,15 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Tabs, Tab, Box, Typography, CircularProgress } from '@mui/material';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import BaseContainer from '../../components/layout/BaseContainer';
-import SearchAll from './tabs/SearchAll';
 import SearchTracks from './tabs/SearchTracks';
 import SearchPosts from './tabs/SearchPosts';
 import axios from 'axios';
 
 const SearchPage = () => {
   const location = useLocation();
-  const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState('');
-  const [searchType, setSearchType] = useState('all');
+  const [searchType, setSearchType] = useState('track');
   const [searchResults, setSearchResults] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState(0);
@@ -26,7 +24,7 @@ const SearchPage = () => {
       });
       setSearchResults(response.data);
     } catch (error) {
-      console.error('Search error:', error);
+      // 검색 에러
       setSearchResults(null);
     } finally {
       setIsLoading(false);
@@ -50,11 +48,6 @@ const SearchPage = () => {
     setCurrentPage(0);
   };
 
-  const handleSearch = query => {
-    setSearchQuery(query);
-    navigate(`/search?q=${encodeURIComponent(query)}`);
-  };
-
   return (
     <BaseContainer>
       <Typography variant="h5" sx={{ mt: 2, mb: 3 }}>
@@ -67,18 +60,18 @@ const SearchPage = () => {
       <Tabs
         value={searchType}
         onChange={handleTabChange}
-        sx={{ width: '100%' }}
+        variant="fullWidth"
+        sx={{
+          width: '100%',
+        }}
       >
-        <Tab label="All" value="all" />
         <Tab label="Tracks" value="track" />
         <Tab label="Posts" value="post" />
       </Tabs>
-
       {isLoading ? (
         <CircularProgress />
       ) : (
         <Box mt={3} sx={{ width: '100%' }}>
-          {searchType === 'all' && <SearchAll results={searchResults} />}
           {searchType === 'track' && (
             <SearchTracks
               results={searchResults}
