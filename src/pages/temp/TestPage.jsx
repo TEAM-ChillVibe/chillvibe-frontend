@@ -74,7 +74,7 @@ function TestPage() {
     id: 1,
     nickname: 'Julie Han',
     introduction: 'testing userprofile now',
-    hashtags: ['#tag1', '#tag2', '#tag3'],
+    hashtags: ['tag1', 'tag2', 'tag3'],
   };
 
   // Track List
@@ -117,7 +117,7 @@ function TestPage() {
       title: '여름밤 드라이브 플레이리스트',
       date: '2024년 7월 25일',
       trackCount: 15,
-      hashtags: ['#팝', '#여름', '#드라이브'],
+      hashtags: ['팝', '여름', '드라이브'],
       user: {
         id: 2,
         name: 'Alice',
@@ -130,7 +130,7 @@ function TestPage() {
       title: '집중력 향상을 위한 클래식 음악',
       date: '2024년 7월 20일',
       trackCount: 8,
-      hashtags: ['#클래식', '#집중', '#공부'],
+      hashtags: ['클래식', '집중', '공부'],
       user: {
         id: 3,
         name: 'Bob',

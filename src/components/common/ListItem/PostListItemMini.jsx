@@ -1,5 +1,6 @@
-import { Box, Chip, Typography } from '@mui/material';
+import { Box, Typography } from '@mui/material';
 import albumSample from '../albumSample.jpeg';
+import HashtagChips from '../HashtagChips';
 
 function PostListItemMini({ post }) {
   const { title, hashtags, user } = post;
@@ -44,11 +45,7 @@ function PostListItemMini({ post }) {
           {title}
         </Typography>
         <Typography variant="body2">{user.name}</Typography>
-        <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1, mt: 0.5 }}>
-          {hashtags.map(hashtags => (
-            <Chip key={hashtags} label={hashtags} size="small" />
-          ))}
-        </Box>
+        <HashtagChips hashtags={hashtags} />
       </Box>
     </Box>
   );

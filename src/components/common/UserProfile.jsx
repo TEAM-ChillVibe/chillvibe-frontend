@@ -1,5 +1,6 @@
-import { Avatar, Box, Chip, Typography } from '@mui/material';
+import { Avatar, Box, Typography } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
+import HashtagChips from './HashtagChips';
 
 function UserProfile({ user }) {
   const { id, nickname, introduction, hashtags } = user;
@@ -48,18 +49,7 @@ function UserProfile({ user }) {
         <Typography variant="body2" color="text.secondary">
           {introduction}
         </Typography>
-        <Box
-          sx={{
-            display: 'flex',
-            flexWrap: 'wrap',
-            gap: 1,
-            mt: 1,
-          }}
-        >
-          {hashtags.map(hashtag => (
-            <Chip key={hashtag} label={hashtag} size="small" />
-          ))}
-        </Box>
+        <HashtagChips hashtags={hashtags} />
       </Box>
     </Box>
   );

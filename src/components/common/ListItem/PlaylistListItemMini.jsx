@@ -1,5 +1,4 @@
 import { Box, Typography } from '@mui/material';
-import albumSample from '../albumSample.jpeg';
 import { useNavigate } from 'react-router-dom';
 
 function PlaylistListItemMini({ playlist }) {
@@ -41,6 +40,7 @@ function PlaylistListItemMini({ playlist }) {
           >
             <img
               src={url}
+              alt={index}
               style={{ width: '100%', height: '100%', objectFit: 'cover' }}
             />
           </Box>
