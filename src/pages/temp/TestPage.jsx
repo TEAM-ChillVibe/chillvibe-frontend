@@ -145,17 +145,44 @@ function TestPage() {
     {
       id: 1,
       title: 'Summer Hits 2024',
-      trackCount: 15,
+      trackCount: 4,
+      thumbnailUrls: [
+        'https://via.placeholder.com/150?text=Playlist+Image+1',
+        'https://via.placeholder.com/150?text=Playlist+Image+2',
+        'https://via.placeholder.com/150?text=Playlist+Image+3',
+        'https://via.placeholder.com/150?text=Playlist+Image+4',
+      ],
     },
     {
       id: 2,
       title: 'Chill Vibes',
-      trackCount: 30,
+      trackCount: 3,
+      thumbnailUrls: [
+        'https://via.placeholder.com/150?text=Playlist+Image+5',
+        'https://via.placeholder.com/150?text=Playlist+Image+6',
+        'https://via.placeholder.com/150?text=Playlist+Image+7',
+      ],
     },
     {
       id: 3,
       title: 'Workout Beats',
-      trackCount: 20,
+      trackCount: 2,
+      thumbnailUrls: [
+        'https://via.placeholder.com/150?text=Playlist+Image+8',
+        'https://via.placeholder.com/150?text=Playlist+Image+9',
+      ],
+    },
+    {
+      id: 4,
+      title: 'Workout Beats',
+      trackCount: 1,
+      thumbnailUrls: ['https://via.placeholder.com/150?text=Playlist+Image+10'],
+    },
+    {
+      id: 5,
+      title: 'Workout Beats',
+      trackCount: 0,
+      thumbnailUrls: [],
     },
   ];
 

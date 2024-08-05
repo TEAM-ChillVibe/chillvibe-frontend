@@ -3,7 +3,7 @@ import albumSample from '../albumSample.jpeg';
 import { useNavigate } from 'react-router-dom';
 
 function PlaylistListItemMini({ playlist }) {
-  const { id, title, imageUrl, trackCount } = playlist;
+  const { id, title, trackCount, thumbnailUrls = [] } = playlist;
   const navigate = useNavigate();
 
   const handleNavigateToPlaylist = () => {
@@ -23,6 +23,9 @@ function PlaylistListItemMini({ playlist }) {
     >
       <Box
         sx={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(2, 1fr)', // 2열 설정
+          gridTemplateRows: 'repeat(2, 1fr)', // 2행 설정
           width: 80,
           height: 80,
           mr: 2,
@@ -31,11 +34,17 @@ function PlaylistListItemMini({ playlist }) {
           order: 1,
         }}
       >
-        <img
-          src={albumSample}
-          alt={'title'}
-          style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-        />
+        {thumbnailUrls.slice(0, 4).map((url, index) => (
+          <Box
+            key={index}
+            sx={{ width: '100%', height: '100%', overflow: 'hidden' }}
+          >
+            <img
+              src={url}
+              style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+            />
+          </Box>
+        ))}
       </Box>
 
       <Box
