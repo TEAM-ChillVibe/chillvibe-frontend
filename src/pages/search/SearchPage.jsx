@@ -10,7 +10,8 @@ const SearchPage = () => {
   const location = useLocation();
   const [searchQuery, setSearchQuery] = useState('');
   const [searchType, setSearchType] = useState('track');
-  const [searchResults, setSearchResults] = useState(null);
+  const [trackResults, setTrackResults] = useState(null);
+  const [postResults, setPostResults] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState(0);
 
@@ -19,13 +20,30 @@ const SearchPage = () => {
 
     setIsLoading(true);
     try {
-      const response = await axios.get(`http://localhost:8080/api/search`, {
-        params: { q: searchQuery, type: searchType, page: currentPage },
-      });
-      setSearchResults(response.data);
+      if (searchType === 'track') {
+        const response = await axios.get(
+          `http://localhost:8080/api/tracks/search`,
+          {
+            params: { query: searchQuery, page: currentPage, size: 20 },
+          },
+        );
+        setTrackResults(response.data);
+      } else {
+        const response = await axios.get(
+          `http://localhost:8080/api/posts/search`,
+          {
+            params: { query: searchQuery, page: currentPage, size: 10 },
+          },
+        );
+        setPostResults(response.data);
+      }
     } catch (error) {
-      // 검색 에러
-      setSearchResults(null);
+      console.error('Search error:', error);
+      if (searchType === 'track') {
+        setTrackResults(null);
+      } else {
+        setPostResults(null);
+      }
     } finally {
       setIsLoading(false);
     }
@@ -74,15 +92,12 @@ const SearchPage = () => {
         <Box mt={3} sx={{ width: '100%' }}>
           {searchType === 'track' && (
             <SearchTracks
-              results={searchResults}
+              results={trackResults}
               onPageChange={setCurrentPage}
             />
           )}
           {searchType === 'post' && (
-            <SearchPosts
-              results={searchResults}
-              onPageChange={setCurrentPage}
-            />
+            <SearchPosts results={postResults} onPageChange={setCurrentPage} />
           )}
         </Box>
       )}
