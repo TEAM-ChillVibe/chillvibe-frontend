@@ -22,7 +22,7 @@ const Signup = () => {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [nickname, setNickname] = useState('');
-  const [introduction, setIntroduction] = useState('');
+  const [introduction] = useState('');
   const [passwordMatchError, setPasswordMatchError] = useState('');
   const [profileImage, setProfileImage] = useState(null);
   const [imagePreview, setImagePreview] = useState('');
@@ -217,13 +217,6 @@ const Signup = () => {
             required
             value={nickname}
             onChange={e => setNickname(e.target.value)}
-            margin="normal"
-          />
-          <TextField
-            label="소개"
-            fullWidth
-            value={introduction}
-            onChange={e => setIntroduction(e.target.value)}
             margin="normal"
           />
           {/* 약관 동의 */}
