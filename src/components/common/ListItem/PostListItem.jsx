@@ -3,6 +3,7 @@ import FavoriteIcon from '@mui/icons-material/Favorite';
 import albumSample from '../albumSample.jpeg';
 import { useNavigate } from 'react-router-dom';
 import HashtagChips from '../HashtagChips';
+import { fetchHashtagsOfPost } from '../../../api/hashtag/hashtagApi';
 
 function PostListItem({ post }) {
   const { id, title, createdAt, trackCount, hashtags, user, likes } = post;
@@ -69,7 +70,7 @@ function PostListItem({ post }) {
         <Typography variant="body2" sx={{ mb: 1 }}>
           트랙 {trackCount}개
         </Typography>
-        <HashtagChips hashtags={hashtags} />
+        <HashtagChips fetchHashtags={() => fetchHashtagsOfPost(id)} />
       </Box>
       <Box
         sx={{

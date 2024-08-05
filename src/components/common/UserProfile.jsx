@@ -1,9 +1,10 @@
 import { Avatar, Box, Typography } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import HashtagChips from './HashtagChips';
+import { fetchHashtagsOfUser } from '../../api/hashtag/hashtagApi';
 
 function UserProfile({ user }) {
-  const { id, nickname, profileUrl, introduction, hashtags } = user;
+  const { id, nickname, profileUrl, introduction } = user;
 
   const navigate = useNavigate();
 
@@ -54,7 +55,10 @@ function UserProfile({ user }) {
         <Typography variant="body2" color="text.secondary">
           {introduction}
         </Typography>
-        <HashtagChips hashtags={hashtags} onChipClick={handleChipClick} />
+        <HashtagChips
+          fetchHashtags={() => fetchHashtagsOfUser(id)}
+          onChipClick={handleChipClick}
+        />
       </Box>
     </Box>
   );

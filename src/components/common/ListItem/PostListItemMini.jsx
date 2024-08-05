@@ -1,9 +1,10 @@
 import { Box, Typography } from '@mui/material';
 import albumSample from '../albumSample.jpeg';
 import HashtagChips from '../HashtagChips';
+import { fetchHashtagsOfPost } from '../../../api/hashtag/hashtagApi';
 
 function PostListItemMini({ post }) {
-  const { title, hashtags, user } = post;
+  const { id, title, hashtags, user } = post;
 
   return (
     <Box
@@ -45,7 +46,7 @@ function PostListItemMini({ post }) {
           {title}
         </Typography>
         <Typography variant="body2">{user.name}</Typography>
-        <HashtagChips hashtags={hashtags} />
+        <HashtagChips fetchHashtags={() => fetchHashtagsOfPost(id)} />
       </Box>
     </Box>
   );
