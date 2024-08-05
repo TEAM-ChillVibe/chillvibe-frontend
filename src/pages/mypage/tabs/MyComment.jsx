@@ -57,6 +57,26 @@ const CommentContent = styled(Typography)`
   color: #000;
 `;
 
+const PostInfo = styled(Box)`
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+`;
+
+const PostAuthor = styled(Typography)`
+  font-size: 16px;
+  color: #888;
+  margin-left: 5px;
+`;
+
+const PostImage = styled.img`
+  width: 100px; /* 이미지 크기를 조정 */
+  height: 100px;
+  border-radius: 8px; /* 사각형 모양 */
+  object-fit: cover;
+  margin-left: 15px; /* 간격 조정 */
+`;
+
 const MyComment = () => {
   const [comments, setComments] = useState([]);
   const [userId] = useState(1); // 하드코딩된 userId를 사용
@@ -65,9 +85,11 @@ const MyComment = () => {
   const navigate = useNavigate();
 
   const token =
-    'eyJhbGciOiJIUzI1NiJ9.eyJjYXRlZ29yeSI6ImFjY2VzcyIsInN1YiI6IjEiLCJlbWFpbCI6InRlc3RAZXhhbXBsZS5jb20iLCJpYXQiOjE3MjI3ODg0NDQsImV4cCI6MTcyMjc5MDYwNH0.Yz8U0zMBF5E82SrNHlJ5YLfefFh8PBhrsxOJSp2N0s4';
+    'eyJhbGciOiJIUzI1NiJ9.eyJjYXRlZ29yeSI6ImFjY2VzcyIsInN1YiI6IjEiLCJlbWFpbCI6InRlc3RAZXhhbXBsZS5jb20iLCJpYXQiOjE3MjI4NDc0MzksImV4cCI6MTcyMjg0OTU5OX0.PTvI0UCShW33TuuyvhfiLptrB7myzB8NjmGQnVskOoA';
 
   useEffect(() => {
+    // const token = localStorage.getItem('authToken');
+
     axios
       .get(`http://localhost:8080/api/comments/byUser?userId=${userId}`, {
         headers: {
@@ -118,15 +140,18 @@ const MyComment = () => {
                 key={comment.id}
                 onClick={() => handleCommentClick(comment.postId)}
               >
-                <Avatar
-                  src={comment.userProfileUrl}
-                  alt={comment.userNickname}
-                  sx={{ width: 55, height: 55, marginRight: 2 }}
-                />
                 <CommentDetails>
                   <CommentHeader>
-                    <CommentAuthor>{comment.userNickname}</CommentAuthor>
+                    <CommentAuthor>{comment.postTitle}</CommentAuthor>
                   </CommentHeader>
+                  <PostInfo>
+                    <Avatar
+                      src={comment.postAuthorProfileUrl}
+                      alt={comment.postAuthor}
+                      sx={{ width: 24, height: 24 }}
+                    />
+                    <PostAuthor>{comment.postAuthor}</PostAuthor>
+                  </PostInfo>
                   <CommentContent>{comment.content}</CommentContent>
                   <CommentDate>
                     {new Date(comment.modifiedAt).toLocaleString()}
@@ -137,6 +162,10 @@ const MyComment = () => {
                     )}
                   </CommentDate>
                 </CommentDetails>
+                <PostImage
+                  src={comment.postTitleImageUrl}
+                  alt={comment.postTitle}
+                />
               </CommentWrapper>
             ))}
             <Box sx={{ display: 'flex', justifyContent: 'center', mt: 4 }}>
