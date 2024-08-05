@@ -3,7 +3,7 @@ import { List, ListItem, Box, Pagination, Typography } from '@mui/material';
 import PostListItem from '../../../components/common/ListItem/PostListItem';
 
 const SearchPosts = ({ results, onPageChange }) => {
-  if (!results || !results.postContent)
+  if (!results || !results.content || results.content.length === 0)
     return <Typography>게시글 검색 결과가 없습니다.</Typography>;
 
   const handlePageChange = (event, value) => {
@@ -16,11 +16,12 @@ const SearchPosts = ({ results, onPageChange }) => {
         게시글 검색 결과
       </Typography>
       <List sx={{ width: '100%', bgcolor: 'background.paper' }}>
-        {results.postContent.map(post => (
+        {results.content.map(post => (
           <ListItem key={post.id} disablePadding sx={{ mb: 1 }}>
             <PostListItem
               post={{
                 ...post,
+                date: new Date(post.createdAt).toLocaleDateString(),
                 likes: post.likeCount,
               }}
             />
@@ -29,8 +30,8 @@ const SearchPosts = ({ results, onPageChange }) => {
       </List>
       <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2 }}>
         <Pagination
-          count={Math.ceil(results.totalPosts / results.pageSize)}
-          page={results.currentPage + 1}
+          count={results.page.totalPages}
+          page={results.page.number + 1}
           onChange={handlePageChange}
         />
       </Box>
