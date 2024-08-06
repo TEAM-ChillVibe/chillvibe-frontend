@@ -92,7 +92,6 @@ const MyComment = () => {
                   >
                     <Avatar
                       src={comment.postAuthorProfileUrl}
-                      alt={comment.postAuthor}
                       sx={{ width: 23, height: 23 }}
                     />
                     <Typography
