@@ -20,6 +20,7 @@ const ServiceUnavailable = lazy(
 );
 const UserPage = lazy(() => import('./pages/userpage/UserPage'));
 const Discover = lazy(() => import('./pages/board/Discover'));
+const AllTags = lazy(() => import('./pages/board/AllTags'));
 
 const Router = () => {
   return (
@@ -52,6 +53,7 @@ const Router = () => {
         <Route path="/503" element={<ServiceUnavailable />} />
         <Route path="/user" element={<UserPage />} />
         <Route path="/discover" element={<Discover />} />
+        <Route path="/all-tags" element={<AllTags />} />
       </Routes>
     </Suspense>
   );
