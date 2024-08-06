@@ -37,9 +37,7 @@ const HashtagChips = ({ fetchHashtags, selectedHashtag, onHashtagClick }) => {
           onClick={() => handleChipClick(hashtag.id)}
           sx={{
             backgroundColor:
-              selectedHashtag === hashtag.id
-                ? 'primary.main'
-                : 'background.default',
+              selectedHashtag === hashtag.id ? 'primary.main' : '#999',
             color: selectedHashtag === hashtag.id ? 'white' : 'text.primary',
             '&:hover': {
               backgroundColor:

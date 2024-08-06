@@ -1,44 +1,26 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
 import { Typography, Box, Avatar, Pagination, Paper } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
+import { getCommentsByUser } from '../../../api/comment/commentApi';
 
 const MyComment = () => {
   const [comments, setComments] = useState([]);
-  const [userId] = useState(1); // 하드코딩된 userId를 사용
   const [page, setPage] = useState(1);
   const itemsPerPage = 6;
   const navigate = useNavigate();
 
-  const token =
-    'eyJhbGciOiJIUzI1NiJ9.eyJjYXRlZ29yeSI6ImFjY2VzcyIsInN1YiI6IjEiLCJlbWFpbCI6InRlc3RAZXhhbXBsZS5jb20iLCJpYXQiOjE3MjI5MTE3NTIsImV4cCI6MTcyMjkxMzkxMn0.qMP18jNnVeguUVvAnMN8DdsVNLV4Je36uU5w3Ypuil4';
-
   useEffect(() => {
-    // const token = localStorage.getItem('authToken');
-    //
-    // if (!token) {
-    //   console.error('No auth token found');
-    //   return;
-    // }
-    //
-    // const decodedToken = JSON.parse(atob(token.split('.')[1]));
-    // setUserId(decodedToken.sub);
+    const fetchComments = async () => {
+      try {
+        const data = await getCommentsByUser(); // userId는 axiosWithToken에서 자동으로 처리
+        setComments(data);
+      } catch (error) {
+        console.error('Error fetching comments:', error);
+      }
+    };
 
-    axios
-      // .get(`http://localhost:8080/api/comments/byUser?userId=${decodedToken.sub}`, {
-      .get(`http://localhost:8080/api/comments/byUser?userId=${userId}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      })
-      .then(response => {
-        console.log('API Response:', response.data); // API 응답을 콘솔에 출력
-        setComments(response.data);
-      })
-      .catch(error => console.error('Error fetching comments:', error));
-  }, [userId]);
-
-  console.log('Rendered Comments:', comments); // 렌더링된 댓글을 콘솔에 출력
+    fetchComments();
+  }, []);
 
   const handlePageChange = (event, newPage) => {
     setPage(newPage);
@@ -110,7 +92,6 @@ const MyComment = () => {
                   >
                     <Avatar
                       src={comment.postAuthorProfileUrl}
-                      alt={comment.postAuthor}
                       sx={{ width: 23, height: 23 }}
                     />
                     <Typography

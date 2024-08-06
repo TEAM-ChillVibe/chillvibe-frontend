@@ -21,7 +21,7 @@ export const theme = createTheme({
     // },
   },
   typography: {
-    fontFamily: 'Roboto, Arial, sans-serif',
+    fontFamily: 'Pretendard, Roboto, Arial, sans-serif',
     h1: {
       fontSize: '2rem',
     },
