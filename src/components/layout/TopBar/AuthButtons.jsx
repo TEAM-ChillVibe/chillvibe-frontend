@@ -16,8 +16,8 @@ const RoundedButton = styled(Button)(({ theme }) => ({
 }));
 
 const AuthButtons = ({ user }) => {
-  const { clearUser } = useUserStore(state => ({
-    clearUser: state.clearUser,
+  const { logout } = useUserStore(state => ({
+    logout: state.logout,
   }));
 
   const [anchorEl, setAnchorEl] = useState(null);
@@ -31,10 +31,10 @@ const AuthButtons = ({ user }) => {
   };
 
   const handleLogout = () => {
-    clearUser();
-    localStorage.removeItem('accessToken');
+    logout();
+    localStorage.removeItem('access');
     localStorage.removeItem('user');
-    window.location.reload(); // 페이지 새로고침
+    console.log(user);
     handleMenuClose();
   };
 
@@ -44,11 +44,11 @@ const AuthButtons = ({ user }) => {
       <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, pl: 1 }}>
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
           <Typography variant="body2" color="white">
-            {user.name}
+            {user.nickname}
           </Typography>
           <Avatar
-            alt={user.name}
-            src={user.profilePicture || '/static/images/avatar/placeholder.jpg'}
+            alt={user.nickname}
+            src={user.profileUrl || '/static/images/avatar/placeholder.jpg'}
             sx={{ width: 24, height: 24, cursor: 'pointer' }}
             onClick={handleMenuOpen}
           />

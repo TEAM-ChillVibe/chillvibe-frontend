@@ -2,7 +2,7 @@ import create from 'zustand';
 
 const useUserStore = create(set => ({
   // 기본 상태: 비로그인 상태
-  user: [],
+  user: null,
   token: null,
   isAutehnticated: false,
   login: (user, token) => set({ user, token, isAutehnticated: true }),
