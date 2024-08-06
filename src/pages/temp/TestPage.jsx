@@ -117,7 +117,7 @@ function TestPage() {
     {
       id: 1,
       title: '여름밤 드라이브 플레이리스트',
-      date: '2024년 7월 25일',
+      createdAt: '2024-07-25T14:30:00Z',
       trackCount: 15,
       hashtags: ['팝', '여름', '드라이브'],
       user: {
@@ -130,7 +130,7 @@ function TestPage() {
     {
       id: 2,
       title: '집중력 향상을 위한 클래식 음악',
-      date: '2024년 7월 20일',
+      createdAt: '2024-07-20T09:15:00Z',
       trackCount: 8,
       hashtags: ['클래식', '집중', '공부'],
       user: {
