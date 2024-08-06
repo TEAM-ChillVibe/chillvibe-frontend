@@ -19,6 +19,7 @@ const ServiceUnavailable = lazy(
   () => import('./pages/error/code/ServiceUnavailable'),
 );
 const UserPage = lazy(() => import('./pages/userpage/UserPage'));
+const Discover = lazy(() => import('./pages/board/Discover'));
 
 const Router = () => {
   return (
@@ -50,6 +51,7 @@ const Router = () => {
         <Route path="/404" element={<NotFound />} />
         <Route path="/503" element={<ServiceUnavailable />} />
         <Route path="/user" element={<UserPage />} />
+        <Route path="/discover" element={<Discover />} />
       </Routes>
     </Suspense>
   );
