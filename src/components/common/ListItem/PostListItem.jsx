@@ -4,9 +4,10 @@ import albumSample from '../albumSample.jpeg';
 import { useNavigate } from 'react-router-dom';
 import HashtagChips from '../HashtagChips';
 import { fetchHashtagsOfPost } from '../../../api/hashtag/hashtagApi';
+import { formatRelativeTime } from '../../../utils/reusableFn';
 
 function PostListItem({ post }) {
-  const { id, title, createdAt, trackCount, hashtags, user, likes } = post;
+  const { id, title, createdAt, trackCount, user, likes } = post;
   const navigate = useNavigate();
 
   const handleNavigateToPost = () => {
@@ -65,7 +66,7 @@ function PostListItem({ post }) {
           {title}
         </Typography>
         <Typography variant="body3" color="text.secondary" sx={{ mb: 1 }}>
-          {createdAt}
+          {formatRelativeTime(createdAt)}
         </Typography>
         <Typography variant="body2" sx={{ mb: 1 }}>
           트랙 {trackCount}개

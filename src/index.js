@@ -7,6 +7,16 @@ import { CssBaseline, ThemeProvider } from '@mui/material';
 import { BrowserRouter } from 'react-router-dom';
 import { theme } from './styles/globalStyle';
 
+/**
+ * dayjs 설정
+ */
+import dayjs from 'dayjs';
+import isLeapYear from 'dayjs/plugin/isLeapYear'; // 윤년 판단 플러그인
+import 'dayjs/locale/ko'; // 한국어
+
+dayjs.extend(isLeapYear);
+dayjs.locale('ko');
+
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>

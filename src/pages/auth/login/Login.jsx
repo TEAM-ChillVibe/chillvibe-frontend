@@ -20,7 +20,7 @@ const Login = () => {
     // 로그인 정보를 서버로 전송하는 로직 추가
     try {
       // 로그인 요청
-      const response = await axiosWithoutToken.post('/login', {
+      const response = await axiosWithoutToken.post('/api/login', {
         email,
         password,
       });
