@@ -1,7 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
 import BaseContainer from '../../components/layout/BaseContainer';
-import axios from 'axios';
+import {
+  getCommentsByPost,
+  createComment,
+  updateComment,
+  deleteComment,
+} from '../../api/comment/commentApi';
 import {
   Avatar,
   Box,
@@ -14,26 +18,27 @@ import { Delete, Edit } from '@mui/icons-material';
 import IconButton from '@mui/material/IconButton';
 
 const Comment = () => {
-  const { postId } = useParams(); // URL에서 postId를 가져옴
+  // const { postId } = useParams(); // URL에서 postId를 가져옴
   const [comments, setComments] = useState([]);
   const [newComment, setNewComment] = useState('');
   const [editingCommentId, setEditingCommentId] = useState(null);
   const [editingContent, setEditingContent] = useState('');
   const [userId, setUserId] = useState(null);
 
-  const token =
-    'eyJhbGciOiJIUzI1NiJ9.eyJjYXRlZ29yeSI6ImFjY2VzcyIsInN1YiI6IjEiLCJlbWFpbCI6InRlc3RAZXhhbXBsZS5jb20iLCJpYXQiOjE3MjI3ODg0NDQsImV4cCI6MTcyMjc5MDYwNH0.Yz8U0zMBF5E82SrNHlJ5YLfefFh8PBhrsxOJSp2N0s4';
+  const postId = 1;
 
   useEffect(() => {
     // 토큰 디코딩하여 사용자 ID 가져오기
-    const decodedToken = JSON.parse(atob(token.split('.')[1]));
-    setUserId(decodedToken.sub); // sub => 사용자 ID 나타냄
-    console.log('Decoded User ID:', decodedToken.sub);
+    const token = localStorage.getItem('access');
+    if (token) {
+      const decodedToken = JSON.parse(atob(token.split('.')[1]));
+      setUserId(decodedToken.sub); // sub => 사용자 ID 나타냄
+      console.log('Decoded User ID:', decodedToken.sub);
+    }
 
     // 댓글 데이터를 가져오는 함수 (API 요청)
-    axios
-      .get(`http://localhost:8080/api/comments/byPost?postId=1`)
-      .then(response => setComments(response.data))
+    getCommentsByPost(postId)
+      .then(response => setComments(response))
       .catch(error => console.error('Error fetching comments:', error));
   }, [postId]);
 
@@ -43,22 +48,11 @@ const Comment = () => {
 
   // 생성
   const handleCommentSubmit = () => {
-    // localStorage에서 토큰 가져옴
-    // const token = localStorage.getItem('authToken');
-    axios
-      .post(
-        'http://localhost:8080/api/comments',
-        { content: newComment, postId: 1 },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        },
-      )
+    createComment({ content: newComment, postId })
       .then(response => {
         setComments(prevComments => {
           // 새로운 댓글을 추가한 후, 전체 목록을 최신순으로 정렬
-          const updatedComments = [...prevComments, response.data].sort(
+          const updatedComments = [...prevComments, response].sort(
             (a, b) => new Date(b.createdAt) - new Date(a.createdAt),
           );
           return updatedComments;
@@ -79,25 +73,15 @@ const Comment = () => {
 
   // 수정
   const handleEditSubmit = () => {
-    // const token = localStorage.getItem('authToken');
-    axios
-      .put(
-        `http://localhost:8080/api/comments/${editingCommentId}`,
-        { content: editingContent },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        },
-      )
+    updateComment(editingCommentId, { content: editingContent })
       .then(response => {
         setComments(prevComments => {
           const updatedComments = prevComments.map(comment =>
             comment.id == editingCommentId
               ? {
                   ...comment,
-                  content: response.data.content,
-                  modifiedAt: response.data.modifiedAt,
+                  content: response.content,
+                  modifiedAt: response.modifiedAt,
                 }
               : comment,
           );
@@ -113,13 +97,7 @@ const Comment = () => {
   // 삭제
   const handleDelete = id => {
     if (window.confirm('댓글을 삭제하시겠습니까?')) {
-      // const token = localStorage.getItem('authToken');
-      axios
-        .delete(`http://localhost:8080/api/comments/${id}`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        })
+      deleteComment(id)
         .then(() => {
           setComments(comments.filter(comment => comment.id !== id));
         })
@@ -147,7 +125,6 @@ const Comment = () => {
             <Box sx={{ display: 'flex', alignItems: 'flex-start' }}>
               <Avatar
                 src={comment.userProfileUrl}
-                alt="Profile"
                 sx={{ width: 55, height: 55, mr: 2 }}
               />
               <Box sx={{ flexGrow: 1 }}>
