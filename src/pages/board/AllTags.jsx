@@ -4,14 +4,24 @@ import { Box, Button, Typography } from '@mui/material';
 import PostList from '../../components/common/PostList';
 import HashtagChips from '../../components/common/HashtagChips';
 import { fetchAllHashtags } from '../../api/hashtag/hashtagApi';
+import { useState } from 'react';
 
 const AllTags = () => {
   const { sortOrder, setSortOrder } = useSortingStore();
+  const [selectedHashtag, setSelectedHashtag] = useState(null);
+
+  const handleHashtagClick = hashtagId => {
+    setSelectedHashtag(hashtagId);
+  };
 
   return (
     <BaseContainer>
       <Typography variant="title">태그별 플레이리스트</Typography>
-      <HashtagChips fetchHashtags={fetchAllHashtags} />
+      <HashtagChips
+        fetchHashtags={fetchAllHashtags}
+        selectedHashtag={selectedHashtag}
+        onHashtagClick={handleHashtagClick}
+      />
       <Box
         sx={{
           width: '100%',

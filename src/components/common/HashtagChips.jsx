@@ -2,9 +2,9 @@ import { Box, Chip } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 
-const HashtagChips = ({ fetchHashtags }) => {
+const HashtagChips = ({ fetchHashtags, selectedHashtag, onHashtagClick }) => {
   const [hashtags, setHashtags] = useState([]);
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
 
   useEffect(() => {
     const loadHashtags = async () => {
@@ -16,7 +16,8 @@ const HashtagChips = ({ fetchHashtags }) => {
   }, [fetchHashtags]);
 
   const handleChipClick = tagId => {
-    navigate(`/all-tags/${tagId}`);
+    onHashtagClick(tagId);
+    // navigate(`/all-tags/${tagId}`);
   };
 
   return (
@@ -34,6 +35,19 @@ const HashtagChips = ({ fetchHashtags }) => {
           label={`#${hashtag.name}`}
           size="small"
           onClick={() => handleChipClick(hashtag.id)}
+          sx={{
+            backgroundColor:
+              selectedHashtag === hashtag.id
+                ? 'primary.main'
+                : 'background.default',
+            color: selectedHashtag === hashtag.id ? 'white' : 'text.primary',
+            '&:hover': {
+              backgroundColor:
+                selectedHashtag === hashtag.id
+                  ? 'primary.dark'
+                  : 'action.hover',
+            },
+          }}
         />
       ))}
     </Box>
