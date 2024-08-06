@@ -1,4 +1,5 @@
 import useSortingStore from '../../store/useSortingStore';
+import usePostStore from '../../store/usePostStore';
 import BaseContainer from '../../components/layout/BaseContainer';
 import { Box, Button, Typography } from '@mui/material';
 import PostList from '../../components/common/PostList';
@@ -13,6 +14,10 @@ const AllTags = () => {
   const handleHashtagClick = hashtagId => {
     setSelectedHashtag(hashtagId);
   };
+
+  const loadPosts = selectedHashtag
+    ? usePostStore.getState().loadPostsByHashtagId
+    : usePostStore.getState().loadPosts;
 
   return (
     <BaseContainer>
@@ -63,7 +68,11 @@ const AllTags = () => {
           새 글 작성
         </Button>
       </Box>
-      <PostList selectedHashtag={selectedHashtag} sortOrder={sortOrder} />
+      <PostList
+        fetchPosts={loadPosts}
+        selectedHashtag={selectedHashtag}
+        sortOrder={sortOrder}
+      />
     </BaseContainer>
   );
 };

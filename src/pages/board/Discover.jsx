@@ -1,7 +1,10 @@
 import { Box, Button, Typography } from '@mui/material';
 import BaseContainer from '../../components/layout/BaseContainer';
 import PostList from '../../components/common/PostList';
+import usePostStore from '../../store/usePostStore';
 import useSortingStore from '../../store/useSortingStore';
+import { fetchAllPosts } from '../../api/post/postApi';
+import { useEffect } from 'react';
 
 const Discover = () => {
   // 필터링 상태
@@ -51,7 +54,8 @@ const Discover = () => {
           새 게시글
         </Button>
       </Box>
-      <PostList />
+      {/*<PostList fetchPosts={loadPosts} fetchPostsArgs={[sortOrder]} />*/}
+      <PostList fetchPosts={fetchAllPosts} sortOrder={sortOrder} />
     </BaseContainer>
   );
 };

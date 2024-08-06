@@ -7,7 +7,7 @@ import { fetchHashtagsOfPost } from '../../../api/hashtag/hashtagApi';
 import { formatRelativeTime } from '../../../utils/reusableFn';
 
 function PostListItem({ post }) {
-  const { id, title, createdAt, trackCount, user, likes } = post;
+  const { id, title, createdAt, trackCount, user, likeCount } = post;
   const navigate = useNavigate();
 
   const handleNavigateToPost = () => {
@@ -103,7 +103,7 @@ function PostListItem({ post }) {
         </Box>
         <Box sx={{ display: 'flex', alignItems: 'center' }}>
           <FavoriteIcon sx={{ fontSize: 14, mr: 0.5 }} />
-          <Typography variant="body2">{likes.toLocaleString()}</Typography>
+          <Typography variant="body2">{likeCount.toLocaleString()}</Typography>
         </Box>
       </Box>
     </Box>
