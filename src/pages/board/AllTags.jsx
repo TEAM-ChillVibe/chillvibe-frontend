@@ -63,7 +63,7 @@ const AllTags = () => {
           새 글 작성
         </Button>
       </Box>
-      <PostList />
+      <PostList selectedHashtag={selectedHashtag} sortOrder={sortOrder} />
     </BaseContainer>
   );
 };
