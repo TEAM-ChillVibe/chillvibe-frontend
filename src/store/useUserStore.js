@@ -2,11 +2,11 @@ import create from 'zustand';
 
 const useUserStore = create(set => ({
   // 기본 상태: 비로그인 상태
-  user: [],
+  user: null,
   token: null,
-  isAutehnticated: false,
-  login: (user, token) => set({ user, token, isAutehnticated: true }),
-  logout: () => set({ user: null, token: null, isAutehnticated: false }),
+  isAuthenticated: false,
+  login: (user, token) => set({ user, token, isAuthenticated: true }),
+  logout: () => set({ user: null, token: null, isAuthenticated: false }),
 
   // 기본 상태: 로그인 상태로 설정 (ui 확인용)
   // user: {
