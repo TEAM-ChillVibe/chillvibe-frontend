@@ -39,7 +39,7 @@ const MyPage = () => {
           mb: 2,
         }}
       >
-        <UserProfile user={user} />
+        {/*<UserProfile user={user} />*/}
         <Button
           variant="outlined"
           href="/edit-profile"
