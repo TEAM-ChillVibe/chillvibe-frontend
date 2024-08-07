@@ -1,10 +1,14 @@
 import { Box, Chip } from '@mui/material';
-import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
+import useHashtagStore from '../../store/useHashtagStore';
 
-const HashtagChips = ({ fetchHashtags, selectedHashtag, onHashtagClick }) => {
+const HashtagChips = ({ fetchHashtags, onChipClick }) => {
   const [hashtags, setHashtags] = useState([]);
-  // const navigate = useNavigate();
+
+  const { selectedHashtag, setSelectedHashtag } = useHashtagStore(state => ({
+    selectedHashtag: state.selectedHashtag,
+    setSelectedHashtag: state.setSelectedHashtag,
+  }));
 
   useEffect(() => {
     const loadHashtags = async () => {
@@ -16,8 +20,10 @@ const HashtagChips = ({ fetchHashtags, selectedHashtag, onHashtagClick }) => {
   }, [fetchHashtags]);
 
   const handleChipClick = tagId => {
-    onHashtagClick(tagId);
-    // navigate(`/all-tags/${tagId}`);
+    setSelectedHashtag(tagId); // 상태 업데이트
+    if (onChipClick) {
+      onChipClick(tagId); // 상위 컴포넌트에서 페이지 이동 로직 처리
+    }
   };
 
   return (

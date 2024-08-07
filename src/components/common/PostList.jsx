@@ -4,22 +4,6 @@ import usePostStore from '../../store/usePostStore';
 import PostListItem from './ListItem/PostListItem';
 
 const PostList = ({ fetchPosts, selectedHashtag, sortOrder }) => {
-  // const [posts, setPosts] = useState([]);
-  //
-  // const loadPosts = async () => {
-  //   try {
-  //     const data = await fetchPosts(sortOrder, 0, 10);
-  //     console.log('fetched: ', data);
-  //     const postsArray = data.content || [];
-  //     setPosts(postsArray);
-  //   } catch (error) {
-  //     console.error(error);
-  //   }
-  // };
-  //
-  // useEffect(() => {
-  //   loadPosts();
-  // }, [fetchPosts, sortOrder]);
   const {
     posts,
     isLoading,
@@ -34,9 +18,9 @@ const PostList = ({ fetchPosts, selectedHashtag, sortOrder }) => {
     setLoading(true);
     try {
       if (selectedHashtag) {
-        await loadPostsByHashtagId(selectedHashtag, 0, 10);
+        await loadPostsByHashtagId(selectedHashtag, sortOrder);
       } else {
-        await loadPosts(sortOrder, 0, 10);
+        await loadPosts(sortOrder);
       }
     } catch (error) {
       console.error(error);
@@ -47,7 +31,7 @@ const PostList = ({ fetchPosts, selectedHashtag, sortOrder }) => {
 
   useEffect(() => {
     loadPostsData();
-  }, [selectedHashtag, sortOrder, loadPosts, loadPostsByHashtagId]);
+  }, [selectedHashtag, sortOrder]);
 
   return (
     <Box sx={{ width: '100%' }}>
