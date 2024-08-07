@@ -103,10 +103,15 @@ export const unlikePost = async postId => {
 };
 
 // 특정 해시태그의 게시글 조회 (페이지네이션 지원)
-export const fetchPostsByHashtagId = async (hashtagId, page = 0, size = 10) => {
+export const fetchPostsByHashtagId = async (
+  hashtagId,
+  sortBy,
+  page = 0,
+  size = 10,
+) => {
   try {
     const response = await axiosWithoutToken.get('/api/posts/hashtags', {
-      params: { hashtagId, page, size },
+      params: { hashtagId, sortBy, page, size },
     });
     return response.data;
   } catch (error) {

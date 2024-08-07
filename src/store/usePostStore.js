@@ -47,10 +47,10 @@ const usePostStore = create(set => ({
   },
 
   // 특정 해시태그의 게시글 조회
-  loadPostsByHashtagId: async (hashtagId, page = 0, size = 10) => {
+  loadPostsByHashtagId: async (hashtagId, sortBy, page = 0, size = 10) => {
     set({ isLoading: true, error: null });
     try {
-      const data = await fetchPostsByHashtagId(hashtagId, page, size);
+      const data = await fetchPostsByHashtagId(hashtagId, sortBy, page, size);
       set({ posts: data.content || [], isLoading: false });
     } catch (error) {
       set({ error: 'Failed to fetch posts by hashtag id', isLoading: false });
