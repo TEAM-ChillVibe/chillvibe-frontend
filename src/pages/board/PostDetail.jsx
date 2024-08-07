@@ -13,6 +13,7 @@ import {
 import BaseContainer from '../../components/layout/BaseContainer';
 import Comment from '../comment/Comment';
 import TrackListItem from '../../components/common/ListItem/TrackListItem';
+import { formatDate, formatRelativeTime } from '../../utils/reusableFn';
 
 const PostDetail = () => {
   const { postId } = useParams();
@@ -44,9 +45,25 @@ const PostDetail = () => {
     return <Typography>Error loading post: {error.message}</Typography>;
   }
 
+  // 생성일과 수정일을 포맷하여 사용
+  const createdAt = post.createdAt;
+  const modifiedAt = post.modifiedAt;
+  const isModified = createdAt !== modifiedAt;
+
+  const formattedCreatedAt = formatDate(createdAt);
+  const formattedModifiedAt = formatRelativeTime(modifiedAt);
+
   return (
     <BaseContainer>
       <Typography variant="h4">{post.title}</Typography>
+      <Typography variant="body2">
+        트랙 {post.playlists.trackCount}개 | {formattedCreatedAt}
+      </Typography>
+      {isModified && (
+        <Typography variant="body2" color="textSecondary">
+          수정됨 ({formattedModifiedAt})
+        </Typography>
+      )}
       <Typography variant="body1">{post.description}</Typography>
 
       {post.user && (
