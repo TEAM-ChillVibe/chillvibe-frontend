@@ -7,7 +7,6 @@ import { fetchAllPosts } from '../../api/post/postApi';
 import { useEffect } from 'react';
 
 const Discover = () => {
-  // 필터링 상태
   const { sortOrder, setSortOrder } = useSortingStore();
 
   return (
@@ -32,7 +31,7 @@ const Discover = () => {
             variant="body2"
             sx={{
               cursor: 'pointer',
-              fontWeight: sortOrder === 'latest' ? 'bold' : 'noramal',
+              fontWeight: sortOrder === 'latest' ? 'bold' : 'normal',
               mr: 1,
             }}
             onClick={() => setSortOrder('latest')}
@@ -43,7 +42,7 @@ const Discover = () => {
             variant="body2"
             sx={{
               cursor: 'pointer',
-              fontWeight: sortOrder === 'popular' ? 'bold' : 'noramal',
+              fontWeight: sortOrder === 'popular' ? 'bold' : 'normal',
             }}
             onClick={() => setSortOrder('popular')}
           >
