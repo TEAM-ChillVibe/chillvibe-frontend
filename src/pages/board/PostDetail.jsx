@@ -1,57 +1,97 @@
-import { Box, Typography, Avatar } from '@mui/material';
+import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { useEffect } from 'react';
+import { fetchPostById } from '../../api/post/postApi';
+import {
+  Box,
+  Typography,
+  Avatar,
+  Chip,
+  List,
+  ListItem,
+  ListItemText,
+} from '@mui/material';
 import BaseContainer from '../../components/layout/BaseContainer';
-import usePostStore from '../../store/usePostStore';
-import HashtagChips from '../../components/common/HashtagChips';
 import Comment from '../comment/Comment';
 
 const PostDetail = () => {
   const { postId } = useParams();
-  const { post, fetchPostById } = usePostStore();
+  const [post, setPost] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
-    fetchPostById(postId);
-  }, [postId, fetchPostById]);
+    const getPost = async () => {
+      try {
+        const response = await fetchPostById(postId);
+        console.log(response);
+        setPost(response);
+      } catch (error) {
+        setError(error);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-  if (!post) {
+    getPost();
+  }, [postId]);
+
+  if (loading) {
     return <Typography>Loading...</Typography>;
+  }
+
+  if (error) {
+    return <Typography>Error loading post: {error.message}</Typography>;
   }
 
   return (
     <BaseContainer>
       <Typography variant="h4">{post.title}</Typography>
-      <Typography variant="body2" color="text.secondary">
-        {new Date(post.createdAt).toLocaleString()}
-      </Typography>
       <Typography variant="body1">{post.description}</Typography>
-      <HashtagChips hashtags={post.hashtags} />
 
-      <Box sx={{ mt: 4 }}>
-        <Typography variant="h6">트랙 리스트</Typography>
-        {post.playlist.tracks.map((track, index) => (
-          <Box
-            key={index}
-            sx={{ display: 'flex', justifyContent: 'space-between' }}
-          >
-            <Typography>{track.title}</Typography>
-            <Typography>{track.duration}</Typography>
-          </Box>
-        ))}
-      </Box>
-
-      <Box sx={{ mt: 4, display: 'flex', alignItems: 'center' }}>
-        <Avatar src={post.user.avatar} alt={post.user.name} />
-        <Box sx={{ ml: 2 }}>
-          <Typography>{post.user.name}</Typography>
-          <HashtagChips hashtags={post.user.hashtags} />
+      {post.user && (
+        <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+          <Avatar src={post.user.profileUrl} alt={post.user.nickname} />
+          <Typography variant="body1" sx={{ ml: 2 }}>
+            {post.user.nickname}
+          </Typography>
         </Box>
+      )}
+
+      <Box sx={{ mb: 2 }}>
+        {post.hashtags &&
+          post.hashtags.map(hashtag => (
+            <Chip key={hashtag.id} label={hashtag.name} sx={{ mr: 1 }} />
+          ))}
       </Box>
 
-      <Box sx={{ mt: 4 }}>
-        <Typography variant="h6">Comments</Typography>
-        <Comment postId={post.id} />
-      </Box>
+      <Typography variant="h6">Tracks</Typography>
+      <List>
+        {post.playlists &&
+        post.playlists.tracks &&
+        post.playlists.tracks.length > 0 ? (
+          post.playlists.tracks.map(track => (
+            <ListItem key={track.id}>
+              <ListItemText primary={track.title} secondary={track.artist} />
+            </ListItem>
+          ))
+        ) : (
+          <Typography>No tracks available</Typography>
+        )}
+      </List>
+
+      <Typography variant="h6">Comments</Typography>
+      {/* <List>
+        {post.comments &&
+          post.comments.map(comment => (
+            <ListItem key={comment.id}>
+              <ListItemText
+                primary={comment.content}
+                secondary={comment.userNickname}
+              />
+            </ListItem>
+          ))}
+      </List> */}
+      <Comment />
     </BaseContainer>
   );
 };
