@@ -57,6 +57,9 @@ const usePostStore = create(set => ({
     }
   },
 
+  // 게시글 추가
+  addPost: post => set(state => ({ posts: [...state.posts, post] })),
+
   // 기타 상태
   clearPosts: () => set({ posts: [] }),
 }));
