@@ -12,6 +12,7 @@ import {
 } from '@mui/material';
 import BaseContainer from '../../components/layout/BaseContainer';
 import Comment from '../comment/Comment';
+import TrackListItem from '../../components/common/ListItem/TrackListItem';
 
 const PostDetail = () => {
   const { postId } = useParams();
@@ -65,13 +66,21 @@ const PostDetail = () => {
       </Box>
 
       <Typography variant="h6">Tracks</Typography>
-      <List>
+      <List sx={{ width: '100%', bgcolor: 'background.paper' }}>
         {post.playlists &&
         post.playlists.tracks &&
         post.playlists.tracks.length > 0 ? (
-          post.playlists.tracks.map(track => (
-            <ListItem key={track.id}>
-              <ListItemText primary={track.title} secondary={track.artist} />
+          post.playlists.tracks.map((track, index) => (
+            <ListItem key={track.id} disablePadding sx={{ mb: 1 }}>
+              <TrackListItem
+                music={{
+                  title: track.name,
+                  artist: track.artist,
+                  albumCover: track.thumbnailUrl,
+                  duration: track.duration,
+                  audioSrc: track.previewUrl,
+                }}
+              />
             </ListItem>
           ))
         ) : (
