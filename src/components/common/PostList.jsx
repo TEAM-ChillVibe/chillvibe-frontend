@@ -3,7 +3,7 @@ import { Box, Typography } from '@mui/material';
 import usePostStore from '../../store/usePostStore';
 import PostListItem from './ListItem/PostListItem';
 
-const PostList = ({ fetchPosts, selectedHashtag, sortOrder }) => {
+const PostList = ({ selectedHashtag, sortOrder }) => {
   const {
     posts,
     isLoading,
