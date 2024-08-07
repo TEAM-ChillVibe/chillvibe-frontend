@@ -1,14 +1,23 @@
 import { Avatar, Box, Typography } from '@mui/material';
-import FavoriteIcon from '@mui/icons-material/Favorite';
 import albumSample from '../albumSample.jpeg';
 import { useNavigate } from 'react-router-dom';
 import HashtagChips from '../HashtagChips';
 import { fetchHashtagsOfPost } from '../../../api/hashtag/hashtagApi';
 import { formatRelativeTime } from '../../../utils/reusableFn';
+import LikeButton from '../Button/LikeButton';
+import { useEffect } from 'react';
+import useLikeStore from '../../../store/useLikeStore';
 
 function PostListItem({ post }) {
   const { id, title, createdAt, trackCount, user, likeCount } = post;
   const navigate = useNavigate();
+  const { initializeLikedPosts } = useLikeStore(state => ({
+    initializeLikedPosts: state.initializeLikedPosts,
+  }));
+
+  useEffect(() => {
+    initializeLikedPosts(); // 좋아요 목록 초기화
+  }, [initializeLikedPosts]);
 
   const handleNavigateToPost = () => {
     navigate(`/post/${id}`);
@@ -79,7 +88,7 @@ function PostListItem({ post }) {
           flexDirection: 'column',
           alignItems: 'flex-end',
           justifyContent: 'space-between',
-          my: 1,
+          mt: 0.5,
           order: 3,
         }}
       >
@@ -98,15 +107,10 @@ function PostListItem({ post }) {
               src={user.avatar}
               sx={{ width: 32, height: 32, mb: 1 }}
             />
-            <Typography variant="body2">{user.name}</Typography>
+            <Typography variant="body2">{user.nickname}</Typography>
           </Box>
         </Box>
-        <Box sx={{ display: 'flex', alignItems: 'center' }}>
-          <FavoriteIcon sx={{ fontSize: 14, mr: 0.5 }} />
-          <Typography variant="body2">
-            {likeCount ? likeCount.toLocaleString() : '0'}
-          </Typography>
-        </Box>
+        <LikeButton postId={id} initialLikeCount={likeCount} />
       </Box>
     </Box>
   );
