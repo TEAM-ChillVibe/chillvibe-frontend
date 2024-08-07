@@ -5,7 +5,6 @@ import { Box, Button, Typography } from '@mui/material';
 import PostList from '../../components/common/PostList';
 import HashtagChips from '../../components/common/HashtagChips';
 import { fetchAllHashtags } from '../../api/hashtag/hashtagApi';
-import { useState } from 'react';
 import useHashtagStore from '../../store/useHashtagStore';
 
 const AllTags = () => {
@@ -72,11 +71,7 @@ const AllTags = () => {
           새 글 작성
         </Button>
       </Box>
-      <PostList
-        // fetchPosts={loadPosts}
-        selectedHashtag={selectedHashtag}
-        sortOrder={sortOrder}
-      />
+      <PostList selectedHashtag={selectedHashtag} sortOrder={sortOrder} />
     </BaseContainer>
   );
 };

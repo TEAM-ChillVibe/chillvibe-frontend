@@ -9,11 +9,6 @@ function UserProfile({ user }) {
 
   const navigate = useNavigate();
 
-  const { selectedHashtag, setSelectedHashtag } = useHashtagStore(state => ({
-    selectedHashtag: state.selectedHashtag,
-    setSelectedHashtag: state.setSelectedHashtag,
-  }));
-
   const handleNavigateToUserPage = () => {
     navigate(`/user/${id}`); // 절대경로 유저프로필로 이동
   };
