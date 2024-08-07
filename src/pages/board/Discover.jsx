@@ -4,7 +4,6 @@ import PostList from '../../components/common/PostList';
 import useSortingStore from '../../store/useSortingStore';
 
 const Discover = () => {
-  // 필터링 상태
   const { sortOrder, setSortOrder } = useSortingStore();
 
   return (
@@ -29,7 +28,7 @@ const Discover = () => {
             variant="body2"
             sx={{
               cursor: 'pointer',
-              fontWeight: sortOrder === 'latest' ? 'bold' : 'noramal',
+              fontWeight: sortOrder === 'latest' ? 'bold' : 'normal',
               mr: 1,
             }}
             onClick={() => setSortOrder('latest')}
@@ -40,7 +39,7 @@ const Discover = () => {
             variant="body2"
             sx={{
               cursor: 'pointer',
-              fontWeight: sortOrder === 'popular' ? 'bold' : 'noramal',
+              fontWeight: sortOrder === 'popular' ? 'bold' : 'normal',
             }}
             onClick={() => setSortOrder('popular')}
           >
@@ -51,7 +50,7 @@ const Discover = () => {
           새 게시글
         </Button>
       </Box>
-      <PostList />
+      <PostList sortOrder={sortOrder} />
     </BaseContainer>
   );
 };

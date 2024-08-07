@@ -1,15 +1,29 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { Box, Typography } from '@mui/material';
-import PostListItem from './ListItem/PostListItem';
+import PostListItem from '../common/ListItem/PostListItems';
+import usePostStore from '../../store/usePostStore';
 
 const PostList = ({ selectedHashtag, sortOrder }) => {
-  const [posts, setPosts] = useState([]);
+  const { posts, fetchAllPosts, fetchPostsByHashtagId, setSortOrder } =
+    usePostStore();
 
   useEffect(() => {
-    // API 호출을 통해 게시글 데이터를 가져온다
-    // post 관련 store 구현 후에 코드 작성 예정
-    //
-  }, [selectedHashtag, sortOrder]);
+    // Set sort order before fetching posts
+    setSortOrder(sortOrder);
+
+    // Fetch posts based on selected hashtag
+    if (selectedHashtag) {
+      fetchPostsByHashtagId(selectedHashtag);
+    } else {
+      fetchPosts();
+    }
+  }, [
+    selectedHashtag,
+    sortOrder,
+    fetchPosts,
+    fetchPostsByHashtagId,
+    setSortOrder,
+  ]);
 
   return (
     <Box sx={{ p: 2 }}>
