@@ -3,6 +3,7 @@ import BaseContainer from '../../../components/layout/BaseContainer';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { axiosWithoutToken } from '../../../axios';
+import useUserStore from '../../../store/useUserStore';
 
 const Login = () => {
   const [email, setEmail] = useState('');
@@ -30,6 +31,10 @@ const Login = () => {
       if (accessToken) {
         localStorage.setItem('access', accessToken.replace('Bearer ', '')); // 'Bearer '를 제거하고 저장
       }
+
+      console.log(response.data);
+      const userData = response.data;
+      useUserStore.getState().login(userData, accessToken); // 상태 관리 스토어에 로그인 정보 저장
 
       // 로그인 후 리다이렉트
       alert('로그인 완료');

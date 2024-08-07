@@ -5,13 +5,14 @@ import BaseContainer from '../../components/layout/BaseContainer';
 import SearchTracks from './tabs/SearchTracks';
 import SearchPosts from './tabs/SearchPosts';
 import axios from 'axios';
+import { searchTracks } from '../../api/track/trackApi';
 
 const SearchPage = () => {
   const location = useLocation();
   const [searchQuery, setSearchQuery] = useState('');
   const [searchType, setSearchType] = useState('track');
-  const [trackResults, setTrackResults] = useState(null);
-  const [postResults, setPostResults] = useState(null);
+  const [trackResults, setTrackResults] = useState({ content: [] });
+  const [postResults, setPostResults] = useState({ content: [] });
   const [isLoading, setIsLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState(0);
 
@@ -21,13 +22,14 @@ const SearchPage = () => {
     setIsLoading(true);
     try {
       if (searchType === 'track') {
-        const response = await axios.get(
-          `http://localhost:8080/api/tracks/search`,
-          {
-            params: { query: searchQuery, page: currentPage, size: 20 },
-          },
-        );
-        setTrackResults(response.data);
+        const response = await searchTracks(searchQuery, currentPage);
+        setTrackResults(prev => ({
+          ...response,
+          content:
+            currentPage === 0
+              ? response.content
+              : [...prev.content, ...response.content],
+        }));
       } else {
         const response = await axios.get(
           `http://localhost:8080/api/posts/search`,
@@ -35,15 +37,16 @@ const SearchPage = () => {
             params: { query: searchQuery, page: currentPage, size: 10 },
           },
         );
-        setPostResults(response.data);
+        setPostResults(prev => ({
+          ...response.data,
+          content:
+            currentPage === 0
+              ? response.data.content
+              : [...prev.content, ...response.data.content],
+        }));
       }
     } catch (error) {
       console.error('Search error:', error);
-      if (searchType === 'track') {
-        setTrackResults(null);
-      } else {
-        setPostResults(null);
-      }
     } finally {
       setIsLoading(false);
     }
@@ -54,6 +57,8 @@ const SearchPage = () => {
     const query = params.get('q');
     if (query) {
       setSearchQuery(query);
+      setCurrentPage(0);
+      window.scrollTo(0, 0);
     }
   }, [location.search]);
 
@@ -64,6 +69,10 @@ const SearchPage = () => {
   const handleTabChange = (event, newValue) => {
     setSearchType(newValue);
     setCurrentPage(0);
+  };
+
+  const handleLoadMore = () => {
+    setCurrentPage(prev => prev + 1);
   };
 
   return (
@@ -86,19 +95,17 @@ const SearchPage = () => {
         <Tab label="Tracks" value="track" />
         <Tab label="Posts" value="post" />
       </Tabs>
-      {isLoading ? (
-        <CircularProgress />
-      ) : (
-        <Box mt={3} sx={{ width: '100%' }}>
-          {searchType === 'track' && (
-            <SearchTracks
-              results={trackResults}
-              onPageChange={setCurrentPage}
-            />
-          )}
-          {searchType === 'post' && (
-            <SearchPosts results={postResults} onPageChange={setCurrentPage} />
-          )}
+      <Box mt={3} sx={{ width: '100%' }}>
+        {searchType === 'track' && (
+          <SearchTracks results={trackResults} onLoadMore={handleLoadMore} />
+        )}
+        {searchType === 'post' && (
+          <SearchPosts results={postResults} onLoadMore={handleLoadMore} />
+        )}
+      </Box>
+      {isLoading && (
+        <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2 }}>
+          <CircularProgress />
         </Box>
       )}
     </BaseContainer>

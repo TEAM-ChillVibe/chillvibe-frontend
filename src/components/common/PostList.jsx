@@ -1,18 +1,56 @@
 import { useEffect, useState } from 'react';
 import { Box, Typography } from '@mui/material';
+import usePostStore from '../../store/usePostStore';
 import PostListItem from './ListItem/PostListItem';
 
-const PostList = ({ tagId }) => {
-  const [posts, setPosts] = useState([]);
+const PostList = ({ fetchPosts, selectedHashtag, sortOrder }) => {
+  // const [posts, setPosts] = useState([]);
+  //
+  // const loadPosts = async () => {
+  //   try {
+  //     const data = await fetchPosts(sortOrder, 0, 10);
+  //     console.log('fetched: ', data);
+  //     const postsArray = data.content || [];
+  //     setPosts(postsArray);
+  //   } catch (error) {
+  //     console.error(error);
+  //   }
+  // };
+  //
+  // useEffect(() => {
+  //   loadPosts();
+  // }, [fetchPosts, sortOrder]);
+  const {
+    posts,
+    isLoading,
+    error,
+    loadPosts,
+    loadPostsByHashtagId,
+    loadPostsByUserId,
+  } = usePostStore();
+  const [loading, setLoading] = useState(false);
+
+  const loadPostsData = async () => {
+    setLoading(true);
+    try {
+      if (selectedHashtag) {
+        await loadPostsByHashtagId(selectedHashtag, 0, 10);
+      } else {
+        await loadPosts(sortOrder, 0, 10);
+      }
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    // API 호출을 통해 게시글 데이터를 가져온다
-    // post 관련 store 구현 후에 코드 작성 예정
-    //
-  }, [tagId]); // tagId가 변경되면 데이터가 업데이트 됨
+    loadPostsData();
+  }, [selectedHashtag, sortOrder, loadPosts, loadPostsByHashtagId]);
 
   return (
-    <Box sx={{ p: 2 }}>
+    <Box sx={{ width: '100%' }}>
       {posts.length > 0 ? (
         posts.map(post => <PostListItem key={post.id} post={post} />)
       ) : (

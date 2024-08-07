@@ -99,7 +99,7 @@ const Signup = () => {
 
     try {
       // 회원가입 요청
-      await axiosWithoutToken.post('/signup', formData, {
+      await axiosWithoutToken.post('/api/signup', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },

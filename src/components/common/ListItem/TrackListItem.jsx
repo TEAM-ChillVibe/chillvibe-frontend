@@ -53,7 +53,9 @@ function TrackListItem({ music }) {
   };
 
   // Description
-  const modalDescription = `"${title} - ${artist}"\n를 추가할 플레이리스트를 선택해주세요.`;
+  // const modalDescription = `"${title} - ${artist}"\n를 추가할 플레이리스트를 선택해주세요.`;
+  const modalTrack = `"${title} - ${artist}"`;
+  const modalDescription = `를 추가할 플레이리스트를 선택해주세요.`;
 
   return (
     <Box sx={{ display: 'flex', alignItems: 'center', width: '100%', p: 2 }}>
@@ -90,7 +92,21 @@ function TrackListItem({ music }) {
           open={isModalOpen}
           onClose={closeModal}
           title="Select Playlist"
-          description={modalDescription}
+          description={
+            <Box
+              sx={{
+                display: 'flex',
+                flexDirection: 'column',
+                height: 'auto',
+                gap: 0.5,
+              }}
+            >
+              <Typography variant="body1" sx={{ fontWeight: 'bold' }}>
+                {modalTrack}
+              </Typography>
+              <Typography variant="body2">{modalDescription}</Typography>
+            </Box>
+          }
           options={options}
           selectedValue={selectedValue}
           onChange={handleChange}

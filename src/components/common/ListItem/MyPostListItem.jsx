@@ -4,7 +4,7 @@ import albumSample from '../albumSample.jpeg';
 import { useNavigate } from 'react-router-dom';
 
 function MyPostListItem({ post }) {
-  const { id, title, createdAt, trackCount, hashtags, likes } = post;
+  const { id, title, createdAt, trackCount, hashtags, likeCount } = post;
   const navigate = useNavigate();
 
   const handleNavigateToPost = () => {
@@ -92,7 +92,9 @@ function MyPostListItem({ post }) {
           </Typography>
           <Box sx={{ display: 'flex', alignItems: 'center' }}>
             <FavoriteIcon sx={{ fontSize: 14, mr: 0.5 }} />
-            <Typography variant="body2">{likes.toLocaleString()}</Typography>
+            <Typography variant="body2">
+              {likeCount.toLocaleString()}
+            </Typography>
           </Box>
         </Box>
       </Box>
