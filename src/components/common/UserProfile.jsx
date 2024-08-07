@@ -5,7 +5,7 @@ import { fetchHashtagsOfUser } from '../../api/hashtag/hashtagApi';
 import useHashtagStore from '../../store/useHashtagStore';
 
 function UserProfile({ user }) {
-  const { id, nickname, profileUrl, introduction } = user;
+  const { userId, nickname, profileUrl, introduction } = user;
 
   const navigate = useNavigate();
 
@@ -15,7 +15,7 @@ function UserProfile({ user }) {
   }));
 
   const handleNavigateToUserPage = () => {
-    navigate(`/user/${id}`); // 절대경로 유저프로필로 이동
+    navigate(`/user/${userId}`); // 절대경로 유저프로필로 이동
   };
 
   const handleChipClick = tagId => {
@@ -62,7 +62,7 @@ function UserProfile({ user }) {
           {introduction}
         </Typography>
         <HashtagChips
-          fetchHashtags={() => fetchHashtagsOfUser(id)}
+          fetchHashtags={() => fetchHashtagsOfUser(userId)}
           onChipClick={handleChipClick}
         />
       </Box>

@@ -1,5 +1,5 @@
 import { Avatar, Box, Button, Menu, MenuItem, Typography } from '@mui/material';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import useUserStore from '../../../store/useUserStore';
 import { styled } from '@mui/material/styles';
 import { useState } from 'react';
@@ -20,6 +20,8 @@ const AuthButtons = ({ user }) => {
     logout: state.logout,
   }));
 
+  const navigate = useNavigate();
+
   const [anchorEl, setAnchorEl] = useState(null);
 
   const handleMenuOpen = event => {
@@ -31,11 +33,14 @@ const AuthButtons = ({ user }) => {
   };
 
   const handleLogout = () => {
-    logout();
-    localStorage.removeItem('access');
-    localStorage.removeItem('user');
-    console.log(user);
-    handleMenuClose();
+    const confirmLogout = window.confirm('정말 로그아웃하시겠습니까?');
+    if (confirmLogout) {
+      logout();
+      localStorage.removeItem('access');
+      localStorage.removeItem('user');
+      handleMenuClose();
+      navigate('/'); // 홈페이지로 리디렉션
+    }
   };
 
   if (user) {
