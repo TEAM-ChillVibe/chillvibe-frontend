@@ -29,13 +29,8 @@ const UserPage = () => {
         setUser(userResponse.data);
         setPostList(postResponse.data.content);
         setIsPublic(userResponse.data.public);
-
-        console.log('User data:', userResponse.data);
-        console.log('Post list:', postResponse.data.content);
-        console.log('Post list:', postResponse.data);
       } catch (err) {
         setError('사용자 정보를 가져오는 데 실패했습니다.');
-        console.error(err);
       } finally {
         setLoading(false);
       }

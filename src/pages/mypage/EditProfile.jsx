@@ -1,80 +1,119 @@
 import BaseContainer from '../../components/layout/BaseContainer';
-import { Avatar, Box, Button, TextField } from '@mui/material';
+import {
+  Avatar,
+  Box,
+  Button,
+  TextField,
+  FormControlLabel,
+  Switch,
+} from '@mui/material';
 import IconButton from '@mui/material/IconButton';
 import { AddPhotoAlternate } from '@mui/icons-material';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { axiosWithToken } from '../../axios';
+import { fetchAllHashtags } from '../../api/hashtag/hashtagApi';
+import HashtagChips from '../../components/common/HashtagChips';
 
 const EditProfile = () => {
-  // const [email, setEmail] = useState('');
-  // const [password, setPassword] = useState('');
-  // const [confirmPassword, setConfirmPassword] = useState('');
-  // const [nickname, setNickname] = useState('');
-  // const [passwordMatchError, setPasswordMatchError] = useState('');
-  // const [profileImage, setProfileImage] = useState(null);
-  // const [imagePreview, setImagePreview] = useState('');
-
-  // form 상태 객체로 관리
-  const [formState, setFormState] = useState({
-    email: '',
-    password: '',
-    confirmPassword: '',
-    nickname: '',
-    introduction: '',
-    passwordMatchError: '',
-    profileImage: null,
-    imagePreview: '',
-  });
-
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [newPassword, setNewPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [nickname, setNickname] = useState('');
+  const [introduction, setIntroduction] = useState(''); // 소개글 상태 추가
+  const [passwordMatchError, setPasswordMatchError] = useState('');
+  const [profileImage, setProfileImage] = useState(null);
+  const [isPublic, setIsPublic] = useState(null);
+  const [imagePreview, setImagePreview] = useState('');
+  const [selectedHashtags, setSelectedHashtags] = useState([]);
   const navigate = useNavigate();
 
-  // 상태 업데이트 함수
-  const handleChange = e => {
-    const { name, value } = e.target;
-    setFormState(prevState => ({
-      ...prevState,
-      [name]: value,
-    }));
+  useEffect(() => {
+    // 사용자 정보를 가져오는 비동기 함수
+    const fetchUserData = async () => {
+      try {
+        const response = await axiosWithToken.get('/api/mypage'); // 적절한 API 엔드포인트로 수정하세요.
+        const userData = response.data;
+
+        console.log(response.data);
+
+        // 사용자 정보 상태 업데이트
+        setEmail(userData.email);
+        setNickname(userData.nickname);
+        setIntroduction(userData.introduction || ''); // 소개글 추가
+        setImagePreview(userData.profileUrl || ''); // 프로필 이미지 URL이 있을 경우 미리보기 설정
+        setIsPublic(userData.public);
+      } catch (error) {}
+    };
+
+    fetchUserData();
+  }, []);
+
+  const handleHashtagClick = tagId => {
+    setSelectedHashtags(prevSelected =>
+      prevSelected.includes(tagId)
+        ? prevSelected.filter(id => id !== tagId)
+        : [...prevSelected, tagId],
+    );
   };
 
-  // 프로필 이미지 상태 업데이트
-  const handleImageChange = e => {
-    const file = e.target.files[0];
-    setFormState(prevState => ({
-      ...prevState,
-      profileImage: file,
-      imagePreview: URL.createObjectURL(file),
-    }));
+  const fetchHashtags = async () => {
+    try {
+      const response = await fetchAllHashtags();
+      return response;
+    } catch (error) {
+      console.error('Error fetching hashtags:', error);
+      return [];
+    }
   };
 
-  // 취소 버튼 액션
+  const handleImageChange = event => {
+    const file = event.target.files[0];
+    if (file) {
+      setProfileImage(file);
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setImagePreview(reader.result);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
   const handleCancel = () => {
     navigate(-1); // 이전 페이지로 이동
   };
 
-  // 저장 버튼 액션
-  const handleSubmit = event => {
+  const handleSubmit = async event => {
     event.preventDefault();
 
     // 비밀번호 확인
-    if (formState.password !== formState.confirmPassword) {
-      setFormState(prevState => ({
-        ...prevState,
-        passwordMatchError: '비밀번호가 일치하지 않습니다.',
-      }));
+    if (password !== confirmPassword) {
+      setPasswordMatchError('비밀번호가 일치하지 않습니다.');
       return;
     }
-    setFormState(prevState => ({
-      ...prevState,
-      passwordMatchError: '',
-    }));
+    setPasswordMatchError('');
 
-    // 회원가입 정보를 서버로 전송하는 로직 추가
+    // 사용자 정보 업데이트 API 호출
+    try {
+      const formData = new FormData();
+      formData.append('email', email);
+      formData.append('nickname', nickname);
+      formData.append('introduction', introduction);
+      if (profileImage) {
+        formData.append('profileImage', profileImage);
+      }
+      if (password) {
+        formData.append('password', password);
+      }
+
+      await axiosWithToken.put('/api/mypage', formData); // 적절한 API 엔드포인트로 수정하세요.
+      navigate('/mypage'); // 성공 후 리디렉션
+    } catch (error) {}
   };
 
-  // 입력 여부 확인 (버튼 활성화용)
   const isFormValid =
-    formState.email && formState.password && formState.nickname;
+    email && nickname && (password === confirmPassword || !password);
 
   return (
     <BaseContainer>
@@ -105,10 +144,7 @@ const EditProfile = () => {
               mx: 'auto',
             }}
           >
-            <Avatar
-              sx={{ width: 150, height: 150 }}
-              src={formState.imagePreview}
-            />
+            <Avatar sx={{ width: 150, height: 150 }} src={imagePreview} />
             <IconButton
               component="label"
               sx={{
@@ -133,48 +169,68 @@ const EditProfile = () => {
             label="닉네임"
             fullWidth
             required
-            value={formState.nickname}
-            onChange={handleChange}
+            value={nickname}
+            onChange={e => setNickname(e.target.value)}
             margin="normal"
           />
           <TextField
             label="이메일"
             fullWidth
-            value={formState.email}
+            value={email}
             InputProps={{
               readOnly: true,
             }}
             margin="normal"
           />
           <TextField
-            label="비밀번호"
+            label="기존 비밀번호"
             fullWidth
             type="password"
-            required
-            value={formState.password}
-            onChange={handleChange}
+            value={password}
+            onChange={e => setPassword(e.target.value)}
+            margin="normal"
+          />
+          <TextField
+            label="새 비밀번호"
+            fullWidth
+            type="password"
+            value={newPassword}
+            onChange={e => setNewPassword(e.target.value)}
             margin="normal"
           />
           <TextField
             label="비밀번호 확인"
             fullWidth
             type="password"
-            required
-            value={formState.confirmPassword}
-            onChange={handleChange}
+            value={confirmPassword}
+            onChange={e => setConfirmPassword(e.target.value)}
             margin="normal"
-            error={!!formState.passwordMatchError}
-            helperText={formState.passwordMatchError}
+            error={!!passwordMatchError}
+            helperText={passwordMatchError}
           />
           <TextField
             label="소개글"
             fullWidth
             multiline
             rows={5}
-            name="introduction"
-            value={formState.introduction || ''}
-            onChange={handleChange}
+            value={introduction}
+            onChange={e => setIntroduction(e.target.value)}
             margin="normal"
+          />
+          <HashtagChips
+            fetchHashtags={fetchHashtags}
+            selectedHashtag={selectedHashtags}
+            onHashtagClick={handleHashtagClick}
+          />
+          <FormControlLabel
+            label="프로필 공개여부"
+            control={
+              <Switch
+                checked={isPublic}
+                onChange={() => setIsPublic(prev => !prev)}
+              />
+            }
+            sx={{ mt: 2 }}
           />
           {/* 버튼 */}
           <Box sx={{ width: '100%', display: 'flex', mt: 5, gap: 2 }}>
