@@ -5,7 +5,7 @@ import BaseContainer from '../../components/layout/BaseContainer';
 import SearchTracks from './tabs/SearchTracks';
 import SearchPosts from './tabs/SearchPosts';
 import axios from 'axios';
-import { searchTracks } from '../../api/track/trackApi';
+import { searchTracks } from '../..//api/track/trackApi';
 
 const SearchPage = () => {
   const location = useLocation();
