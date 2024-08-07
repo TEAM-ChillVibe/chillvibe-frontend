@@ -6,13 +6,17 @@ import PostList from '../../components/common/PostList';
 import HashtagChips from '../../components/common/HashtagChips';
 import { fetchAllHashtags } from '../../api/hashtag/hashtagApi';
 import { useState } from 'react';
+import useHashtagStore from '../../store/useHashtagStore';
 
 const AllTags = () => {
   const { sortOrder, setSortOrder } = useSortingStore();
-  const [selectedHashtag, setSelectedHashtag] = useState(null);
+
+  const { selectedHashtag } = useHashtagStore(state => ({
+    selectedHashtag: state.selectedHashtag,
+  }));
 
   const handleHashtagClick = hashtagId => {
-    setSelectedHashtag(hashtagId);
+    useHashtagStore.getState().setSelectedHashtag(hashtagId);
   };
 
   const loadPosts = selectedHashtag
@@ -69,7 +73,7 @@ const AllTags = () => {
         </Button>
       </Box>
       <PostList
-        fetchPosts={loadPosts}
+        // fetchPosts={loadPosts}
         selectedHashtag={selectedHashtag}
         sortOrder={sortOrder}
       />
