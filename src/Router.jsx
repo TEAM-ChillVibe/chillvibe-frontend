@@ -55,7 +55,7 @@ const Router = () => {
         <Route path="/user" element={<UserPage />} />
         <Route path="/discover" element={<Discover />} />
         <Route path="/all-tags" element={<AllTags />} />
-        <Route path="/postdetail" element={<PostDetail />} />
+        <Route path="/post/:postId" element={<PostDetail />} />
       </Routes>
     </Suspense>
   );

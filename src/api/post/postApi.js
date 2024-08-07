@@ -16,7 +16,7 @@ export const fetchAllPosts = async (sortBy = 'latest', page = 0, size = 10) => {
 // 특정 게시글 상세 조회
 export const fetchPostById = async postId => {
   try {
-    const response = await axiosWithoutToken.get('/api/posts/${postId}');
+    const response = await axiosWithoutToken.get(`/api/posts/${postId}`);
     return response.data;
   } catch (error) {
     console.error('Failed to fetch post by id:', error);
@@ -27,7 +27,7 @@ export const fetchPostById = async postId => {
 // 특정 유저 게시글 조회 (페이지네이션 지원)
 export const fetchPostsByUserId = async (userId, page = 0, size = 10) => {
   try {
-    const response = await axiosWithoutToken.get('/api/posts/user/${userId}', {
+    const response = await axiosWithoutToken.get(`/api/posts/user/${userId}`, {
       params: { page, size },
     });
     return response.data;
