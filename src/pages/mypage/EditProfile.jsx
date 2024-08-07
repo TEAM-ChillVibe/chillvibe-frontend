@@ -6,26 +6,45 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 const EditProfile = () => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
-  const [nickname, setNickname] = useState('');
-  const [passwordMatchError, setPasswordMatchError] = useState('');
-  const [profileImage, setProfileImage] = useState(null);
-  const [imagePreview, setImagePreview] = useState('');
+  // const [email, setEmail] = useState('');
+  // const [password, setPassword] = useState('');
+  // const [confirmPassword, setConfirmPassword] = useState('');
+  // const [nickname, setNickname] = useState('');
+  // const [passwordMatchError, setPasswordMatchError] = useState('');
+  // const [profileImage, setProfileImage] = useState(null);
+  // const [imagePreview, setImagePreview] = useState('');
+
+  // form 상태 객체로 관리
+  const [formState, setFormState] = useState({
+    email: '',
+    password: '',
+    confirmPassword: '',
+    nickname: '',
+    introduction: '',
+    passwordMatchError: '',
+    profileImage: null,
+    imagePreview: '',
+  });
+
   const navigate = useNavigate();
 
-  // 프로필 이미지 변경 핸들러
-  const handleImageChange = event => {
-    const file = event.target.files[0];
-    if (file) {
-      setProfileImage(file);
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setImagePreview(reader.result);
-      };
-      reader.readAsDataURL(file);
-    }
+  // 상태 업데이트 함수
+  const handleChange = e => {
+    const { name, value } = e.target;
+    setFormState(prevState => ({
+      ...prevState,
+      [name]: value,
+    }));
+  };
+
+  // 프로필 이미지 상태 업데이트
+  const handleImageChange = e => {
+    const file = e.target.files[0];
+    setFormState(prevState => ({
+      ...prevState,
+      profileImage: file,
+      imagePreview: URL.createObjectURL(file),
+    }));
   };
 
   // 취소 버튼 액션
@@ -38,17 +57,24 @@ const EditProfile = () => {
     event.preventDefault();
 
     // 비밀번호 확인
-    if (password !== confirmPassword) {
-      setPasswordMatchError('비밀번호가 일치하지 않습니다.');
+    if (formState.password !== formState.confirmPassword) {
+      setFormState(prevState => ({
+        ...prevState,
+        passwordMatchError: '비밀번호가 일치하지 않습니다.',
+      }));
       return;
     }
-    setPasswordMatchError('');
+    setFormState(prevState => ({
+      ...prevState,
+      passwordMatchError: '',
+    }));
 
     // 회원가입 정보를 서버로 전송하는 로직 추가
   };
 
   // 입력 여부 확인 (버튼 활성화용)
-  const isFormValid = email && password && nickname;
+  const isFormValid =
+    formState.email && formState.password && formState.nickname;
 
   return (
     <BaseContainer>
@@ -79,7 +105,10 @@ const EditProfile = () => {
               mx: 'auto',
             }}
           >
-            <Avatar sx={{ width: 150, height: 150 }} src={imagePreview} />
+            <Avatar
+              sx={{ width: 150, height: 150 }}
+              src={formState.imagePreview}
+            />
             <IconButton
               component="label"
               sx={{
@@ -104,15 +133,14 @@ const EditProfile = () => {
             label="닉네임"
             fullWidth
             required
-            value={nickname}
-            onChange={e => setNickname(e.target.value)}
+            value={formState.nickname}
+            onChange={handleChange}
             margin="normal"
           />
           <TextField
             label="이메일"
             fullWidth
-            // value={email}
-            value="email@example.com"
+            value={formState.email}
             InputProps={{
               readOnly: true,
             }}
@@ -123,8 +151,8 @@ const EditProfile = () => {
             fullWidth
             type="password"
             required
-            value={password}
-            onChange={e => setPassword(e.target.value)}
+            value={formState.password}
+            onChange={handleChange}
             margin="normal"
           />
           <TextField
@@ -132,19 +160,20 @@ const EditProfile = () => {
             fullWidth
             type="password"
             required
-            value={confirmPassword}
-            onChange={e => setConfirmPassword(e.target.value)}
+            value={formState.confirmPassword}
+            onChange={handleChange}
             margin="normal"
-            error={!!passwordMatchError}
-            helperText={passwordMatchError}
+            error={!!formState.passwordMatchError}
+            helperText={formState.passwordMatchError}
           />
           <TextField
             label="소개글"
             fullWidth
             multiline
             rows={5}
-            value={confirmPassword}
-            onChange={e => setConfirmPassword(e.target.value)}
+            name="introduction"
+            value={formState.introduction || ''}
+            onChange={handleChange}
             margin="normal"
           />
           {/* 버튼 */}

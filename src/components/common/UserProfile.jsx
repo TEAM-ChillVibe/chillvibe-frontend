@@ -2,18 +2,24 @@ import { Avatar, Box, Typography } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import HashtagChips from './HashtagChips';
 import { fetchHashtagsOfUser } from '../../api/hashtag/hashtagApi';
+import useHashtagStore from '../../store/useHashtagStore';
 
 function UserProfile({ user }) {
   const { id, nickname, profileUrl, introduction } = user;
 
   const navigate = useNavigate();
 
+  const { selectedHashtag, setSelectedHashtag } = useHashtagStore(state => ({
+    selectedHashtag: state.selectedHashtag,
+    setSelectedHashtag: state.setSelectedHashtag,
+  }));
+
   const handleNavigateToUserPage = () => {
     navigate(`/user/${id}`); // 절대경로 유저프로필로 이동
   };
 
   const handleChipClick = tagId => {
-    navigate(`/all-tags/${tagId}`);
+    navigate(`/all-tags/`);
   };
 
   return (
