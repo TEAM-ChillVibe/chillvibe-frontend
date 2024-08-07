@@ -53,7 +53,7 @@ const Router = () => {
         <Route path="/500" element={<InternalServerError />} />
         <Route path="/404" element={<NotFound />} />
         <Route path="/503" element={<ServiceUnavailable />} />
-        <Route path="/user" element={<UserPage />} />
+        <Route path="/user/:userId" element={<UserPage />} />
         <Route path="/discover" element={<Discover />} />
         <Route path="/all-tags" element={<AllTags />} />
         <Route path="/new-post" element={<NewPost />} />
