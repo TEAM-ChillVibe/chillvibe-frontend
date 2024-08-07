@@ -24,7 +24,7 @@ const AllTags = lazy(() => import('./pages/board/AllTags'));
 const NewPost = lazy(() => import('./pages/post/NewPost'));
 const PostDetail = lazy(() => import('./pages/post/PostDetail'));
 const PlaylistDetail = lazy(
-  () => import('./pages/mypage/playlist/PlaylistDetail'),
+  () => import('./pages/mypage/playlist/playlistDetail'),
 );
 
 const Router = () => {

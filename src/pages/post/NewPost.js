@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { createPost } from '../../api/post/postApi';
-import { getUserPlaylistsForSelection } from '../../api/playlist/playlist';
+import { getUserPlaylistsForSelection } from '../../api/playlist/playlistApi';
 import { fetchAllHashtags } from '../../api/hashtag/hashtagApi';
 
 import {
