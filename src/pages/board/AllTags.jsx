@@ -1,5 +1,4 @@
 import useSortingStore from '../../store/useSortingStore';
-import usePostStore from '../../store/usePostStore';
 import BaseContainer from '../../components/layout/BaseContainer';
 import { Box, Button, Typography } from '@mui/material';
 import PostList from '../../components/common/PostList';
@@ -17,10 +16,6 @@ const AllTags = () => {
   const handleHashtagClick = hashtagId => {
     useHashtagStore.getState().setSelectedHashtag(hashtagId);
   };
-
-  const loadPosts = selectedHashtag
-    ? usePostStore.getState().loadPostsByHashtagId
-    : usePostStore.getState().loadPosts;
 
   return (
     <BaseContainer>
