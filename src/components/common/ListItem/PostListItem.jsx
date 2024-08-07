@@ -103,7 +103,9 @@ function PostListItem({ post }) {
         </Box>
         <Box sx={{ display: 'flex', alignItems: 'center' }}>
           <FavoriteIcon sx={{ fontSize: 14, mr: 0.5 }} />
-          <Typography variant="body2">{likeCount.toLocaleString()}</Typography>
+          <Typography variant="body2">
+            {likeCount ? likeCount.toLocaleString() : '0'}
+          </Typography>
         </Box>
       </Box>
     </Box>

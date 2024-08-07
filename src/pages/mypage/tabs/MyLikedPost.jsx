@@ -15,7 +15,7 @@ const MyLikedPost = () => {
         name: 'Alice',
         avatar: 'https://example.com/alice.jpg',
       },
-      likes: 3256,
+      likeCount: 3256,
       createdAt: '2024-07-25T18:00:00Z',
     },
     {
@@ -28,7 +28,7 @@ const MyLikedPost = () => {
         name: 'Bob',
         avatar: 'https://example.com/bob.jpg',
       },
-      likes: 180,
+      likeCount: 180,
       createdAt: '2024-07-20T09:30:00Z',
     },
     //   {
