@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import useUserStore from '../../../store/useUserStore';
 import { styled } from '@mui/material/styles';
 import { useState } from 'react';
-import { axiosWithToken } from '../../../axios';
+import { signout } from '../../../api/auth/authApi';
 
 const RoundedButton = styled(Button)(({ theme }) => ({
   textTransform: 'none',
@@ -38,7 +38,7 @@ const AuthButtons = ({ user }) => {
     if (confirmLogout) {
       try {
         // 로그아웃 요청
-        await axiosWithToken.post('/logout');
+        await signout();
 
         // 클라이언트 측 저장소와 쿠키 정리
         localStorage.removeItem('access');
