@@ -1,4 +1,4 @@
-import BaseContainer from '../../components/layout/BaseContainer';
+import BaseContainer from '../../../components/layout/BaseContainer';
 import {
   Avatar,
   Box,
@@ -11,18 +11,14 @@ import IconButton from '@mui/material/IconButton';
 import { AddPhotoAlternate } from '@mui/icons-material';
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { axiosWithToken } from '../../axios';
-import { fetchAllHashtags } from '../../api/hashtag/hashtagApi';
-import HashtagChips from '../../components/common/HashtagChips';
+import { axiosWithToken } from '../../../axios';
+import { fetchAllHashtags } from '../../../api/hashtag/hashtagApi';
+import HashtagChips from '../../../components/common/HashtagChips';
 
 const EditProfile = () => {
   const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [newPassword, setNewPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
   const [nickname, setNickname] = useState('');
   const [introduction, setIntroduction] = useState(''); // 소개글 상태 추가
-  const [passwordMatchError, setPasswordMatchError] = useState('');
   const [profileImage, setProfileImage] = useState(null);
   const [isPublic, setIsPublic] = useState(null);
   const [imagePreview, setImagePreview] = useState('');
@@ -87,13 +83,6 @@ const EditProfile = () => {
   const handleSubmit = async event => {
     event.preventDefault();
 
-    // 비밀번호 확인
-    if (password !== confirmPassword) {
-      setPasswordMatchError('비밀번호가 일치하지 않습니다.');
-      return;
-    }
-    setPasswordMatchError('');
-
     // 사용자 정보 업데이트 API 호출
     try {
       const formData = new FormData();
@@ -103,17 +92,17 @@ const EditProfile = () => {
       if (profileImage) {
         formData.append('profileImage', profileImage);
       }
-      if (password) {
-        formData.append('password', password);
-      }
 
       await axiosWithToken.put('/api/mypage', formData); // 적절한 API 엔드포인트로 수정하세요.
       navigate('/mypage'); // 성공 후 리디렉션
     } catch (error) {}
   };
 
-  const isFormValid =
-    email && nickname && (password === confirmPassword || !password);
+  const isFormValid = email && nickname;
+
+  const handleChangePassword = () => {
+    navigate('/edit-password'); // 비밀번호 변경 페이지로 이동
+  };
 
   return (
     <BaseContainer>
@@ -183,32 +172,6 @@ const EditProfile = () => {
             margin="normal"
           />
           <TextField
-            label="기존 비밀번호"
-            fullWidth
-            type="password"
-            value={password}
-            onChange={e => setPassword(e.target.value)}
-            margin="normal"
-          />
-          <TextField
-            label="새 비밀번호"
-            fullWidth
-            type="password"
-            value={newPassword}
-            onChange={e => setNewPassword(e.target.value)}
-            margin="normal"
-          />
-          <TextField
-            label="비밀번호 확인"
-            fullWidth
-            type="password"
-            value={confirmPassword}
-            onChange={e => setConfirmPassword(e.target.value)}
-            margin="normal"
-            error={!!passwordMatchError}
-            helperText={passwordMatchError}
-          />
-          <TextField
             label="소개글"
             fullWidth
             multiline
@@ -222,16 +185,23 @@ const EditProfile = () => {
             selectedHashtag={selectedHashtags}
             onHashtagClick={handleHashtagClick}
           />
-          <FormControlLabel
-            label="프로필 공개여부"
-            control={
-              <Switch
-                checked={isPublic}
-                onChange={() => setIsPublic(prev => !prev)}
-              />
-            }
-            sx={{ mt: 2 }}
-          />
+          <Box
+            display="flex"
+            justifyContent="center"
+            alignItems="center"
+            sx={{ mt: 5 }}
+          >
+            <FormControlLabel
+              label="게시글 공개"
+              labelPlacement="start"
+              control={
+                <Switch
+                  checked={isPublic}
+                  onChange={() => setIsPublic(prev => !prev)}
+                />
+              }
+            />
+          </Box>
           {/* 버튼 */}
           <Box sx={{ width: '100%', display: 'flex', mt: 5, gap: 2 }}>
             <Button
@@ -253,6 +223,15 @@ const EditProfile = () => {
             </Button>
           </Box>
         </form>
+        <Button
+          variant="text"
+          fullWidth
+          onClick={handleChangePassword}
+          sx={{ flex: 1, my: 5 }}
+          size="large"
+        >
+          비밀번호 변경
+        </Button>
       </Box>
     </BaseContainer>
   );
