@@ -27,6 +27,10 @@ function PostListItem({ post }) {
     navigate(`/user/${user.id}`);
   };
 
+  const handleChipClick = () => {
+    navigate(`/all-tags/`);
+  };
+
   return (
     <Box
       sx={{
@@ -80,7 +84,10 @@ function PostListItem({ post }) {
         <Typography variant="body2" sx={{ mb: 1 }}>
           트랙 {trackCount}개
         </Typography>
-        <HashtagChips fetchHashtags={() => fetchHashtagsOfPost(id)} />
+        <HashtagChips
+          fetchHashtags={() => fetchHashtagsOfPost(id)}
+          onChipClick={handleChipClick}
+        />
       </Box>
       <Box
         sx={{

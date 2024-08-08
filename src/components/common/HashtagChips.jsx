@@ -2,12 +2,25 @@ import { Box, Chip } from '@mui/material';
 import { useEffect, useState } from 'react';
 import useHashtagStore from '../../store/useHashtagStore';
 
-const HashtagChips = ({ fetchHashtags, onChipClick }) => {
+const HashtagChips = ({
+  fetchHashtags,
+  onChipClick,
+  multiSelectMode = false,
+}) => {
   const [hashtags, setHashtags] = useState([]);
 
-  const { selectedHashtag, setSelectedHashtag } = useHashtagStore(state => ({
-    selectedHashtag: state.selectedHashtag,
-    setSelectedHashtag: state.setSelectedHashtag,
+  const {
+    multiSelectedHashtags,
+    singleSelectedHashtag,
+    multiToggleHashtag,
+    multiSetSelectedHashtags,
+    singleSetSelectedHashtag,
+  } = useHashtagStore(state => ({
+    multiSelectedHashtags: state.multiSelectedHashtags,
+    singleSelectedHashtag: state.singleSelectedHashtag,
+    multiToggleHashtag: state.multiToggleHashtag,
+    multiSetSelectedHashtags: state.multiSetSelectedHashtags,
+    singleSetSelectedHashtag: state.singleSetSelectedHashtag,
   }));
 
   useEffect(() => {
@@ -20,7 +33,14 @@ const HashtagChips = ({ fetchHashtags, onChipClick }) => {
   }, [fetchHashtags]);
 
   const handleChipClick = tagId => {
-    setSelectedHashtag(tagId); // 상태 업데이트
+    if (multiSelectMode) {
+      // 다중 선택 모드
+      multiToggleHashtag(tagId);
+    } else {
+      // 단일 선택 모드
+      singleSetSelectedHashtag(tagId);
+    }
+
     if (onChipClick) {
       onChipClick(tagId); // 상위 컴포넌트에서 페이지 이동 로직 처리
     }
@@ -42,14 +62,28 @@ const HashtagChips = ({ fetchHashtags, onChipClick }) => {
           size="small"
           onClick={() => handleChipClick(hashtag.id)}
           sx={{
-            backgroundColor:
-              selectedHashtag === hashtag.id ? 'primary.main' : '#999',
-            color: selectedHashtag === hashtag.id ? 'white' : 'text.primary',
+            backgroundColor: (
+              multiSelectMode
+                ? multiSelectedHashtags.includes(hashtag.id)
+                : singleSelectedHashtag === hashtag.id
+            )
+              ? 'primary.main'
+              : '#999',
+            color: (
+              multiSelectMode
+                ? multiSelectedHashtags.includes(hashtag.id)
+                : singleSelectedHashtag === hashtag.id
+            )
+              ? 'white'
+              : 'text.primary',
             '&:hover': {
-              backgroundColor:
-                selectedHashtag === hashtag.id
-                  ? 'primary.dark'
-                  : 'action.hover',
+              backgroundColor: (
+                multiSelectMode
+                  ? multiSelectedHashtags.includes(hashtag.id)
+                  : singleSelectedHashtag === hashtag.id
+              )
+                ? 'primary.dark'
+                : 'action.hover',
             },
           }}
         />

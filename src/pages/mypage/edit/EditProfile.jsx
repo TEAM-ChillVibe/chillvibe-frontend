@@ -184,6 +184,7 @@ const EditProfile = () => {
             fetchHashtags={fetchHashtags}
             selectedHashtag={selectedHashtags}
             onHashtagClick={handleHashtagClick}
+            multiSelectMode={true}
           />
           <Box
             display="flex"
