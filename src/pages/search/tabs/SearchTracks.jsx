@@ -1,11 +1,5 @@
 import React, { useRef, useEffect, useState } from 'react';
-import {
-  List,
-  ListItem,
-  Box,
-  Typography,
-  CircularProgress,
-} from '@mui/material';
+import { Box, Typography, CircularProgress } from '@mui/material';
 import TrackListItem from '../../../components/common/ListItem/TrackListItem';
 
 const SearchTracks = ({ results, onLoadMore }) => {
