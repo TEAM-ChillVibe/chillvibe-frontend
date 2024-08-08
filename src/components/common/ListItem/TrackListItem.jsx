@@ -148,6 +148,7 @@ function TrackListItem({ music }) {
 
       <Snackbar
         open={snackbarOpen}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
         autoHideDuration={6000}
         onClose={() => setSnackbarOpen(false)}
       >

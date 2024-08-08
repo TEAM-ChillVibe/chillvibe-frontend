@@ -13,7 +13,7 @@ function UserProfile({ user }) {
     navigate(`/user/${userId}`); // 절대경로 유저프로필로 이동
   };
 
-  const handleChipClick = tagId => {
+  const handleChipClick = () => {
     navigate(`/all-tags/`);
   };
 

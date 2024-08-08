@@ -123,6 +123,7 @@ const NewPost = () => {
           fetchHashtags={fetchHashtags}
           selectedHashtag={selectedHashtags}
           onHashtagClick={handleHashtagClick}
+          multiSelectMode={true}
         />
         <Typography variant="h6" sx={{ fontSize: '1.2rem' }}>
           플레이리스트 선택

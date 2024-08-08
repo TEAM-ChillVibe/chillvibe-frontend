@@ -9,12 +9,15 @@ import PostList from '../../components/common/PostList';
 const PopularTags = () => {
   const { sortOrder, setSortOrder } = useSortingStore();
 
-  const { selectedHashtag } = useHashtagStore(state => ({
-    selectedHashtag: state.selectedHashtag,
-  }));
+  const { singleSelectedHashtag, setSingleSelectedHashtag } = useHashtagStore(
+    state => ({
+      singleSelectedHashtag: state.singleSelectedHashtag,
+      setSingleSelectedHashtag: state.singleSetSelectedHashtag,
+    }),
+  );
 
   const handleHashtagClick = hashtagId => {
-    useHashtagStore.getState().setSelectedHashtag(hashtagId);
+    setSingleSelectedHashtag(hashtagId);
   };
 
   return (
@@ -65,7 +68,7 @@ const PopularTags = () => {
           새 글 작성
         </Button>
       </Box>
-      <PostList selectedHashtag={selectedHashtag} sortOrder={sortOrder} />
+      <PostList selectedHashtag={singleSelectedHashtag} sortOrder={sortOrder} />
     </BaseContainer>
   );
 };
