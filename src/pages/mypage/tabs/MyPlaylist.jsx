@@ -1,52 +1,79 @@
-import { Box, Button, Grid, Pagination, Typography } from '@mui/material';
+import {
+  Alert,
+  Box,
+  Button,
+  Grid,
+  Pagination,
+  Typography,
+} from '@mui/material';
 import PlaylistListItemMini from '../../../components/common/ListItem/PlaylistListItemMini';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import FormModal from '../../../components/common/Modal/FormModal';
+import {
+  createEmptyPlaylist,
+  getUserPlaylists,
+} from '../../../api/playlist/playlistApi';
+
+// Pagination
+const itemsPerPage = 10;
 
 const MyPlaylist = () => {
-  // modal state
   const [open, setOpen] = useState(false);
+  const [playlistTitle, setPlaylistTitle] = useState('');
+  const [error, setError] = useState(null);
+  const [playlists, setPlaylists] = useState([]);
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(0);
+
+  useEffect(() => {
+    const fetchPlaylists = async () => {
+      try {
+        const data = await getUserPlaylists(page - 1, itemsPerPage);
+        setPlaylists(data.content);
+        setTotalPages(data.totalPages);
+      } catch (error) {
+        setError('플레이리스트를 가져오는 데 실패했습니다. 다시 시도해주세요.');
+      }
+    };
+
+    fetchPlaylists();
+  }, [page]);
 
   const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
+  const handleClose = () => {
+    setOpen(false);
+    setPlaylistTitle(''); // 모달 닫을 때 폼 필드 초기화
+    setError(null);
+  };
 
-  const handlePrimaryClick = () => {
-    handleClose();
+  const handlePrimaryClick = async () => {
+    if (!playlistTitle.trim()) {
+      return;
+    } // 제목이 비어있으면 처리하지 않음
+
+    try {
+      await createEmptyPlaylist(playlistTitle);
+      handleClose();
+      setPage(1); // 생성 후 첫페이지로 이동
+      const data = await getUserPlaylists(0, itemsPerPage); // 첫 페이지의 플레이리스트를 가져옵니다.
+      setPlaylists(data.content); // 업데이트된 플레이리스트 설정
+      setTotalPages(data.totalPages); // 업데이트된 총 페이지 수 설정
+    } catch (e) {
+      setError('재생목록 생성에 실패했습니다. 다시 시도해 주세요.');
+    }
   };
 
   const handleSecondaryClick = () => {
     handleClose();
   };
 
-  // Playlist List
-  // const playlists = [];
-  const playlists = [
-    { id: 1, title: 'Summer Hits 2024', trackCount: 15 },
-    { id: 2, title: 'Chill Vibes', trackCount: 30 },
-    { id: 3, title: 'Workout Beats', trackCount: 20 },
-    { id: 4, title: 'Top 40 Hits', trackCount: 40 },
-    { id: 5, title: 'Indie Essentials', trackCount: 25 },
-    { id: 6, title: 'Classic Rock Anthems', trackCount: 18 },
-    { id: 7, title: 'Electronic Grooves', trackCount: 22 },
-    { id: 8, title: 'Jazz Favorites', trackCount: 12 },
-    { id: 9, title: 'Pop Classics', trackCount: 28 },
-    { id: 10, title: 'Hip-Hop Legends', trackCount: 35 },
-    { id: 11, title: 'Relaxing Instrumentals', trackCount: 14 },
-    { id: 12, title: 'Country Hits', trackCount: 27 },
-  ];
-
-  // Pagination
-  const [page, setPage] = useState(1);
-  const itemsPerPage = 6;
+  const handleTitleChange = e => {
+    setPlaylistTitle(e.target.value);
+  };
 
   const handlePageChange = (event, newPage) => {
     setPage(newPage);
   };
-
-  // Calculate the indices of the items to display
-  // const startIndex = (page - 1) * itemsPerPage;
-  // const endIndex = startIndex + itemsPerPage;
-  // const currentPlaylists = playlists.slice(startIndex, endIndex);
 
   return (
     <Box sx={{ width: '100%' }}>
@@ -72,15 +99,25 @@ const MyPlaylist = () => {
               {
                 label: 'Title of playlist',
                 type: 'text',
-                value: '',
-                onChange: () => {},
+                value: playlistTitle,
+                onChange: handleTitleChange,
               },
             ]}
             primaryButtonText="저장"
             secondaryButtonText="취소"
             onPrimaryClick={handlePrimaryClick}
             onSecondaryClick={handleSecondaryClick}
+            isPrimaryButtonDisabled={!playlistTitle.trim()}
           />
+          {error && (
+            <Alert
+              severity="error"
+              onClose={() => setError(null)}
+              sx={{ mt: 2 }}
+            >
+              {error}
+            </Alert>
+          )}
         </Box>
       </Box>
       <Box sx={{ width: '100%', my: 2 }}>
