@@ -54,34 +54,26 @@ const SearchTracks = ({ results, onLoadMore }) => {
     }
   }, [results]);
 
-  if (!results || !results.content || results.content.length === 0)
+  if (!results || !results.content || results.content.length === 0) {
     return <Typography>트랙 검색 결과가 없습니다.</Typography>;
+  }
 
   return (
     <Box sx={{ width: '100%' }}>
       <Typography variant="h6" sx={{ mb: 2 }}>
         트랙 검색 결과
       </Typography>
-      <List sx={{ width: '100%', bgcolor: 'background.paper' }}>
-        {results.content.map((track, index) => (
-          <ListItem
-            key={track.id}
-            disablePadding
-            sx={{ mb: 1 }}
-            ref={index === results.content.length - 1 ? lastItemRef : null}
-          >
-            <TrackListItem
-              music={{
-                title: track.name,
-                artist: track.artistName,
-                albumCover: track.albumImageUrl,
-                duration: track.duration,
-                audioSrc: track.previewUrl,
-              }}
-            />
-          </ListItem>
-        ))}
-      </List>
+      {results.content.map((track, index) => (
+        <TrackListItem
+          music={{
+            name: track.name,
+            artist: track.artistName,
+            thumbnailUrl: track.albumImageUrl,
+            duration: track.duration,
+            previewUrl: track.previewUrl,
+          }}
+        />
+      ))}
       {isLoading && !isLastPage && (
         <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2 }}>
           <CircularProgress />

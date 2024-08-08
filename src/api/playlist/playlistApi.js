@@ -64,7 +64,7 @@ export const deletePlaylist = async playlistId => {
 export const addTrackToPlaylist = async (playlistId, track) => {
   try {
     const trackData = {
-      trackId: track.id,
+      trackId: String(track.id),
       name: track.name,
       artist: track.artist,
       duration: track.duration,

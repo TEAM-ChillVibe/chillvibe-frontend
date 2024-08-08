@@ -1,12 +1,12 @@
 import useSortingStore from '../../store/useSortingStore';
+import useHashtagStore from '../../store/useHashtagStore';
 import BaseContainer from '../../components/layout/BaseContainer';
 import { Box, Button, Typography } from '@mui/material';
-import PostList from '../../components/common/PostList';
 import HashtagChips from '../../components/common/HashtagChips';
-import { fetchAllHashtags } from '../../api/hashtag/hashtagApi';
-import useHashtagStore from '../../store/useHashtagStore';
+import { fetchPopularHashtags } from '../../api/hashtag/hashtagApi';
+import PostList from '../../components/common/PostList';
 
-const AllTags = () => {
+const PopularTags = () => {
   const { sortOrder, setSortOrder } = useSortingStore();
 
   const { selectedHashtag } = useHashtagStore(state => ({
@@ -19,9 +19,9 @@ const AllTags = () => {
 
   return (
     <BaseContainer>
-      <Typography variant="title">태그별 플레이리스트</Typography>
+      <Typography variant="title">인기 태그별 플레이리스트</Typography>
       <HashtagChips
-        fetchHashtags={fetchAllHashtags}
+        fetchHashtags={fetchPopularHashtags}
         onChipClick={handleHashtagClick}
       />
       <Box
@@ -70,4 +70,4 @@ const AllTags = () => {
   );
 };
 
-export default AllTags;
+export default PopularTags;

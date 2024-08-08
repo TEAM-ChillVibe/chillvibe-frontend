@@ -38,7 +38,16 @@ const PostList = ({ selectedHashtag, sortOrder }) => {
       {posts.length > 0 ? (
         posts.map(post => <PostListItem key={post.id} post={post} />)
       ) : (
-        <Typography>게시글이 없습니다.</Typography>
+        <Box
+          sx={{
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            py: 10,
+          }}
+        >
+          <Typography>게시글이 없습니다.</Typography>
+        </Box>
       )}
     </Box>
   );

@@ -22,6 +22,7 @@ const ServiceUnavailable = lazy(
 const UserPage = lazy(() => import('./pages/userpage/UserPage'));
 const Discover = lazy(() => import('./pages/board/Discover'));
 const AllTags = lazy(() => import('./pages/board/AllTags'));
+const PopularTags = lazy(() => import('./pages/board/PopularTags'));
 const NewPost = lazy(() => import('./pages/post/NewPost'));
 const PostDetail = lazy(() => import('./pages/post/PostDetail'));
 const PlaylistDetail = lazy(
@@ -61,6 +62,7 @@ const Router = () => {
         <Route path="/user/:userId" element={<UserPage />} />
         <Route path="/discover" element={<Discover />} />
         <Route path="/all-tags" element={<AllTags />} />
+        <Route path="/popular-tags" element={<PopularTags />} />
         <Route path="/new-post" element={<NewPost />} />
         <Route path="/post/:postId" element={<PostDetail />} />
         <Route

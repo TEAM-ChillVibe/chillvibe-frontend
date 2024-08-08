@@ -11,6 +11,7 @@ const FormModal = ({
   secondaryButtonText,
   onPrimaryClick,
   onSecondaryClick,
+  isPrimaryButtonDisabled,
 }) => {
   return (
     <Modal
@@ -70,7 +71,12 @@ const FormModal = ({
           <Button onClick={onSecondaryClick} color="inherit">
             {secondaryButtonText}
           </Button>
-          <Button onClick={onPrimaryClick} variant="contained" color="primary">
+          <Button
+            onClick={onPrimaryClick}
+            variant="contained"
+            color="primary"
+            disabled={isPrimaryButtonDisabled}
+          >
             {primaryButtonText}
           </Button>
         </Box>
