@@ -352,8 +352,8 @@ const PlaylistDetail = () => {
         <CardMedia
           component="img"
           sx={{ width: 151 }}
-          image={playlistData.imageUrl}
-          alt={playlistData.playlistName}
+          image={playlistData.thumbnailUrl}
+          alt={playlistData.title}
         />
         <Box
           sx={{
@@ -365,7 +365,7 @@ const PlaylistDetail = () => {
           }}
         >
           <Typography variant="title" component="div" sx={{ color: 'black' }}>
-            {playlistData.playlistName}
+            {playlistData.title}
           </Typography>
           <Typography variant="subtitle1" color="text.secondary">
             트랙 {playlistData.trackCount}개
@@ -385,11 +385,11 @@ const PlaylistDetail = () => {
               <TrackListEditItem
                 music={{
                   id: track.id,
-                  title: track.name,
+                  name: track.name,
                   artist: track.artist,
-                  albumCover: track.thumbnailUrl,
+                  thumbnailUrl: track.thumbnailUrl,
                   duration: track.duration,
-                  audioSrc: track.previewUrl,
+                  previewUrl: track.previewUrl,
                   trackId: track.trackId,
                 }}
                 onSelect={() => handleTrackSelect(track)}

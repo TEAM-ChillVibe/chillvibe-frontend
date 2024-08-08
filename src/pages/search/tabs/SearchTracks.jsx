@@ -65,11 +65,13 @@ const SearchTracks = ({ results, onLoadMore }) => {
         <TrackListItem
           key={track.id}
           music={{
+            id: track.id,
             name: track.name,
-            artist: track.artistName,
-            thumbnailUrl: track.albumImageUrl,
+            artist: track.artist,
+            thumbnailUrl: track.thumbnailUrl,
             duration: track.duration,
             previewUrl: track.previewUrl,
+            trackId: track.trackId,
           }}
         />
       ))}
