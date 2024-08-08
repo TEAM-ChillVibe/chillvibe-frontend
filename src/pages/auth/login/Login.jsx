@@ -3,6 +3,7 @@ import BaseContainer from '../../../components/layout/BaseContainer';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { signin } from '../../../api/auth/authApi';
+import useUserStore from '../../../store/useUserStore';
 
 const Login = () => {
   const [email, setEmail] = useState('');
@@ -28,6 +29,8 @@ const Login = () => {
         localStorage.setItem('access', accessToken.replace('Bearer ', ''));
       }
 
+      const userData = response.data;
+      useUserStore.getState().login(userData, accessToken);
       alert('로그인 완료');
       navigate('/');
     } catch (error) {
