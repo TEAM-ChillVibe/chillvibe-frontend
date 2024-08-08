@@ -26,8 +26,8 @@ const useMusicPlayerStore = create((set, get) => ({
   playTrack: track => {
     const { audioRef } = get();
 
-    // audioSrc가 null인 경우 알림창을 띄우고 함수 종료
-    if (!track.audioSrc) {
+    // previewUrl null인 경우 알림창을 띄우고 함수 종료
+    if (!track.previewUrl) {
       alert('미리듣기를 지원하지 않는 트랙입니다.');
       return;
     }
@@ -45,10 +45,10 @@ const useMusicPlayerStore = create((set, get) => ({
     // 상태 설정
     set({
       currentTrack: {
-        title: track.title,
+        name: track.name,
         artist: track.artist,
-        albumCover: track.albumCover,
-        audioSrc: track.audioSrc,
+        thumbnailUrl: track.thumbnailUrl,
+        previewUrl: track.previewUrl,
         duration: track.duration,
       },
       isVisible: true,
@@ -56,7 +56,7 @@ const useMusicPlayerStore = create((set, get) => ({
     });
 
     // 오디오 소스 설정 및 로드
-    audioRef.src = track.audioSrc;
+    audioRef.src = track.previewUrl;
     audioRef.load();
 
     // 현재 시간 업데이트 메서드

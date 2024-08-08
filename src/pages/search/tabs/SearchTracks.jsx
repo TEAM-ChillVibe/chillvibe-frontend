@@ -1,11 +1,5 @@
 import React, { useRef, useEffect, useState } from 'react';
-import {
-  List,
-  ListItem,
-  Box,
-  Typography,
-  CircularProgress,
-} from '@mui/material';
+import { Box, Typography, CircularProgress } from '@mui/material';
 import TrackListItem from '../../../components/common/ListItem/TrackListItem';
 
 const SearchTracks = ({ results, onLoadMore }) => {
@@ -65,11 +59,13 @@ const SearchTracks = ({ results, onLoadMore }) => {
         <TrackListItem
           key={track.id}
           music={{
+            id: track.id,
             name: track.name,
-            artist: track.artistName,
-            thumbnailUrl: track.albumImageUrl,
+            artist: track.artist,
+            thumbnailUrl: track.thumbnailUrl,
             duration: track.duration,
             previewUrl: track.previewUrl,
+            trackId: track.trackId,
           }}
         />
       ))}

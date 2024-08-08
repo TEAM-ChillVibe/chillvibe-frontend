@@ -63,13 +63,13 @@ const MusicPlayer = () => {
         {/* 앨범아트, 제목, 아티스트*/}
         <Box sx={{ display: 'flex', alignItems: 'center', flexGrow: 1, mr: 2 }}>
           <Avatar
-            src={currentTrack.albumCover}
-            alt={currentTrack.title}
+            src={currentTrack.thumbnailUrl}
+            alt={currentTrack.name}
             sx={{ width: 56, height: 56, mr: 2, borderRadius: 1 }}
           />
           <Box sx={{ display: 'flex', flexDirection: 'column', minWidth: 0 }}>
             <Typography variant="subtitle1" noWrap sx={{ maxWidth: '200px' }}>
-              {currentTrack.title}
+              {currentTrack.name}
             </Typography>
             <Typography variant="caption" noWrap sx={{ maxWidth: '200px' }}>
               {currentTrack.artist}

@@ -91,11 +91,11 @@ const PostDetail = () => {
             <ListItem key={track.id} disablePadding sx={{ mb: 1 }}>
               <TrackListItem
                 music={{
-                  title: track.name,
+                  name: track.name,
                   artist: track.artist,
-                  albumCover: track.thumbnailUrl,
+                  thumbnailUrl: track.thumbnailUrl,
                   duration: track.duration,
-                  audioSrc: track.previewUrl,
+                  previewUrl: track.previewUrl,
                 }}
               />
             </ListItem>
