@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import useUserStore from '../../../store/useUserStore';
 import { styled } from '@mui/material/styles';
 import { useState } from 'react';
+import { axiosWithToken } from '../../../axios';
 
 const RoundedButton = styled(Button)(({ theme }) => ({
   textTransform: 'none',
@@ -32,14 +33,25 @@ const AuthButtons = ({ user }) => {
     setAnchorEl(null);
   };
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
     const confirmLogout = window.confirm('정말 로그아웃하시겠습니까?');
     if (confirmLogout) {
-      logout();
-      localStorage.removeItem('access');
-      localStorage.removeItem('user');
-      handleMenuClose();
-      navigate('/'); // 홈페이지로 리디렉션
+      try {
+        // 로그아웃 요청
+        await axiosWithToken.post('/logout');
+
+        // 클라이언트 측 저장소와 쿠키 정리
+        localStorage.removeItem('access');
+        localStorage.removeItem('user');
+
+        // 상태 업데이트 (로그아웃 상태로 변경)
+        logout();
+
+        handleMenuClose();
+        navigate('/'); // 홈페이지로 리디렉션
+      } catch (error) {
+        window.alert('로그아웃 중 오류가 발생했습니다. 다시 시도해 주세요.');
+      }
     }
   };
 
