@@ -66,3 +66,13 @@ export const editProfile = async formData => {
     throw error;
   }
 };
+
+// 재인증 store 세팅
+export const reauth = async () => {
+  try {
+    const response = await axiosWithToken.get(`/api/reauth`);
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};

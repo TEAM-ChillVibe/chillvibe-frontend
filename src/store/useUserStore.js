@@ -1,34 +1,43 @@
 import { create } from 'zustand';
+import { reauth } from '../api/auth/authApi';
+import { devtools } from 'zustand/middleware';
 
-const useUserStore = create(set => ({
-  // 기본 상태
-  user: JSON.parse(localStorage.getItem('user')) || null,
-  token: localStorage.getItem('token') || null,
-  isAuthenticated: JSON.parse(localStorage.getItem('isAuthenticated')) || false,
+const useUserStore = create(
+  devtools(
+    set => ({
+      user: null,
+      isAuthenticated: false,
 
-  login: (user, token) => {
-    localStorage.setItem('user', JSON.stringify(user));
-    localStorage.setItem('token', token);
-    localStorage.setItem('isAuthenticated', JSON.stringify(true));
-    set({ user, token, isAuthenticated: true });
-  },
+      initialize: async () => {
+        const accessToken = localStorage.getItem('access');
+        if (accessToken) {
+          try {
+            const userData = await reauth();
+            set({ user: userData, isAuthenticated: true });
+          } catch (error) {
+            set({ user: null, isAuthenticated: false });
+          }
+        }
+      },
 
-  logout: () => {
-    localStorage.removeItem('user');
-    localStorage.removeItem('token');
-    localStorage.removeItem('isAuthenticated');
-    set({ user: null, token: null, isAuthenticated: false });
-  },
+      login: user => {
+        set({ user, isAuthenticated: true });
+      },
 
-  setUser: user => {
-    localStorage.setItem('user', JSON.stringify(user));
-    set({ user });
-  },
+      logout: () => {
+        set({ user: null, isAuthenticated: false });
+      },
 
-  clearUser: () => {
-    localStorage.removeItem('user');
-    set({ user: null });
-  },
-}));
+      setUser: user => {
+        set({ user });
+      },
+
+      clearUser: () => {
+        set({ user: null });
+      },
+    }),
+    { name: 'UserStore' },
+  ),
+);
 
 export default useUserStore;

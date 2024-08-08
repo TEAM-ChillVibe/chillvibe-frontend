@@ -30,7 +30,7 @@ const Login = () => {
       }
 
       const userData = response.data;
-      useUserStore.getState().login(userData, accessToken);
+      useUserStore.getState().login(userData);
       alert('로그인 완료');
       navigate('/');
     } catch (error) {
