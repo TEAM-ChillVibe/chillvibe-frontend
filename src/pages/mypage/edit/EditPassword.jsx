@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Box, Button, TextField } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
-import { axiosWithToken } from '../../../axios';
+import { editPassword } from '../../../api/auth/authApi';
 
 const EditPassword = () => {
   const [oldPassword, setOldPassword] = useState('');
@@ -36,16 +36,11 @@ const EditPassword = () => {
     }
 
     try {
-      await axiosWithToken.put('/api/password', {
-        oldPassword,
-        newPassword,
-        confirmPassword,
-      });
+      await editPassword(oldPassword, newPassword, confirmPassword);
 
       // 변경 성공 알림
       window.alert('비밀번호가 성공적으로 변경되었습니다.');
 
-      // 확인 버튼 클릭 시 홈 페이지로 이동
       navigate('/my-page');
     } catch (error) {
       // 에러 처리

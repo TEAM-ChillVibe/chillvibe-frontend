@@ -14,7 +14,7 @@ import {
 } from '@mui/material';
 import { AddPhotoAlternate } from '@mui/icons-material';
 import IconButton from '@mui/material/IconButton';
-import { axiosWithoutToken } from '../../../axios';
+import { signup } from '../../../api/auth/authApi';
 import defaultImage from '../../../assets/default-profile.png';
 
 const Signup = () => {
@@ -99,11 +99,7 @@ const Signup = () => {
 
     try {
       // 회원가입 요청
-      await axiosWithoutToken.post('/api/signup', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      });
+      await signup(formData);
       // 성공 시, 로그인 화면으로 이동
       alert('회원가입 되었습니다.');
       navigate('/login');
