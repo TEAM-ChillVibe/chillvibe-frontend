@@ -4,8 +4,8 @@ import { useLocation } from 'react-router-dom';
 import BaseContainer from '../../components/layout/BaseContainer';
 import SearchTracks from './tabs/SearchTracks';
 import SearchPosts from './tabs/SearchPosts';
-import axios from 'axios';
 import { searchTracks } from '../..//api/track/trackApi';
+import { searchPosts } from '../..//api/post/postApi';
 
 const SearchPage = () => {
   const location = useLocation();
@@ -23,6 +23,7 @@ const SearchPage = () => {
 
     setIsLoading(true);
     try {
+      // 트랙 검색 결과일때
       if (searchType === 'track') {
         const response = await searchTracks(searchQuery, currentPage);
         setTrackResults(prev => ({
@@ -33,18 +34,14 @@ const SearchPage = () => {
               : [...prev.content, ...response.content],
         }));
       } else {
-        const response = await axios.get(
-          `http://localhost:8080/api/posts/search`,
-          {
-            params: { query: searchQuery, page: currentPage, size: 10 },
-          },
-        );
+        // 게시글 검색 결과일때
+        const response = await searchPosts(searchQuery, currentPage);
         setPostResults(prev => ({
-          ...response.data,
+          ...response,
           content:
             currentPage === 0
-              ? response.data.content
-              : [...prev.content, ...response.data.content],
+              ? response.content
+              : [...prev.content, ...response.content],
         }));
       }
     } catch (error) {
