@@ -8,6 +8,7 @@ const EditPassword = () => {
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState('');
+  const [oldPasswordError, setOldPasswordError] = useState('');
   const navigate = useNavigate();
 
   const handleSubmit = async event => {
@@ -26,6 +27,7 @@ const EditPassword = () => {
     }
 
     setError('');
+    setOldPasswordError('');
 
     // 확인 창 표시
     const isConfirmed = window.confirm('비밀번호를 변경하시겠습니까?');
@@ -46,7 +48,17 @@ const EditPassword = () => {
       // 확인 버튼 클릭 시 홈 페이지로 이동
       navigate('/my-page');
     } catch (error) {
-      setError('비밀번호 변경에 실패했습니다. 다시 시도해 주세요.');
+      // 에러 처리
+      if (error.response) {
+        const { code } = error.response.data;
+        if (code === 'U004') {
+          setOldPasswordError('현재 비밀번호가 틀렸습니다.');
+        } else {
+          setError('비밀번호 변경에 실패했습니다. 다시 시도해 주세요.');
+        }
+      } else {
+        setError('서버에 연결할 수 없습니다. 다시 시도해 주세요.');
+      }
     }
   };
 
@@ -77,6 +89,8 @@ const EditPassword = () => {
           value={oldPassword}
           onChange={e => setOldPassword(e.target.value)}
           margin="normal"
+          error={!!oldPasswordError}
+          helperText={oldPasswordError}
         />
         <TextField
           label="새 비밀번호"
