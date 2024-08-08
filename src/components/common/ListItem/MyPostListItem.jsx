@@ -1,7 +1,7 @@
 import { Box, Chip, Typography } from '@mui/material';
-import FavoriteIcon from '@mui/icons-material/Favorite';
 import albumSample from '../albumSample.jpeg';
 import { useNavigate } from 'react-router-dom';
+import LikeButton from '../Button/LikeButton';
 
 function MyPostListItem({ post }) {
   const { id, title, createdAt, trackCount, hashtags, likeCount } = post;
@@ -90,12 +90,7 @@ function MyPostListItem({ post }) {
           <Typography variant="body3" color="text.secondary" sx={{ mb: 2 }}>
             {createdAt}
           </Typography>
-          <Box sx={{ display: 'flex', alignItems: 'center' }}>
-            <FavoriteIcon sx={{ fontSize: 14, mr: 0.5 }} />
-            <Typography variant="body2">
-              {likeCount.toLocaleString()}
-            </Typography>
-          </Box>
+          <LikeButton postId={id} initialLikeCount={likeCount} />
         </Box>
       </Box>
     </Box>

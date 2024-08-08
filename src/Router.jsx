@@ -23,6 +23,9 @@ const Discover = lazy(() => import('./pages/board/Discover'));
 const AllTags = lazy(() => import('./pages/board/AllTags'));
 const NewPost = lazy(() => import('./pages/post/NewPost'));
 const PostDetail = lazy(() => import('./pages/post/PostDetail'));
+const PlaylistDetail = lazy(
+  () => import('./pages/mypage/playlist/playlistDetail'),
+);
 
 const Router = () => {
   return (
@@ -58,6 +61,10 @@ const Router = () => {
         <Route path="/all-tags" element={<AllTags />} />
         <Route path="/new-post" element={<NewPost />} />
         <Route path="/post/:postId" element={<PostDetail />} />
+        <Route
+          path="/my-page/playlist/:playlistId"
+          element={<PlaylistDetail />}
+        />
       </Routes>
     </Suspense>
   );
