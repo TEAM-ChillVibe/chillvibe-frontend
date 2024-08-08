@@ -17,7 +17,9 @@ const SearchPage = () => {
   const [currentPage, setCurrentPage] = useState(0);
 
   const fetchSearchResults = useCallback(async () => {
-    if (!searchQuery) return;
+    if (!searchQuery) {
+      return;
+    }
 
     setIsLoading(true);
     try {
@@ -77,7 +79,7 @@ const SearchPage = () => {
 
   return (
     <BaseContainer>
-      <Typography variant="h5" sx={{ mt: 2, mb: 3 }}>
+      <Typography variant="h6" sx={{ mt: 2, mb: 3 }}>
         "
         <Box component="span" sx={{ fontWeight: 'bold' }}>
           {searchQuery}
@@ -95,7 +97,7 @@ const SearchPage = () => {
         <Tab label="Tracks" value="track" />
         <Tab label="Posts" value="post" />
       </Tabs>
-      <Box mt={3} sx={{ width: '100%' }}>
+      <Box sx={{ width: '100%' }}>
         {searchType === 'track' && (
           <SearchTracks results={trackResults} onLoadMore={handleLoadMore} />
         )}

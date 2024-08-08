@@ -54,14 +54,12 @@ const SearchPosts = ({ results, onLoadMore }) => {
     }
   }, [results]);
 
-  if (!results || !results.content || results.content.length === 0)
+  if (!results || !results.content || results.content.length === 0) {
     return <Typography>게시글 검색 결과가 없습니다.</Typography>;
+  }
 
   return (
     <Box sx={{ width: '100%' }}>
-      <Typography variant="h6" sx={{ mb: 2 }}>
-        게시글 검색 결과
-      </Typography>
       <List sx={{ width: '100%', bgcolor: 'background.paper' }}>
         {results.content.map((post, index) => (
           <ListItem

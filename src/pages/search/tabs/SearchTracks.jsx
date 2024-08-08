@@ -54,17 +54,16 @@ const SearchTracks = ({ results, onLoadMore }) => {
     }
   }, [results]);
 
-  if (!results || !results.content || results.content.length === 0) {
-    return <Typography>트랙 검색 결과가 없습니다.</Typography>;
-  }
+  const noResultsMessage =
+    !isLoading &&
+    (!results || !results.content || results.content.length === 0);
 
   return (
     <Box sx={{ width: '100%' }}>
-      <Typography variant="h6" sx={{ mb: 2 }}>
-        트랙 검색 결과
-      </Typography>
+      {noResultsMessage && <Typography>트랙 검색 결과가 없습니다.</Typography>}
       {results.content.map((track, index) => (
         <TrackListItem
+          key={track.id}
           music={{
             name: track.name,
             artist: track.artistName,
