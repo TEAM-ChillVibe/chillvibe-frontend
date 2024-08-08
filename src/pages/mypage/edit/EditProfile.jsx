@@ -11,16 +11,17 @@ import IconButton from '@mui/material/IconButton';
 import { AddPhotoAlternate } from '@mui/icons-material';
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { axiosWithToken } from '../../../axios';
 import { fetchAllHashtags } from '../../../api/hashtag/hashtagApi';
 import HashtagChips from '../../../components/common/HashtagChips';
+import { editProfile } from '../../../api/auth/authApi';
+import { myInfo } from '../../../api/user/userApi';
 
 const EditProfile = () => {
   const [email, setEmail] = useState('');
   const [nickname, setNickname] = useState('');
-  const [introduction, setIntroduction] = useState(''); // 소개글 상태 추가
-  const [profileImage, setProfileImage] = useState(null);
-  const [isPublic, setIsPublic] = useState(null);
+  const [introduction, setIntroduction] = useState('');
+  const [profileImage, setProfileImage] = useState('');
+  const [isPublic, setIsPublic] = useState(false);
   const [imagePreview, setImagePreview] = useState('');
   const [selectedHashtags, setSelectedHashtags] = useState([]);
   const navigate = useNavigate();
@@ -29,7 +30,7 @@ const EditProfile = () => {
     // 사용자 정보를 가져오는 비동기 함수
     const fetchUserData = async () => {
       try {
-        const response = await axiosWithToken.get('/api/mypage'); // 적절한 API 엔드포인트로 수정하세요.
+        const response = await myInfo();
         const userData = response.data;
 
         console.log(response.data);
@@ -93,7 +94,7 @@ const EditProfile = () => {
         formData.append('profileImage', profileImage);
       }
 
-      await axiosWithToken.put('/api/mypage', formData); // 적절한 API 엔드포인트로 수정하세요.
+      await editProfile(formData);
       navigate('/mypage'); // 성공 후 리디렉션
     } catch (error) {}
   };

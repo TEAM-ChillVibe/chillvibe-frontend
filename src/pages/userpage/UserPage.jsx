@@ -2,10 +2,11 @@ import BaseContainer from '../../components/layout/BaseContainer';
 import { Box, Typography } from '@mui/material';
 import LockIcon from '@mui/icons-material/Lock';
 import UserProfile from '../../components/common/UserProfile';
-import MyPostListItem from '../../components/common/ListItem/MyPostListItem';
+import PostListItem from '../../components/common/ListItem/PostListItem';
 import { useParams } from 'react-router-dom';
 import { useState, useEffect } from 'react';
-import { axiosWithToken } from '../../axios';
+import { userInfo } from '../../api/user/userApi';
+import { fetchPostsByUserId } from '../../api/post/postApi';
 
 const UserPage = () => {
   const { userId } = useParams();
@@ -19,15 +20,11 @@ const UserPage = () => {
     const fetchUserData = async () => {
       try {
         setLoading(true);
-        const userResponse = await axiosWithToken.get(`/api/userpage`, {
-          params: { userId }, // 쿼리 파라미터로 userId를 전달합니다.
-        });
-        const postResponse = await axiosWithToken.get(
-          `/api/posts/user/${userId}`,
-        );
+        const userResponse = await userInfo(userId);
+        const postResponse = await fetchPostsByUserId(userId);
 
         setUser(userResponse.data);
-        setPostList(postResponse.data.content);
+        setPostList(postResponse.content);
         setIsPublic(userResponse.data.public);
       } catch (err) {
         setError('사용자 정보를 가져오는 데 실패했습니다.');
@@ -134,7 +131,7 @@ const UserPage = () => {
         ) : (
           <>
             {postList.map(post => (
-              <MyPostListItem key={post.id} post={post} />
+              <PostListItem key={post.id} post={post} />
             ))}
             <Box sx={{ display: 'flex', justifyContent: 'center', mt: 4 }} />
           </>
