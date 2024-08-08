@@ -6,6 +6,8 @@
 //   removeTracksFromPlaylist,
 // } from '../../../api/playlist/playlistApi';
 // import BaseContainer from '../../../components/layout/BaseContainer';
+// import SimpleModal from '../../../components/common/Modal/SimpleModal';
+
 // import {
 //   Box,
 //   Typography,
@@ -19,16 +21,12 @@
 // import TrackListEditItem from '../../../components/common/ListItem/TrackListEditItem';
 
 // const PlaylistDetail = () => {
-//   // URL 파라미터에서 플레이리스트 ID를 추출
 //   const { playlistId } = useParams();
-//   // 플레이리스트 데이터를 저장하는 상태
 //   const [playlistData, setPlaylistData] = useState(null);
-//   // 현재 선택된 트랙들의 ID를 저장하는 상태
 //   const [selectedTracks, setSelectedTracks] = useState([]);
-//   // 삭제 대기 중인 트랙들의 ID를 저장하는 상태
 //   const [tracksToDelete, setTracksToDelete] = useState([]);
+//   const [isModalOpen, setIsModalOpen] = useState(false); // 모달 상태 추가
 
-//   // 컴포넌트가 마운트되거나 playlistId가 변경될 때 플레이리스트 데이터를 불러온다.
 //   useEffect(() => {
 //     const fetchPlaylistData = async () => {
 //       try {
@@ -41,40 +39,29 @@
 //     fetchPlaylistData();
 //   }, [playlistId]);
 
-//   // 트랙 선택/선택 해제 처리 함수
-//   // 트랙 선택/선택 해제 처리 함수
 //   const handleTrackSelect = track => {
-//     setSelectedTracks(
-//       prev =>
-//         prev.includes(track.id)
-//           ? prev.filter(id => id !== track.id) // 이미 선택된 경우 제거
-//           : [...prev, track.id], // 선택되지 않은 경우 추가
+//     setSelectedTracks(prev =>
+//       prev.includes(track.id)
+//         ? prev.filter(id => id !== track.id)
+//         : [...prev, track.id],
 //     );
 //   };
 
-//   // 선택된 트랙들을 화면에서 삭제하는 함수
 //   const handleDeleteSelected = () => {
-//     // 선택된 트랙을 삭제 대기 목록에 추가
 //     setTracksToDelete(prev => [...prev, ...selectedTracks]);
-
-//     // 화면에서 선택된 트랙 제거
 //     setPlaylistData(prev => ({
 //       ...prev,
 //       tracks: prev.tracks.filter(track => !selectedTracks.includes(track.id)),
 //       trackCount: prev.trackCount - selectedTracks.length,
 //     }));
-
-//     // 선택된 트랙 목록 초기화
 //     setSelectedTracks([]);
 //   };
 
-//   // 변경사항을 서버에 저장하는 함수
 //   const handleSave = async () => {
 //     try {
-//       // 삭제할 트랙이 있는 경우에만 서버에 요청
 //       if (tracksToDelete.length > 0) {
 //         await removeTracksFromPlaylist(playlistId, tracksToDelete);
-//         setTracksToDelete([]); // 삭제 대기 목록 초기화
+//         setTracksToDelete([]);
 //       }
 //       console.log('Changes saved successfully');
 //       // TODO: 사용자에게 저장 성공 메시지 표시
@@ -84,7 +71,33 @@
 //     }
 //   };
 
-//   // 플레이리스트 데이터 로딩 중 표시
+//   // 저장 버튼 클릭 시 모달을 열도록 변경
+//   const handleSaveClick = () => {
+//     setIsModalOpen(true);
+//   };
+
+//   // 모달 취소 시 실행될 함수
+//   const handleCancelDelete = () => {
+//     setIsModalOpen(false);
+//   };
+
+//   // 모달에서 확인 버튼 클릭 시 실행될 함수
+//   const handleConfirmDelete = async () => {
+//     try {
+//       if (tracksToDelete.length > 0) {
+//         await removeTracksFromPlaylist(playlistId, tracksToDelete);
+//         setTracksToDelete([]);
+//       }
+//       console.log('Changes saved successfully');
+//       window.location.reload();
+//       // TODO: 사용자에게 저장 성공 메시지 표시
+//     } catch (error) {
+//       console.error('Failed to save changes:', error);
+//       // TODO: 사용자에게 저장 실패 메시지 표시
+//     }
+//     setIsModalOpen(false); // 모달 닫기
+//   };
+
 //   if (!playlistData) {
 //     return <div>Loading...</div>;
 //   }
@@ -104,7 +117,7 @@
 //           variant="contained"
 //           color="error"
 //           startIcon={<DeleteIcon />}
-//           onClick={handleDeleteSelected}
+//           onClick={() => deletePlaylist(playlistId)}
 //         >
 //           플레이리스트 삭제
 //         </Button>
@@ -113,7 +126,7 @@
 //         <CardMedia
 //           component="img"
 //           sx={{ width: 151 }}
-//           image={playlistData.thumbnailUrls[0]}
+//           image={playlistData.imageUrl}
 //           alt={playlistData.playlistName}
 //         />
 //         <Box
@@ -139,11 +152,7 @@
 //           </Typography>
 //         </Box>
 //       </Card>
-//       <Box
-//         sx={{
-//           width: '100%',
-//         }}
-//       >
+//       <Box sx={{ width: '100%' }}>
 //         <List>
 //           {playlistData.tracks.map(track => (
 //             <ListItem key={track.id} disablePadding>
@@ -169,7 +178,7 @@
 //           display: 'flex',
 //           justifyContent: 'flex-end',
 //           mb: 2,
-//           width: '100%', // 전체 너비를 차지하도록 설정
+//           width: '100%',
 //         }}
 //       >
 //         <Button
@@ -177,7 +186,7 @@
 //           color="error"
 //           startIcon={<DeleteIcon />}
 //           onClick={handleDeleteSelected}
-//           disabled={selectedTracks.length === 0} // 선택한 트랙이 없으면 비활성화
+//           disabled={selectedTracks.length === 0}
 //         >
 //           선택삭제
 //         </Button>
@@ -186,25 +195,40 @@
 //         <Button
 //           variant="contained"
 //           color="primary"
-//           onClick={handleSave}
-//           disabled={tracksToDelete.length === 0} // 삭제할 트랙이 없으면 비활성화
+//           onClick={handleSaveClick}
+//           disabled={tracksToDelete.length === 0}
 //         >
 //           저장
 //         </Button>
 //       </Box>
+
+//       {/* 저장 컴포넌트 추가 */}
+//       <SimpleModal
+//         open={isModalOpen}
+//         onClose={handleCancelDelete}
+//         title="변경사항저장"
+//         description={`${tracksToDelete.length}개의 트랙을 \n플레이리스트에서 삭제하고 \n변경사항을 저장하시겠습니까?\n\n이 작업은 되돌릴 수 없습니다.`}
+//         primaryButtonText="저장"
+//         secondaryButtonText="취소"
+//         onPrimaryClick={handleConfirmDelete}
+//         onSecondaryClick={handleCancelDelete}
+//       />
 //     </BaseContainer>
 //   );
 // };
 
 // export default PlaylistDetail;
+
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import {
   getPlaylistForEditing,
   deletePlaylist,
   removeTracksFromPlaylist,
 } from '../../../api/playlist/playlistApi';
 import BaseContainer from '../../../components/layout/BaseContainer';
+import SimpleModal from '../../../components/common/Modal/SimpleModal';
+
 import {
   Box,
   Typography,
@@ -219,9 +243,12 @@ import TrackListEditItem from '../../../components/common/ListItem/TrackListEdit
 
 const PlaylistDetail = () => {
   const { playlistId } = useParams();
+  const navigate = useNavigate();
   const [playlistData, setPlaylistData] = useState(null);
   const [selectedTracks, setSelectedTracks] = useState([]);
   const [tracksToDelete, setTracksToDelete] = useState([]);
+  const [isSaveModalOpen, setIsSaveModalOpen] = useState(false);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
   useEffect(() => {
     const fetchPlaylistData = async () => {
@@ -253,18 +280,48 @@ const PlaylistDetail = () => {
     setSelectedTracks([]);
   };
 
-  const handleSave = async () => {
+  const handleSaveClick = () => {
+    setIsSaveModalOpen(true);
+  };
+
+  const handleCancelSave = () => {
+    setIsSaveModalOpen(false);
+  };
+
+  const handleConfirmSave = async () => {
     try {
       if (tracksToDelete.length > 0) {
         await removeTracksFromPlaylist(playlistId, tracksToDelete);
         setTracksToDelete([]);
       }
       console.log('Changes saved successfully');
+      window.location.reload();
       // TODO: 사용자에게 저장 성공 메시지 표시
     } catch (error) {
       console.error('Failed to save changes:', error);
       // TODO: 사용자에게 저장 실패 메시지 표시
     }
+    setIsSaveModalOpen(false);
+  };
+
+  const handleDeleteClick = () => {
+    setIsDeleteModalOpen(true);
+  };
+
+  const handleCancelDelete = () => {
+    setIsDeleteModalOpen(false);
+  };
+
+  const handleConfirmDelete = async () => {
+    try {
+      await deletePlaylist(playlistId);
+      console.log('Playlist deleted successfully');
+      navigate('/my-page');
+    } catch (error) {
+      console.error('Failed to delete playlist:', error);
+      // TODO: 사용자에게 삭제 실패 메시지 표시
+    }
+    setIsDeleteModalOpen(false);
   };
 
   if (!playlistData) {
@@ -286,7 +343,7 @@ const PlaylistDetail = () => {
           variant="contained"
           color="error"
           startIcon={<DeleteIcon />}
-          onClick={() => deletePlaylist(playlistId)}
+          onClick={handleDeleteClick}
         >
           플레이리스트 삭제
         </Button>
@@ -295,7 +352,7 @@ const PlaylistDetail = () => {
         <CardMedia
           component="img"
           sx={{ width: 151 }}
-          image={playlistData.thumbnailUrls[0]}
+          image={playlistData.imageUrl}
           alt={playlistData.playlistName}
         />
         <Box
@@ -364,12 +421,38 @@ const PlaylistDetail = () => {
         <Button
           variant="contained"
           color="primary"
-          onClick={handleSave}
+          onClick={handleSaveClick}
           disabled={tracksToDelete.length === 0}
         >
           저장
         </Button>
       </Box>
+
+      {/* 저장 컴포넌트 추가 */}
+      <SimpleModal
+        open={isSaveModalOpen}
+        onClose={handleCancelSave}
+        title="변경사항 저장"
+        description={`${tracksToDelete.length}개의 트랙을 \n플레이리스트에서 삭제하고 \n변경사항을 저장하시겠습니까?\n\n이 작업은 되돌릴 수 없습니다.`}
+        primaryButtonText="저장"
+        secondaryButtonText="취소"
+        onPrimaryClick={handleConfirmSave}
+        onSecondaryClick={handleCancelSave}
+      />
+
+      {/* 삭제 확인 모달 */}
+      <SimpleModal
+        open={isDeleteModalOpen}
+        onClose={handleCancelDelete}
+        title="플레이리스트 삭제"
+        description={
+          '플레이리스트를 삭제하시겠습니까? \n\n 이 작업은 되돌릴 수 없습니다.'
+        }
+        primaryButtonText="삭제"
+        secondaryButtonText="취소"
+        onPrimaryClick={handleConfirmDelete}
+        onSecondaryClick={handleCancelDelete}
+      />
     </BaseContainer>
   );
 };
