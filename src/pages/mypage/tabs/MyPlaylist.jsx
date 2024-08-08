@@ -59,7 +59,7 @@ const MyPlaylist = () => {
       setPlaylists(data.content); // 업데이트된 플레이리스트 설정
       setTotalPages(data.totalPages); // 업데이트된 총 페이지 수 설정
     } catch (e) {
-      setError('재생목록 생성에 실패했습니다. 다시 시도해 주세요.');
+      setError('플레이리스트 생성에 실패했습니다. 다시 시도해 주세요.');
     }
   };
 
@@ -88,13 +88,13 @@ const MyPlaylist = () => {
         <Typography variant="subtitleMypage">My Playlists</Typography>
         <Box>
           <Button variant="contained" onClick={handleOpen}>
-            새 재생목록
+            새 플레이리스트
           </Button>
           <FormModal
             open={open}
             onClose={handleClose}
             title="New Playlist"
-            description={`새 재생목록의 제목을 정해주세요!\n재생목록 생성 후, 검색창을 통해 음악을 추가할 수 있습니다.`}
+            description={`새 플레이리스트의 제목을 정해주세요!\n플레이리스트 생성 후, 검색창을 통해 음악을 추가할 수 있습니다.`}
             formFields={[
               {
                 label: 'Title of playlist',

@@ -67,11 +67,15 @@ const DropdownModal = ({
           <FormControl fullWidth>
             <InputLabel>Playlists</InputLabel>
             <Select value={selectedValue} onChange={onChange} label="Playlists">
-              {options.map((option, index) => (
-                <MenuItem key={index} value={option.value}>
-                  {option.label}
-                </MenuItem>
-              ))}
+              {options.length > 0 ? (
+                options.map((option, index) => (
+                  <MenuItem key={index} value={option.value}>
+                    {option.label}
+                  </MenuItem>
+                ))
+              ) : (
+                <MenuItem disabled>플레이리스트 없음</MenuItem>
+              )}
             </Select>
           </FormControl>
         </Box>
