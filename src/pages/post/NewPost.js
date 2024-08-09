@@ -99,86 +99,90 @@ const NewPost = () => {
     <BaseContainer>
       <Typography variant="title">New Post</Typography>
       <Box
-        component="form"
-        onSubmit={handleSubmit}
-        sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}
+        sx={{
+          width: '70%',
+          minWidth: '400px',
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'center',
+          m: '0 auto',
+          p: 2,
+        }}
       >
-        <Typography variant="h6" sx={{ fontSize: '1.2rem' }}>
-          제목
-        </Typography>
-        <TextField
-          label="Title"
-          value={title}
-          onChange={e => setTitle(e.target.value)}
-          required
-        />
-        <Typography variant="h6" sx={{ fontSize: '1.2rem' }}>
-          플레이리스트 소개
-        </Typography>
-        <TextField
-          label="Description"
-          value={description}
-          onChange={e => setDescription(e.target.value)}
-          required
-          multiline
-          rows={4}
-        />
-        <Typography variant="h6" sx={{ fontSize: '1.2rem' }}>
-          태그 선택
-        </Typography>
-        <HashtagChips
-          fetchHashtags={fetchHashtags}
-          selectedHashtag={selectedHashtags}
-          onHashtagClick={handleHashtagClick}
-          multiSelectMode={true}
-        />
-        <Typography variant="h6" sx={{ fontSize: '1.2rem' }}>
-          플레이리스트 선택
-        </Typography>
-        <Grid container spacing={2}>
-          {playlists.map(playlist => (
-            <Grid item xs={12} sm={6} key={playlist.id}>
-              <Box
-                onClick={() => setSelectedPlaylistId(playlist.id)}
-                sx={{
-                  cursor: 'pointer',
-                  border:
-                    selectedPlaylistId === playlist.id
-                      ? '2px solid #3f51b5'
-                      : '1px solid #ccc',
-                  padding: 1,
-                  borderRadius: 1,
-                  display: 'flex',
-                  alignItems: 'center',
-                  '&:hover': {
-                    border: '2px solid #3f51b5',
-                  },
-                }}
-              >
-                <PlaylistListItem playlist={playlist} />
-              </Box>
-            </Grid>
-          ))}
-        </Grid>
-        <Box sx={{ display: 'flex', justifyContent: 'center', mt: 4 }}>
-          <Pagination
-            count={Math.ceil(playlists.length / itemsPerPage)}
-            page={page}
-            onChange={handlePageChange}
+        <Box
+          component="form"
+          onSubmit={handleSubmit}
+          sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}
+        >
+          <TextField
+            label="게시글 제목"
+            value={title}
+            onChange={e => setTitle(e.target.value)}
+            required
           />
-        </Box>
-        <Box sx={{ display: 'flex', justifyContent: 'center', gap: 2 }}>
-          <Button
-            variant="outlined"
-            color="secondary"
-            onClick={handleCancel}
-            sx={{ color: 'black', borderColor: 'black' }}
+          <TextField
+            label="플레이리스트 소개글"
+            value={description}
+            onChange={e => setDescription(e.target.value)}
+            required
+            multiline
+            minRows={4}
+          />
+          <Typography variant="h6" sx={{ fontSize: '1.2rem', mt: 1 }}>
+            해시태그 선택
+          </Typography>
+          <HashtagChips
+            fetchHashtags={fetchHashtags}
+            selectedHashtag={selectedHashtags}
+            onHashtagClick={handleHashtagClick}
+            multiSelectMode={true}
+          />
+          <Typography variant="h6" sx={{ fontSize: '1.2rem', mt: 2, mb: 1 }}>
+            플레이리스트 선택
+          </Typography>
+          <Grid container spacing={2}>
+            {playlists.map(playlist => (
+              <Grid item xs={12} sm={6} key={playlist.id}>
+                <Box
+                  onClick={() => setSelectedPlaylistId(playlist.id)}
+                  sx={{
+                    cursor: 'pointer',
+                    border:
+                      selectedPlaylistId === playlist.id
+                        ? '2px solid #3f51b5'
+                        : '1px solid #ccc',
+                    padding: 1,
+                    borderRadius: 1,
+                    display: 'flex',
+                    alignItems: 'center',
+                    '&:hover': {
+                      border: '2px solid #3f51b5',
+                    },
+                  }}
+                >
+                  <PlaylistListItem playlist={playlist} />
+                </Box>
+              </Grid>
+            ))}
+          </Grid>
+          <Box sx={{ display: 'flex', justifyContent: 'center', mt: 4 }}>
+            <Pagination
+              count={Math.ceil(playlists.length / itemsPerPage)}
+              page={page}
+              onChange={handlePageChange}
+            />
+          </Box>
+          <Box
+            sx={{ display: 'flex', justifyContent: 'center', gap: 2, my: 5 }}
           >
-            취소
-          </Button>
-          <Button type="submit" variant="contained" color="primary">
-            작성
-          </Button>
+            <Button variant="outlined" onClick={handleCancel}>
+              취소
+            </Button>
+            <Button type="submit" variant="contained" color="primary">
+              작성
+            </Button>
+          </Box>
         </Box>
       </Box>
       <Snackbar

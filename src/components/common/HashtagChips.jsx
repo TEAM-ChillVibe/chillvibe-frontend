@@ -1,6 +1,5 @@
 import { Box, Chip } from '@mui/material';
 import { useEffect, useState } from 'react';
-import useHashtagStore from '../../store/useHashtagStore';
 
 const HashtagChips = ({
   fetchHashtags,
@@ -8,20 +7,22 @@ const HashtagChips = ({
   multiSelectMode = false,
 }) => {
   const [hashtags, setHashtags] = useState([]);
+  const [selectedHashtags, setSelectedHashtags] = useState([]);
+  const [selectedHashtag, setSelectedHashtag] = useState(null);
 
-  const {
-    multiSelectedHashtags,
-    singleSelectedHashtag,
-    multiToggleHashtag,
-    multiSetSelectedHashtags,
-    singleSetSelectedHashtag,
-  } = useHashtagStore(state => ({
-    multiSelectedHashtags: state.multiSelectedHashtags,
-    singleSelectedHashtag: state.singleSelectedHashtag,
-    multiToggleHashtag: state.multiToggleHashtag,
-    multiSetSelectedHashtags: state.multiSetSelectedHashtags,
-    singleSetSelectedHashtag: state.singleSetSelectedHashtag,
-  }));
+  useEffect(() => {
+    if (multiSelectMode) {
+      const storedHashtags = JSON.parse(
+        localStorage.getItem('selectedHashtags') || '[]',
+      );
+      setSelectedHashtags(storedHashtags);
+    } else {
+      const storedHashtag = localStorage.getItem('selectedHashtag');
+      if (storedHashtag) {
+        setSelectedHashtag(storedHashtag);
+      }
+    }
+  }, [multiSelectMode]);
 
   useEffect(() => {
     const loadHashtags = async () => {
@@ -34,15 +35,31 @@ const HashtagChips = ({
 
   const handleChipClick = tagId => {
     if (multiSelectMode) {
-      // 다중 선택 모드
-      multiToggleHashtag(tagId);
-    } else {
-      // 단일 선택 모드
-      singleSetSelectedHashtag(tagId);
-    }
+      const newSelectedHashtags = [...selectedHashtags];
+      if (newSelectedHashtags.includes(tagId)) {
+        const index = newSelectedHashtags.indexOf(tagId);
+        newSelectedHashtags.splice(index, 1);
+      } else {
+        if (newSelectedHashtags.length < 5) {
+          newSelectedHashtags.push(tagId);
+        }
+      }
+      setSelectedHashtags(newSelectedHashtags);
+      localStorage.setItem(
+        'selectedHashtags',
+        JSON.stringify(newSelectedHashtags),
+      );
 
-    if (onChipClick) {
-      onChipClick(tagId); // 상위 컴포넌트에서 페이지 이동 로직 처리
+      if (onChipClick) {
+        onChipClick(newSelectedHashtags);
+      }
+    } else {
+      localStorage.setItem('selectedHashtag', tagId);
+      setSelectedHashtag(tagId);
+
+      if (onChipClick) {
+        onChipClick(tagId);
+      }
     }
   };
 
@@ -62,28 +79,28 @@ const HashtagChips = ({
           size="small"
           onClick={() => handleChipClick(hashtag.id)}
           sx={{
-            backgroundColor: (
-              multiSelectMode
-                ? multiSelectedHashtags.includes(hashtag.id)
-                : singleSelectedHashtag === hashtag.id
-            )
-              ? 'primary.main'
-              : '#999',
-            color: (
-              multiSelectMode
-                ? multiSelectedHashtags.includes(hashtag.id)
-                : singleSelectedHashtag === hashtag.id
-            )
-              ? 'text.primary'
-              : 'text.dark',
-            '&:hover': {
-              backgroundColor: (
-                multiSelectMode
-                  ? multiSelectedHashtags.includes(hashtag.id)
-                  : singleSelectedHashtag === hashtag.id
-              )
+            backgroundColor: multiSelectMode
+              ? selectedHashtags.includes(hashtag.id)
                 ? 'primary.main'
-                : 'secondary.light',
+                : '#999'
+              : hashtag.id === selectedHashtag
+                ? 'primary.main'
+                : '#999',
+            color: multiSelectMode
+              ? selectedHashtags.includes(hashtag.id)
+                ? 'text.primary'
+                : 'text.dark'
+              : hashtag.id === selectedHashtag
+                ? 'text.primary'
+                : 'text.dark',
+            '&:hover': {
+              backgroundColor: multiSelectMode
+                ? selectedHashtags.includes(hashtag.id)
+                  ? 'primary.main'
+                  : 'secondary.light'
+                : hashtag.id === selectedHashtag
+                  ? 'primary.main'
+                  : 'secondary.light',
             },
           }}
         />

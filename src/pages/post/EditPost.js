@@ -15,10 +15,8 @@ import {
 import HashtagChips from '../../components/common/HashtagChips';
 import BaseContainer from '../../components/layout/BaseContainer';
 import PlaylistListItem from '../../components/common/ListItem/PlaylistListItem';
-import useHashtagStore from '../../store/useHashtagStore';
 
 const EditPost = () => {
-  // const { postId } = useParams();
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [selectedPlaylist, setSelectedPlaylist] = useState(null);
@@ -26,15 +24,6 @@ const EditPost = () => {
   const [selectedHashtags, setSelectedHashtags] = useState([]);
   const navigate = useNavigate();
   const [openSnackbar, setOpenSnackbar] = useState(false);
-  const {
-    multiSelectedHashtags,
-    multiToggleHashtag,
-    multiSetSelectedHashtags,
-  } = useHashtagStore(state => ({
-    multiSelectedHashtags: state.multiSelectedHashtags,
-    multiToggleHashtag: state.multiToggleHashtag,
-    multiSetSelectedHashtags: state.multiSetSelectedHashtags,
-  }));
 
   const postId = 1;
 
@@ -46,7 +35,12 @@ const EditPost = () => {
         setTitle(post.title);
         setDescription(post.description);
         setSelectedPlaylist(post.playlists);
-        multiSetSelectedHashtags(post.hashtags.map(hashtag => hashtag.id));
+
+        // 로컬스토리지에서 선택된 해시태그 불러오기
+        const storedHashtags = JSON.parse(
+          localStorage.getItem('selectedHashtags') || '[]',
+        );
+        setSelectedHashtags(storedHashtags);
       } catch (error) {
         console.error('Error fetching post data:', error);
       }
@@ -84,22 +78,8 @@ const EditPost = () => {
     }
   };
 
-  const handleHashtagClick = tagId => {
-    setSelectedHashtags(prevSelected =>
-      prevSelected.includes(tagId)
-        ? prevSelected.filter(id => id !== tagId)
-        : [...prevSelected, tagId],
-    );
-  };
-
-  const fetchHashtags = async () => {
-    try {
-      const response = await fetchAllHashtags();
-      return response;
-    } catch (error) {
-      console.error('Error fetching hashtags:', error);
-      return [];
-    }
+  const handleHashtagClick = selectedHashtags => {
+    setSelectedHashtags(selectedHashtags);
   };
 
   const handleCancel = () => {
@@ -142,7 +122,7 @@ const EditPost = () => {
           태그 선택
         </Typography>
         <HashtagChips
-          fetchHashtags={fetchHashtags}
+          fetchHashtags={fetchAllHashtags}
           onChipClick={handleHashtagClick}
           multiSelectMode={true}
         />

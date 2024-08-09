@@ -136,7 +136,16 @@ const MyPlaylist = () => {
       </Box>
       <Box sx={{ width: '100%', my: 2 }}>
         {isLoading ? (
-          <CircularProgress color="secondary" />
+          <Box
+            sx={{
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              py: 10,
+            }}
+          >
+            <CircularProgress color="secondary" />
+          </Box>
         ) : playlists.length === 0 ? (
           <Typography variant="body1" sx={{ textAlign: 'center', my: 15 }}>
             아직 플레이리스트가 없습니다.

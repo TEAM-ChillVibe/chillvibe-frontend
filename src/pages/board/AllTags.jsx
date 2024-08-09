@@ -4,20 +4,22 @@ import { Box, Button, Typography } from '@mui/material';
 import PostList from '../../components/common/PostList';
 import HashtagChips from '../../components/common/HashtagChips';
 import { fetchAllHashtags } from '../../api/hashtag/hashtagApi';
-import useHashtagStore from '../../store/useHashtagStore';
+import { useEffect, useState } from 'react';
 
 const AllTags = () => {
   const { sortOrder, setSortOrder } = useSortingStore();
+  const [selectedHashtag, setSelectedHashtag] = useState(null);
 
-  const { singleSelectedHashtag, setSingleSelectedHashtag } = useHashtagStore(
-    state => ({
-      singleSelectedHashtag: state.singleSelectedHashtag,
-      setSingleSelectedHashtag: state.singleSetSelectedHashtag,
-    }),
-  );
+  useEffect(() => {
+    const storedHashtag = localStorage.getItem('selectedHashtag');
+    if (storedHashtag) {
+      setSelectedHashtag(storedHashtag);
+    }
+  }, []);
 
   const handleHashtagClick = hashtagId => {
-    setSingleSelectedHashtag(hashtagId);
+    localStorage.setItem('selectedHashtag', hashtagId);
+    setSelectedHashtag(hashtagId);
   };
 
   return (
@@ -68,7 +70,7 @@ const AllTags = () => {
           새 글 작성
         </Button>
       </Box>
-      <PostList selectedHashtag={singleSelectedHashtag} sortOrder={sortOrder} />
+      <PostList selectedHashtag={selectedHashtag} sortOrder={sortOrder} />
     </BaseContainer>
   );
 };
