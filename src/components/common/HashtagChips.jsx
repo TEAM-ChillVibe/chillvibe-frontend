@@ -74,16 +74,16 @@ const HashtagChips = ({
                 ? multiSelectedHashtags.includes(hashtag.id)
                 : singleSelectedHashtag === hashtag.id
             )
-              ? 'white'
-              : 'text.primary',
+              ? 'text.primary'
+              : 'text.dark',
             '&:hover': {
               backgroundColor: (
                 multiSelectMode
                   ? multiSelectedHashtags.includes(hashtag.id)
                   : singleSelectedHashtag === hashtag.id
               )
-                ? 'primary.dark'
-                : 'action.hover',
+                ? 'primary.main'
+                : 'secondary.light',
             },
           }}
         />

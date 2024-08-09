@@ -2,23 +2,25 @@ import { createTheme } from '@mui/material';
 
 export const theme = createTheme({
   palette: {
-    // 임시값
+    mode: 'dark', // 다크모드
     primary: {
-      main: '#007BFF',
-      // main: '#333',
-      light: '#999',
+      main: '#D8A1F0', // 포인트컬러
+      light: '#F3E5F5',
     },
     secondary: {
-      main: '#D8A1F0',
+      main: '#007BFF',
       light: '#F3E5F5',
       contrastText: '#FFFFFF',
     },
-    // background: {
-    //   default: '#000000',
-    // },
-    // text: {
-    //   primary: '#FFFFFF',
-    // },
+    background: {
+      default: '#000000', // 기본 배경색
+      paper: '#000000', // 카드와 같은 요소의 배경색
+    },
+    text: {
+      primary: '#FFFFFF',
+      secondary: '#FFFFFF', // 보조 텍스트 색상
+      dark: '#000',
+    },
   },
   typography: {
     fontFamily: 'Pretendard, Roboto, Arial, sans-serif',
