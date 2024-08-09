@@ -13,8 +13,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { fetchAllHashtags } from '../../../api/hashtag/hashtagApi';
 import HashtagChips from '../../../components/common/HashtagChips';
-import { editProfile } from '../../../api/auth/authApi';
-import { myInfo } from '../../../api/user/userApi';
+import { editProfile, myInfo } from '../../../api/user/userApi';
 
 const EditProfile = () => {
   const [email, setEmail] = useState('');
@@ -23,7 +22,7 @@ const EditProfile = () => {
   const [profileImage, setProfileImage] = useState('');
   const [isPublic, setIsPublic] = useState(false);
   const [imagePreview, setImagePreview] = useState('');
-  const [selectedHashtags, setSelectedHashtags] = useState([]);
+  const [hashtagIds, setSelectedHashtags] = useState([]);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -31,16 +30,18 @@ const EditProfile = () => {
     const fetchUserData = async () => {
       try {
         const response = await myInfo();
-        const userData = response.data;
+        const userData = response;
 
-        console.log(response.data);
+        console.log(response);
 
         // 사용자 정보 상태 업데이트
         setEmail(userData.email);
         setNickname(userData.nickname);
-        setIntroduction(userData.introduction || ''); // 소개글 추가
-        setImagePreview(userData.profileUrl || ''); // 프로필 이미지 URL이 있을 경우 미리보기 설정
+        setIntroduction(userData.introduction || '');
+        setImagePreview(userData.profileUrl || '');
         setIsPublic(userData.public);
+        const userHashtags = userData.hashtags.map(hashtag => hashtag.id);
+        setSelectedHashtags(userHashtags);
       } catch (error) {}
     };
 
@@ -87,16 +88,27 @@ const EditProfile = () => {
     // 사용자 정보 업데이트 API 호출
     try {
       const formData = new FormData();
-      formData.append('email', email);
-      formData.append('nickname', nickname);
-      formData.append('introduction', introduction);
+      const userUpdateDto = {
+        nickname,
+        introduction,
+        hashtagIds,
+        isPublic,
+      };
+
+      formData.append('userUpdateDto', JSON.stringify(userUpdateDto));
+
       if (profileImage) {
-        formData.append('profileImage', profileImage);
+        formData.append('profileImg', profileImage);
       }
 
-      await editProfile(formData);
-      navigate('/mypage'); // 성공 후 리디렉션
-    } catch (error) {}
+      if (window.confirm('정말로 회원정보를 수정하시겠습니까?')) {
+        await editProfile(formData);
+        alert('회원정보가 수정되었습니다.');
+        navigate('/my-page');
+      }
+    } catch (error) {
+      alert('프로필 업데이트에 실패했습니다. 다시 시도해 주세요.');
+    }
   };
 
   const isFormValid = email && nickname;
@@ -183,7 +195,7 @@ const EditProfile = () => {
           />
           <HashtagChips
             fetchHashtags={fetchHashtags}
-            selectedHashtag={selectedHashtags}
+            selectedHashtags={hashtagIds}
             onHashtagClick={handleHashtagClick}
             multiSelectMode={true}
           />
