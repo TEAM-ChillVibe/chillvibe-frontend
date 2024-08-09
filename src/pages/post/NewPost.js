@@ -172,7 +172,7 @@ const NewPost = () => {
             variant="outlined"
             color="secondary"
             onClick={handleCancel}
-            sx={{ color: 'black', borderColor: 'black' }}
+            sx={{ color: 'white', borderColor: 'white' }}
           >
             취소
           </Button>

@@ -18,7 +18,7 @@ import PlaylistListItem from '../../components/common/ListItem/PlaylistListItem'
 import useHashtagStore from '../../store/useHashtagStore';
 
 const EditPost = () => {
-  // const { postId } = useParams();
+  const { postId } = useParams();
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [selectedPlaylist, setSelectedPlaylist] = useState(null);
@@ -35,8 +35,6 @@ const EditPost = () => {
     multiToggleHashtag: state.multiToggleHashtag,
     multiSetSelectedHashtags: state.multiSetSelectedHashtags,
   }));
-
-  const postId = 1;
 
   useEffect(() => {
     const fetchPostData = async () => {
@@ -170,7 +168,7 @@ const EditPost = () => {
             variant="outlined"
             color="secondary"
             onClick={handleCancel}
-            sx={{ color: 'black', borderColor: 'black' }}
+            sx={{ color: 'white', borderColor: 'white' }}
           >
             취소
           </Button>
