@@ -68,7 +68,7 @@ export const updatePost = async (postId, postUpdateRequestDto) => {
 // 게시글 삭제
 export const deletePost = async postId => {
   try {
-    const response = await axiosWithToken.delete('/api/posts/${postId}');
+    const response = await axiosWithToken.delete(`/api/posts/${postId}`);
     return response.data;
   } catch (error) {
     console.error('Failed to delete post:', error);
