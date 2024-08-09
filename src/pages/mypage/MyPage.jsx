@@ -70,7 +70,7 @@ const MyPage = () => {
         </Tabs>
         <Box sx={{ p: 3, my: 3 }}>
           {currentTab === 0 && <MyPlaylist />}
-          {currentTab === 1 && <MyPost />}
+          {currentTab === 1 && <MyPost user={user} />}
           {currentTab === 2 && <MyLikedPost />}
           {currentTab === 3 && <MyComment />}
         </Box>

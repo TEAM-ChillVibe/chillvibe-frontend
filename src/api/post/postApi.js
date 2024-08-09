@@ -134,10 +134,26 @@ export const searchPosts = async (query, page = 0, size = 10) => {
 };
 
 // 현재 로그인한 사용자 ID로 좋아요한 게시물 ID 목록을 가져오는 함수
-export const fetchUserLikedPosts = async userId => {
+export const fetchUserLikedPosts = async () => {
   try {
     const response = await axiosWithToken.get('/api/posts/user/liked-posts');
     return response.data; // 좋아요한 게시물 ID 목록 반환
+  } catch (error) {
+    console.error('Error fetching liked posts:', error);
+    throw error;
+  }
+};
+
+// 현재 로그인한 사용자 ID로 좋아요한 게시물 목록을 가져오는 함수
+export const fetchMyLikedPosts = async (page = 0, size = 10) => {
+  try {
+    const response = await axiosWithToken.get(
+      '/api/posts/user/my-liked-posts',
+      {
+        params: { page, size },
+      },
+    );
+    return response.data;
   } catch (error) {
     console.error('Error fetching liked posts:', error);
     throw error;

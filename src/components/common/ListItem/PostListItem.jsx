@@ -110,11 +110,13 @@ function PostListItem({ post }) {
             }}
           >
             <Avatar
-              alt={user.name}
-              src={user.avatar}
+              alt={user.nickname || 'Unknown User'}
+              src={user.profileUrl || ''}
               sx={{ width: 32, height: 32, mb: 1 }}
             />
-            <Typography variant="body2">{user.nickname}</Typography>
+            <Typography variant="body2">
+              {user.nickname || 'Unknown User'}
+            </Typography>
           </Box>
         </Box>
         <LikeButton postId={id} initialLikeCount={likeCount} />
