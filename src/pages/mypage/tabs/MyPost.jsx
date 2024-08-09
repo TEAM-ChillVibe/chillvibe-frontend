@@ -88,7 +88,7 @@ const MyPost = ({ user }) => {
         ) : (
           <>
             {currentPosts.map(post => (
-              <MyPostListItem key={post.id} post={post} />
+              <MyPostListItem user={user} key={post.id} post={post} />
             ))}
             <Box sx={{ display: 'flex', justifyContent: 'center', mt: 4 }}>
               <Pagination
