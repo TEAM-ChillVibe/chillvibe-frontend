@@ -5,126 +5,94 @@ import BaseContainer from '../../components/layout/BaseContainer';
 import PostListItemMini from '../../components/common/ListItem/PostListItemMini';
 import HashtagChips from '../../components/common/HashtagChips';
 import TrackListItem from '../../components/common/ListItem/TrackListItem';
+import { fetchPostsInMainPage } from '../../api/post/postApi';
+import { fetchPopularHashtags } from '../../api/hashtag/hashtagApi';
 
 // 지금 가장 인기있는 플레이리스트
-const fetchPlaylists = async () => {
-  return [
-    {
-      id: 1,
-      title: 'OST 감성 국내 발라드 노래 모음',
-      user: { name: '핑프' },
-    },
-    {
-      id: 2,
-      title: 'OST 감성 국내 발라드 노래 모음',
-      user: { name: '핑프' },
-    },
-    {
-      id: 3,
-      title: 'OST 감성 국내 발라드 노래 모음',
-      user: { name: '핑프' },
-    },
-    {
-      id: 4,
-      title: 'OST 감성 국내 발라드 노래 모음',
-      user: { name: '핑프' },
-    },
-    {
-      id: 5,
-      title: 'OST 감성 국내 발라드 노래 모음',
-      user: { name: '핑프' },
-    },
-    {
-      id: 6,
-      title: 'OST 감성 국내 발라드 노래 모음',
-      user: { name: '핑프' },
-    },
-  ];
-};
-
-//인기태그 부분
-const fetchHashtags = async () => {
-  return [
-    { id: 1, name: '발라드' },
-    { id: 2, name: '힙합' },
-    { id: 3, name: '인디' },
-    { id: 4, name: '댄스' },
-    { id: 5, name: '재즈' },
-    { id: 6, name: '팝' },
-    { id: 7, name: 'OST' },
-    { id: 8, name: 'JPOP' },
-    { id: 9, name: '트로트' },
-    { id: 10, name: '알앤비' },
-  ];
-};
-
-//추천 트랙 부분
-const fetchTracks = async () => {
-  return [
-    {
-      id: 1,
-      title: 'Track 1',
-      artist: 'Artist 1',
-      albumCover: 'path/to/cover1.jpg',
-      duration: '3:45',
-      audioSrc:
-        'https://p.scdn.co/mp3-preview/4d63fe1638aa41592706f835bd076443b09d8afa?cid=cfe923b2d660439caf2b557b21f31221',
-    },
-    {
-      id: 2,
-      title: '제목 2',
-      artist: 'Artist 2',
-      albumCover: 'path/to/cover2.jpg',
-      duration: '4:30',
-      audioSrc: null,
-    },
-    {
-      id: 3,
-      title: '제목 3',
-      artist: 'Artist 3',
-      albumCover: 'path/to/cover3.jpg',
-      duration: '2:22',
-      audioSrc: 'path/to/audio3.mp3',
-    },
-    {
-      id: 4,
-      title: '제목 4',
-      artist: 'Artist 4',
-      albumCover: 'path/to/cover4.jpg',
-      duration: '2:44',
-      audioSrc: 'path/to/audio4.mp3',
-    },
-    {
-      id: 5,
-      title: '제목5',
-      artist: 'Artist 5',
-      albumCover: 'path/to/cover5.jpg',
-      duration: '7:55',
-      audioSrc: 'path/to/audio5.mp3',
-    },
-    {
-      id: 6,
-      title: '제목6',
-      artist: 'Artist 6',
-      albumCover: 'path/to/cover6.jpg',
-      duration: '5:32',
-      audioSrc: 'path/to/audio6.mp3',
-    },
-  ];
-};
-
 const Main = () => {
   const [playlists, setPlaylists] = useState([]);
   const [tracks, setTracks] = useState([]);
   const navigate = useNavigate();
+  const [hashtags, setHashtags] = useState([]);
 
   useEffect(() => {
-    const getPlaylists = async () => {
-      const data = await fetchPlaylists();
-      setPlaylists(data);
+    const getPostsInMainPage = async () => {
+      try {
+        const data = await fetchPostsInMainPage();
+        setPlaylists(data); // 응답 데이터를 상태에 저장
+      } catch (error) {
+        console.error('Error fetching playlists:', error);
+      }
     };
-    getPlaylists();
+    getPostsInMainPage();
   }, []);
+
+  useEffect(() => {
+    const getPopularHashtags = async () => {
+      try {
+        const data = await fetchPopularHashtags(0, 10);
+        setHashtags(data);
+      } catch (error) {
+        console.error('Error fetching popular hashtags:', error);
+      }
+    };
+    getPopularHashtags();
+  }, []);
+
+  //추천 트랙 부분
+  const fetchTracks = async () => {
+    return [
+      {
+        id: 1,
+        title: 'Track 1',
+        artist: 'Artist 1',
+        albumCover: 'path/to/cover1.jpg',
+        duration: '3:45',
+        audioSrc:
+          'https://p.scdn.co/mp3-preview/4d63fe1638aa41592706f835bd076443b09d8afa?cid=cfe923b2d660439caf2b557b21f31221',
+      },
+      {
+        id: 2,
+        title: '제목 2',
+        artist: 'Artist 2',
+        albumCover: 'path/to/cover2.jpg',
+        duration: '4:30',
+        audioSrc: null,
+      },
+      {
+        id: 3,
+        title: '제목 3',
+        artist: 'Artist 3',
+        albumCover: 'path/to/cover3.jpg',
+        duration: '2:22',
+        audioSrc: 'path/to/audio3.mp3',
+      },
+      {
+        id: 4,
+        title: '제목 4',
+        artist: 'Artist 4',
+        albumCover: 'path/to/cover4.jpg',
+        duration: '2:44',
+        audioSrc: 'path/to/audio4.mp3',
+      },
+      {
+        id: 5,
+        title: '제목5',
+        artist: 'Artist 5',
+        albumCover: 'path/to/cover5.jpg',
+        duration: '7:55',
+        audioSrc: 'path/to/audio5.mp3',
+      },
+      {
+        id: 6,
+        title: '제목6',
+        artist: 'Artist 6',
+        albumCover: 'path/to/cover6.jpg',
+        duration: '5:32',
+        audioSrc: 'path/to/audio6.mp3',
+      },
+    ];
+  };
 
   useEffect(() => {
     const getTracks = async () => {
@@ -176,7 +144,7 @@ const Main = () => {
       >
         요즘 인기있는 태그
       </Typography>
-      <HashtagChips fetchHashtags={fetchHashtags} />
+      <HashtagChips hashtags={hashtags} />
       <Grid container spacing={2}>
         {playlists.length > 0 ? (
           playlists.map(playlist => (
