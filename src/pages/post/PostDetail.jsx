@@ -9,6 +9,7 @@ import {
   Chip,
   List,
   ListItem,
+  ListItemText,
   Button,
 } from '@mui/material';
 import BaseContainer from '../../components/layout/BaseContainer';
@@ -34,6 +35,7 @@ const PostDetail = () => {
     const getPost = async () => {
       try {
         const response = await fetchPostById(postId);
+        console.log('Fetched post data:', response);
         setPost(response);
 
         // ✔️ 현재 사용자 정보 가져오기 및 작성자 여부 확인
@@ -218,8 +220,8 @@ const PostDetail = () => {
       <Typography variant="h6" sx={{ mt: 3, mb: 2 }}>
         Comments
       </Typography>
-      {/* <List>
-        {post.comments &&
+      <List>
+        {post.comments && post.comments.length > 0 ? (
           post.comments.map(comment => (
             <ListItem key={comment.id}>
               <ListItemText
@@ -227,7 +229,11 @@ const PostDetail = () => {
                 secondary={comment.userNickname}
               />
             </ListItem>
-          ))}
+          ))
+        ) : (
+          <Typography>No comments available.</Typography>
+        )}
+      </List>
 
       {/* 삭제 모달 */}
       <DeleteModal
