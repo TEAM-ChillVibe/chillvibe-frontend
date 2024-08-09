@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { Typography, Box, Avatar, Pagination, Paper } from '@mui/material';
+import { Typography, Box, Avatar, Pagination } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { getCommentsByUser } from '../../../api/comment/commentApi';
+import { formatDate } from '../../../utils/reusableFn';
 
 const MyComment = () => {
   const [comments, setComments] = useState([]);
@@ -47,11 +48,7 @@ const MyComment = () => {
       </Box>
       <Box
         sx={{
-          backgroundColor: '#fff',
-          padding: 2,
-          borderRadius: 2,
           marginTop: 2,
-          color: '#000',
           width: '100%',
           marginLeft: 'auto',
           marginRight: 'auto',
@@ -68,10 +65,7 @@ const MyComment = () => {
               <Box
                 key={comment.id}
                 sx={{
-                  backgroundColor: '#f5f5f5',
-                  padding: 2,
-                  borderRadius: 1,
-                  marginBottom: 2,
+                  py: 2,
                   display: 'flex',
                   alignItems: 'flex-start',
                   justifyContent: 'space-between',
@@ -92,18 +86,15 @@ const MyComment = () => {
                   >
                     <Avatar
                       src={comment.postAuthorProfileUrl}
-                      sx={{ width: 23, height: 23 }}
+                      sx={{ width: 20, height: 20 }}
                     />
-                    <Typography
-                      variant="body2"
-                      sx={{ marginLeft: 0.5, color: '#888' }}
-                    >
+                    <Typography variant="body2" sx={{ marginLeft: 1 }}>
                       {comment.postAuthor}
                     </Typography>
                   </Box>
                   <Typography variant="body1">{comment.content}</Typography>
                   <Typography variant="caption" sx={{ color: '#888' }}>
-                    {new Date(comment.modifiedAt).toLocaleString()}
+                    {formatDate(comment.modifiedAt)}
                     {comment.createdAt !== comment.modifiedAt && (
                       <span style={{ marginLeft: '10px', color: '#888' }}>
                         수정됨
@@ -118,9 +109,9 @@ const MyComment = () => {
                     style={{
                       width: 100,
                       height: 100,
-                      borderRadius: 8,
+                      borderRadius: 2,
                       objectFit: 'cover',
-                      marginLeft: 15,
+                      p: 2,
                     }}
                   />
                 </Box>
