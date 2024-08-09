@@ -30,7 +30,6 @@ const NewPost = () => {
   const addPost = usePostStore(state => state.addPost);
   const navigate = useNavigate();
   const [openSnackbar, setOpenSnackbar] = useState(false);
-  const defaultImageUrl = 'https://via.placeholder.com/100';
 
   useEffect(() => {
     const fetchPlaylists = async () => {
