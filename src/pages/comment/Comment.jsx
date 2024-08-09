@@ -16,16 +16,15 @@ import {
 } from '@mui/material';
 import { Delete, Edit } from '@mui/icons-material';
 import IconButton from '@mui/material/IconButton';
+import { useParams } from 'react-router-dom';
 
 const Comment = () => {
-  // const { postId } = useParams(); // URL에서 postId를 가져옴
+  const { postId } = useParams(); // URL에서 postId를 가져옴
   const [comments, setComments] = useState([]);
   const [newComment, setNewComment] = useState('');
   const [editingCommentId, setEditingCommentId] = useState(null);
   const [editingContent, setEditingContent] = useState('');
   const [userId, setUserId] = useState(null);
-
-  const postId = 1;
 
   useEffect(() => {
     // 토큰 디코딩하여 사용자 ID 가져오기
