@@ -21,3 +21,17 @@ export const myInfo = async () => {
     throw error;
   }
 };
+
+// 회원정보 수정
+export const editProfile = async formData => {
+  try {
+    const response = await axiosWithToken.put('/api/users', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+    return response;
+  } catch (error) {
+    throw error;
+  }
+};

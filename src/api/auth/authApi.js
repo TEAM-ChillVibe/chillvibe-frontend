@@ -55,18 +55,6 @@ export const editPassword = async (
   }
 };
 
-// 회원정보 수정
-export const editProfile = async formData => {
-  try {
-    const response = await axiosWithToken.put('/api/users', {
-      formData,
-    });
-    return response;
-  } catch (error) {
-    throw error;
-  }
-};
-
 // 재인증 store 세팅
 export const reauth = async () => {
   try {
