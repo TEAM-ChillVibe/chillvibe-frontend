@@ -125,7 +125,7 @@ const Comment = () => {
               />
               <Box sx={{ flexGrow: 1 }}>
                 <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
-                  <Typography variant="h6">
+                  <Typography variant="h6" sx={{ fontSize: '1rem' }}>
                     {comment.userNickname} ({getMaskedEmail(comment.userEmail)})
                   </Typography>
                 </Box>
@@ -146,7 +146,11 @@ const Comment = () => {
                   </>
                 ) : (
                   <>
-                    <Typography variant="body1" paragraph>
+                    <Typography
+                      variant="body1"
+                      paragraph
+                      sx={{ marginBottom: '7px' }}
+                    >
                       {comment.content}
                     </Typography>
                     <Typography variant="caption" color="textSecondary">
