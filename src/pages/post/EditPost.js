@@ -15,7 +15,6 @@ import {
 import HashtagChips from '../../components/common/HashtagChips';
 import BaseContainer from '../../components/layout/BaseContainer';
 import PlaylistListItem from '../../components/common/ListItem/PlaylistListItem';
-import useHashtagStore from '../../store/useHashtagStore';
 
 const EditPost = () => {
   const { postId } = useParams();
@@ -26,7 +25,6 @@ const EditPost = () => {
   const [selectedHashtags, setSelectedHashtags] = useState([]);
   const navigate = useNavigate();
   const [openSnackbar, setOpenSnackbar] = useState(false);
-
 
   useEffect(() => {
     const fetchPostData = async () => {
@@ -147,12 +145,7 @@ const EditPost = () => {
             marginTop: 8,
           }}
         >
-          <Button
-            variant="outlined"
-            color="secondary"
-            onClick={handleCancel}
-            sx={{ color: 'white', borderColor: 'white' }}
-          >
+          <Button variant="outlined" onClick={handleCancel}>
             취소
           </Button>
           <Button type="submit" variant="contained" color="primary">
