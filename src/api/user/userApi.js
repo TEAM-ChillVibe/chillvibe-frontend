@@ -16,7 +16,7 @@ export const userInfo = async userId => {
 export const myInfo = async () => {
   try {
     const response = await axiosWithToken.get(`/api/mypage`);
-    return response;
+    return response.data;
   } catch (error) {
     throw error;
   }

@@ -2,12 +2,11 @@ import { Avatar, Box, Typography } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import HashtagChips from './HashtagChips';
 import { fetchHashtagsOfUser } from '../../api/hashtag/hashtagApi';
-import useHashtagStore from '../../store/useHashtagStore';
 
 function UserProfile({ user }) {
-  const { userId, nickname, profileUrl, introduction } = user;
-
   const navigate = useNavigate();
+
+  const { userId, email, nickname, profileUrl, introduction, hashtags } = user;
 
   const handleNavigateToUserPage = () => {
     navigate(`/user/${userId}`); // 절대경로 유저프로필로 이동

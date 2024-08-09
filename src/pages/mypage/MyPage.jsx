@@ -6,6 +6,7 @@ import MyPlaylist from './tabs/MyPlaylist';
 import MyPost from './tabs/MyPost';
 import MyLikedPost from './tabs/MyLikedPost';
 import MyComment from './tabs/MyComment';
+import useUserStore from '../../store/useUserStore';
 
 const MyPage = () => {
   // 탭 상태 관리
@@ -20,12 +21,15 @@ const MyPage = () => {
     localStorage.setItem('currentTab', newValue);
   };
 
-  const user = {
-    id: 1,
-    nickname: 'Julie Han',
-    introduction: 'testing mypage profile',
-    hashtags: ['#tag1', '#tag2', '#tag3'],
-  };
+  // user 정보 가져오기
+  const { user, fetchUserInfo } = useUserStore(state => ({
+    user: state.user,
+    fetchUserInfo: state.fetchUserInfo,
+  }));
+
+  useEffect(() => {
+    fetchUserInfo();
+  }, [fetchUserInfo]);
 
   return (
     <BaseContainer>
@@ -39,7 +43,7 @@ const MyPage = () => {
           mb: 2,
         }}
       >
-        {/*<UserProfile user={user} />*/}
+        <UserProfile user={user} />
         <Button
           variant="outlined"
           href="/edit-profile"

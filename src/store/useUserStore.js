@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import { reauth } from '../api/auth/authApi';
 import { devtools } from 'zustand/middleware';
+import { myInfo } from '../api/user/userApi';
 
 const useUserStore = create(
   devtools(
@@ -17,6 +18,16 @@ const useUserStore = create(
           } catch (error) {
             set({ user: null, isAuthenticated: false });
           }
+        }
+      },
+
+      // 사용자 정보 초기화
+      fetchUserInfo: async () => {
+        try {
+          const userData = await myInfo();
+          set({ user: userData, isAuthenticated: true });
+        } catch (error) {
+          set({ user: null, isAuthenticated: false });
         }
       },
 
