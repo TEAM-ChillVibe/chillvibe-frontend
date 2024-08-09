@@ -27,7 +27,8 @@ function PostListItem({ post }) {
     navigate(`/user/${user.id}`);
   };
 
-  const handleChipClick = () => {
+  const handleChipClick = tagId => {
+    localStorage.setItem('selectedHashtag', tagId);
     navigate(`/all-tags/`);
   };
 
