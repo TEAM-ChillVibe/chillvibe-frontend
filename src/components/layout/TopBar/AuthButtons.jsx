@@ -77,8 +77,6 @@ const AuthButtons = ({ user }) => {
           onClose={handleMenuClose}
           PaperProps={{
             sx: {
-              bgcolor: '#fff',
-              color: '#000',
               borderRadius: 1,
               marginTop: 1.5,
               paddingX: 1,

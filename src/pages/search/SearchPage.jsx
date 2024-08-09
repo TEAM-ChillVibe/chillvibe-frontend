@@ -77,11 +77,10 @@ const SearchPage = () => {
   return (
     <BaseContainer>
       <Typography variant="h6" sx={{ mt: 2, mb: 3 }}>
-        "
-        <Box component="span" sx={{ fontWeight: 'bold' }}>
+        <Typography component="span" variant="searchQuery">
           {searchQuery}
-        </Box>
-        "에 대한 검색 결과입니다.
+        </Typography>{' '}
+        에 대한 검색 결과입니다.
       </Typography>
       <Tabs
         value={searchType}
@@ -104,7 +103,7 @@ const SearchPage = () => {
       </Box>
       {isLoading && (
         <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2 }}>
-          <CircularProgress />
+          <CircularProgress color="secondary" />
         </Box>
       )}
     </BaseContainer>

@@ -163,16 +163,21 @@ const Comment = () => {
                 <Box
                   sx={{
                     display: 'flex',
-                    flexDirection: 'column',
+                    flexDirection: 'row',
                     alignItems: 'center',
+                    justifyContent: 'center',
                   }}
                 >
                   <IconButton
+                    size="small"
                     onClick={() => handleEdit(comment.id, comment.content)}
                   >
                     <Edit />
                   </IconButton>
-                  <IconButton onClick={() => handleDelete(comment.id)}>
+                  <IconButton
+                    size="small"
+                    onClick={() => handleDelete(comment.id)}
+                  >
                     <Delete />
                   </IconButton>
                 </Box>

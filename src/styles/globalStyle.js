@@ -48,6 +48,10 @@ export const theme = createTheme({
     modalTitle: {
       fontSize: '1.6rem',
     },
+    searchQuery: {
+      fontSize: '1.2rem',
+      color: '#D8A1F0',
+    },
   },
   spacing: 8,
 });

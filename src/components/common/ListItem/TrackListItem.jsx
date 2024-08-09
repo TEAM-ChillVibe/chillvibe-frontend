@@ -96,7 +96,7 @@ function TrackListItem({ music }) {
         <Avatar
           alt={name}
           src={thumbnailUrl}
-          sx={{ width: 56, height: 56, mr: 2, borderRadius: 1 }}
+          sx={{ width: 56, height: 56, ml: 1, mr: 2, borderRadius: 1 }}
         />
         <Box sx={{ display: 'flex', flexDirection: 'column' }}>
           <Typography variant="subtitle1" noWrap>
