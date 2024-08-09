@@ -78,8 +78,13 @@ const PostDetail = () => {
 
   return (
     <BaseContainer>
-      <Box sx={{ mb: 2 }}>
-        <Box display="flex" justifyContent="space-between" alignItems="center">
+      <Box sx={{ mb: 2, width: '100%' }}>
+        <Box
+          display="flex"
+          justifyContent="space-between"
+          alignItems="center"
+          sx={{ mb: 2, width: '100%' }}
+        >
           <Box>
             <Typography variant="h4" sx={{ fontWeight: 'bold', mb: 1 }}>
               {post.title}
@@ -109,9 +114,15 @@ const PostDetail = () => {
                 </Button>
                 <Button
                   variant="contained"
-                  color="error"
                   startIcon={<DeleteIcon />}
                   onClick={openModal}
+                  sx={{
+                    backgroundColor: '#D895FF', // 보라색 배경
+                    color: '#000',
+                    '&:hover': {
+                      backgroundColor: '#C27BFF', // hover 시 더 어두운 보라색
+                    },
+                  }}
                 >
                   삭제
                 </Button>
@@ -193,7 +204,7 @@ const PostDetail = () => {
         >
           {/* Avatar와 사용자 이름에 Link를 추가 */}
           <Link
-            to={`/user/${post.user.id}`}
+            to={`/user/${post.user.userId}`}
             style={{ textDecoration: 'none', color: 'inherit' }}
           >
             <Avatar
@@ -204,7 +215,7 @@ const PostDetail = () => {
           </Link>
           <Box sx={{ ml: 2 }}>
             <Link
-              to={`/user/${post.user.id}`}
+              to={`/user/${post.user.userId}`}
               style={{ textDecoration: 'none', color: 'inherit' }}
             >
               <Typography variant="h6">{post.user.nickname}</Typography>

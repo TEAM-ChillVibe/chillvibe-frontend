@@ -23,7 +23,7 @@ const DeleteModal = ({ isOpen, onClose, onDelete }) => {
     borderRadius: '8px',
     textAlign: 'center',
     width: '400px',
-    border: '2px solid #fff',
+    border: '2px solid #D895FF',
   };
 
   const modalActionsStyle = {
@@ -39,6 +39,7 @@ const DeleteModal = ({ isOpen, onClose, onDelete }) => {
     fontSize: '16px',
     cursor: 'pointer',
     flex: 1,
+    transition: 'background-color 0.3s, transform 0.3s', // 전환 효과 추가
   };
 
   const cancelButtonStyle = {
@@ -46,12 +47,20 @@ const DeleteModal = ({ isOpen, onClose, onDelete }) => {
     backgroundColor: 'transparent',
     color: '#fff',
     marginRight: '10px',
+    '&:hover': {
+      backgroundColor: '#444',
+      transform: 'scale(1.05)', // 강조 효과: 크기 확대
+    },
   };
 
   const deleteButtonStyle = {
     ...buttonStyle,
-    backgroundColor: '#d9534f',
-    color: '#fff',
+    backgroundColor: '#D895FF',
+    color: '#000',
+    '&:hover': {
+      backgroundColor: '#B372E8', // 강조 효과: 색상 변경
+      transform: 'scale(1.05)', // 강조 효과: 크기 확대
+    },
   };
 
   return (
