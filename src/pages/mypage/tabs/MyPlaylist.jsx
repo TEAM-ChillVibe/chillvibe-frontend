@@ -2,8 +2,10 @@ import {
   Alert,
   Box,
   Button,
+  CircularProgress,
   Grid,
   Pagination,
+  Snackbar,
   Typography,
 } from '@mui/material';
 import PlaylistListItemMini from '../../../components/common/ListItem/PlaylistListItemMini';
@@ -14,17 +16,28 @@ import {
   getUserPlaylists,
 } from '../../../api/playlist/playlistApi';
 
-// Pagination
+// 페이지네이션 단위 고정값
 const itemsPerPage = 10;
 
 const MyPlaylist = () => {
+  // 모달 상태
   const [open, setOpen] = useState(false);
+  // 플레이리스트 (생성)
   const [playlistTitle, setPlaylistTitle] = useState('');
-  const [error, setError] = useState(null);
   const [playlists, setPlaylists] = useState([]);
+  // 페이지
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
+  // 로딩
+  const [isLoading, setIsLoading] = useState(false);
+  // 스낵바
+  const [snackbar, setSnackbar] = useState({
+    open: false,
+    message: '',
+    severity: 'success',
+  });
 
+  // 플레이리스트 데이터 로드
   useEffect(() => {
     const fetchPlaylists = async () => {
       try {
@@ -32,20 +45,25 @@ const MyPlaylist = () => {
         setPlaylists(data.content);
         setTotalPages(data.totalPages);
       } catch (error) {
-        setError('플레이리스트를 가져오는 데 실패했습니다. 다시 시도해주세요.');
+        setSnackbar({
+          open: true,
+          message: '플레이리스트 로딩에 실패했습니다. 다시 시도해 주세요.',
+          severity: 'error',
+        });
       }
     };
 
     fetchPlaylists();
   }, [page]);
 
+  // 모달 핸들러
   const handleOpen = () => setOpen(true);
   const handleClose = () => {
     setOpen(false);
     setPlaylistTitle(''); // 모달 닫을 때 폼 필드 초기화
-    setError(null);
   };
 
+  // 모달 버튼 이벤트
   const handlePrimaryClick = async () => {
     if (!playlistTitle.trim()) {
       return;
@@ -59,18 +77,23 @@ const MyPlaylist = () => {
       setPlaylists(data.content); // 업데이트된 플레이리스트 설정
       setTotalPages(data.totalPages); // 업데이트된 총 페이지 수 설정
     } catch (e) {
-      setError('플레이리스트 생성에 실패했습니다. 다시 시도해 주세요.');
+      setSnackbar({
+        open: true,
+        message: '플레이리스트 생성에 실패했습니다. 다시 시도해 주세요.',
+        severity: 'error',
+      });
     }
   };
-
   const handleSecondaryClick = () => {
     handleClose();
   };
 
+  // 플레이리스트 제목 폼 핸들러
   const handleTitleChange = e => {
     setPlaylistTitle(e.target.value);
   };
 
+  // 페이지 핸들러
   const handlePageChange = (event, newPage) => {
     setPage(newPage);
   };
@@ -109,19 +132,12 @@ const MyPlaylist = () => {
             onSecondaryClick={handleSecondaryClick}
             isPrimaryButtonDisabled={!playlistTitle.trim()}
           />
-          {error && (
-            <Alert
-              severity="error"
-              onClose={() => setError(null)}
-              sx={{ mt: 2 }}
-            >
-              {error}
-            </Alert>
-          )}
         </Box>
       </Box>
       <Box sx={{ width: '100%', my: 2 }}>
-        {playlists.length === 0 ? (
+        {isLoading ? (
+          <CircularProgress color="secondary" />
+        ) : playlists.length === 0 ? (
           <Typography variant="body1" sx={{ textAlign: 'center', my: 15 }}>
             아직 플레이리스트가 없습니다.
           </Typography>
@@ -136,15 +152,29 @@ const MyPlaylist = () => {
             </Grid>
             <Box sx={{ display: 'flex', justifyContent: 'center', mt: 4 }}>
               <Pagination
-                count={Math.ceil(playlists.length / itemsPerPage)}
+                count={totalPages}
                 page={page}
                 onChange={handlePageChange}
-                // color="primary"
+                color="primary"
               />
             </Box>
           </>
         )}
       </Box>
+
+      <Snackbar
+        open={snackbar.open}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+        autoHideDuration={6000}
+        onClose={() => setSnackbar(prev => ({ ...prev, open: false }))}
+      >
+        <Alert
+          onClose={() => setSnackbar(prev => ({ ...prev, open: false }))}
+          severity={snackbar.severity}
+        >
+          {snackbar.message}
+        </Alert>
+      </Snackbar>
     </Box>
   );
 };
