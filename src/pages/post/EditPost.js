@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { createPost } from '../../api/post/postApi';
+import { useParams, useNavigate } from 'react-router-dom';
+import { fetchPostById, updatePost } from '../../api/post/postApi';
 import { getUserPlaylistsForSelection } from '../../api/playlist/playlistApi';
 import { fetchAllHashtags } from '../../api/hashtag/hashtagApi';
 
@@ -8,61 +8,79 @@ import {
   TextField,
   Button,
   Box,
-  Grid,
   Typography,
   Snackbar,
   Alert,
-  Pagination,
 } from '@mui/material';
 import HashtagChips from '../../components/common/HashtagChips';
-import usePostStore from '../../store/usePostStore';
 import BaseContainer from '../../components/layout/BaseContainer';
 import PlaylistListItem from '../../components/common/ListItem/PlaylistListItem';
+import useHashtagStore from '../../store/useHashtagStore';
 
-const NewPost = () => {
+const EditPost = () => {
+  // const { postId } = useParams();
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
-  const [selectedPlaylistId, setSelectedPlaylistId] = useState('');
+  const [selectedPlaylist, setSelectedPlaylist] = useState(null);
   const [playlists, setPlaylists] = useState([]);
   const [selectedHashtags, setSelectedHashtags] = useState([]);
-  const [page, setPage] = useState(1);
-  const itemsPerPage = 6; // 페이지당 표시할 플레이리스트 수
-  const addPost = usePostStore(state => state.addPost);
   const navigate = useNavigate();
   const [openSnackbar, setOpenSnackbar] = useState(false);
-  const defaultImageUrl = 'https://via.placeholder.com/100';
+  const {
+    multiSelectedHashtags,
+    multiToggleHashtag,
+    multiSetSelectedHashtags,
+  } = useHashtagStore(state => ({
+    multiSelectedHashtags: state.multiSelectedHashtags,
+    multiToggleHashtag: state.multiToggleHashtag,
+    multiSetSelectedHashtags: state.multiSetSelectedHashtags,
+  }));
+
+  const postId = 1;
 
   useEffect(() => {
+    const fetchPostData = async () => {
+      try {
+        const post = await fetchPostById(postId);
+        console.log(post);
+        setTitle(post.title);
+        setDescription(post.description);
+        setSelectedPlaylist(post.playlists);
+        multiSetSelectedHashtags(post.hashtags.map(hashtag => hashtag.id));
+      } catch (error) {
+        console.error('Error fetching post data:', error);
+      }
+    };
+
     const fetchPlaylists = async () => {
       try {
         const response = await getUserPlaylistsForSelection();
-        console.log(response);
         setPlaylists(response);
       } catch (error) {
         console.error('Error fetching playlists:', error);
       }
     };
 
+    fetchPostData();
     fetchPlaylists();
-  }, []);
+  }, [postId]);
 
   const handleSubmit = async e => {
     e.preventDefault();
-    const newPost = {
+    const updatedPost = {
       title,
       description,
-      playlistId: selectedPlaylistId,
       hashtagIds: selectedHashtags,
     };
+    console.log('updating post with data: ', updatedPost);
     try {
-      const response = await createPost(newPost);
-      addPost(response);
+      await updatePost(postId, updatedPost);
       setOpenSnackbar(true);
       setTimeout(() => {
-        navigate('/api/posts'); // 게시글 목록 페이지로 이동
-      }, 3000); // 3초 후에 페이지 이동
+        navigate(`/post/${postId}`); // 게시글 상세 페이지로 이동
+      }, 3000); // 2초 후에 페이지 이동
     } catch (error) {
-      console.error('Error creating post:', error);
+      console.error('Error updating post:', error);
     }
   };
 
@@ -88,17 +106,13 @@ const NewPost = () => {
     navigate(-1); // 이전 페이지로 이동
   };
 
-  const handlePageChange = (event, newPage) => {
-    setPage(newPage);
-  };
-
   const handleCloseSnackbar = () => {
     setOpenSnackbar(false);
   };
 
   return (
     <BaseContainer>
-      <Typography variant="title">New Post</Typography>
+      <Typography variant="title">Edit Post</Typography>
       <Box
         component="form"
         onSubmit={handleSubmit}
@@ -113,7 +127,7 @@ const NewPost = () => {
           onChange={e => setTitle(e.target.value)}
           required
         />
-        <Typography variant="h6" sx={{ fontSize: '1.2rem' }}>
+        <Typography variant="h6" sx={{ fontSize: '1.2rem', marginTop: 2 }}>
           플레이리스트 소개
         </Typography>
         <TextField
@@ -124,51 +138,34 @@ const NewPost = () => {
           multiline
           rows={4}
         />
-        <Typography variant="h6" sx={{ fontSize: '1.2rem' }}>
+        <Typography variant="h6" sx={{ fontSize: '1.2rem', marginTop: 3 }}>
           태그 선택
         </Typography>
         <HashtagChips
           fetchHashtags={fetchHashtags}
-          selectedHashtag={selectedHashtags}
-          onHashtagClick={handleHashtagClick}
+          onChipClick={handleHashtagClick}
           multiSelectMode={true}
         />
-        <Typography variant="h6" sx={{ fontSize: '1.2rem' }}>
-          플레이리스트 선택
+        <Typography variant="h6" sx={{ fontSize: '1.2rem', marginTop: 5 }}>
+          플레이리스트
         </Typography>
-        <Grid container spacing={2}>
-          {playlists.map(playlist => (
-            <Grid item xs={12} sm={6} key={playlist.id}>
-              <Box
-                onClick={() => setSelectedPlaylistId(playlist.id)}
-                sx={{
-                  cursor: 'pointer',
-                  border:
-                    selectedPlaylistId === playlist.id
-                      ? '2px solid #3f51b5'
-                      : '1px solid #ccc',
-                  padding: 1,
-                  borderRadius: 1,
-                  display: 'flex',
-                  alignItems: 'center',
-                  '&:hover': {
-                    border: '2px solid #3f51b5',
-                  },
-                }}
-              >
-                <PlaylistListItem playlist={playlist} />
-              </Box>
-            </Grid>
-          ))}
-        </Grid>
-        <Box sx={{ display: 'flex', justifyContent: 'center', mt: 4 }}>
-          <Pagination
-            count={Math.ceil(playlists.length / itemsPerPage)}
-            page={page}
-            onChange={handlePageChange}
-          />
+        <Box sx={{ mt: 2 }}>
+          {selectedPlaylist ? (
+            <PlaylistListItem playlist={selectedPlaylist} />
+          ) : (
+            <Typography variant="body2" sx={{ color: 'gray' }}>
+              선택된 플레이리스트가 없습니다.
+            </Typography>
+          )}
         </Box>
-        <Box sx={{ display: 'flex', justifyContent: 'center', gap: 2 }}>
+        <Box
+          sx={{
+            display: 'flex',
+            justifyContent: 'center',
+            gap: 2,
+            marginTop: 8,
+          }}
+        >
           <Button
             variant="outlined"
             color="secondary"
@@ -178,7 +175,7 @@ const NewPost = () => {
             취소
           </Button>
           <Button type="submit" variant="contained" color="primary">
-            작성
+            수정
           </Button>
         </Box>
       </Box>
@@ -192,11 +189,11 @@ const NewPost = () => {
           severity="success"
           sx={{ width: '100%' }}
         >
-          게시글이 성공적으로 생성되었습니다!
+          게시글이 성공적으로 수정되었습니다!
         </Alert>
       </Snackbar>
     </BaseContainer>
   );
 };
 
-export default NewPost;
+export default EditPost;

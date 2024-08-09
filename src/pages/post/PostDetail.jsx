@@ -105,7 +105,9 @@ const PostDetail = () => {
         )}
       </List>
 
-      <Typography variant="h6">Comments</Typography>
+      <Typography variant="h6" sx={{ mt: 3, mb: 2 }}>
+        Comments
+      </Typography>
       {/* <List>
         {post.comments &&
           post.comments.map(comment => (
@@ -117,7 +119,9 @@ const PostDetail = () => {
             </ListItem>
           ))}
       </List> */}
-      <Comment />
+      <Box sx={{ width: '100%', mt: -10 }}>
+        <Comment />
+      </Box>
     </BaseContainer>
   );
 };

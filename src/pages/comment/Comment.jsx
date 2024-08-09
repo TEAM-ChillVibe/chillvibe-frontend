@@ -116,10 +116,7 @@ const Comment = () => {
 
   return (
     <BaseContainer>
-      <Box sx={{ width: '100%' }}>
-        <Typography variant="h5" sx={{ pb: 2 }}>
-          Comments
-        </Typography>
+      <Box sx={{ width: '170%' }}>
         {comments.map(comment => (
           <Paper key={comment.id} sx={{ p: 2, mb: 2 }}>
             <Box sx={{ display: 'flex', alignItems: 'flex-start' }}>
