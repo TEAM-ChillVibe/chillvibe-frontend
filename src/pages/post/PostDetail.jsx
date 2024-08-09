@@ -220,21 +220,9 @@ const PostDetail = () => {
       <Typography variant="h6" sx={{ mt: 3, mb: 2 }}>
         Comments
       </Typography>
-      <List>
-        {post.comments && post.comments.length > 0 ? (
-          post.comments.map(comment => (
-            <ListItem key={comment.id}>
-              <ListItemText
-                primary={comment.content}
-                secondary={comment.userNickname}
-              />
-            </ListItem>
-          ))
-        ) : (
-          <Typography>No comments available.</Typography>
-        )}
-      </List>
-
+      <Box sx={{ width: '100%', mt: -10 }}>
+        <Comment />
+      </Box>
       {/* 삭제 모달 */}
       <DeleteModal
         isOpen={isModalOpen}

@@ -1,4 +1,7 @@
 import axios from 'axios';
+import useUserStore from './store/useUserStore';
+import { signout } from './api/auth/authApi';
+import { useNavigate } from 'react-router-dom';
 
 // 토큰이 없는 요청을 위한 인스턴스
 const axiosWithoutToken = axios.create({
@@ -67,7 +70,14 @@ axiosWithToken.interceptors.response.use(
         // 기존의 요청 재시도
         return axiosWithToken(originalRequest);
       } catch (refreshError) {
-        // 토큰 재발급 실패시 로그인페이지로 리다이렉트
+        // 토큰 재발급 실패시 동작
+        localStorage.clear();
+
+        const { clearUser, logout } = useUserStore.getState();
+        clearUser();
+        logout();
+        await signout();
+        alert('로그인 세션이 만료되었습니다. 다시 로그인해 주세요.');
         window.location.href = '/login';
         return Promise.reject(refreshError);
       }

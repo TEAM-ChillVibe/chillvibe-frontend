@@ -59,7 +59,7 @@ const MyComment = () => {
 
   // 댓글 클릭 핸들러
   const handleCommentClick = postId => {
-    navigate(`/api/posts/${postId}`); // 해당 게시글 페이지로 이동
+    navigate(`/posts/${postId}`); // 해당 게시글 페이지로 이동
   };
 
   // 페이지 인덱스 계산
@@ -75,7 +75,16 @@ const MyComment = () => {
       </Typography>
       <Box sx={{ width: '100%', my: 2 }}>
         {isLoading ? (
-          <CircularProgress color="secondary" />
+          <Box
+            sx={{
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              py: 10,
+            }}
+          >
+            <CircularProgress color="secondary" />
+          </Box>
         ) : comments.length === 0 ? (
           <Typography variant="body1" sx={{ textAlign: 'center', my: 15 }}>
             아직 작성된 댓글이 없습니다.
@@ -86,7 +95,8 @@ const MyComment = () => {
               <Box
                 key={comment.id}
                 sx={{
-                  py: 2,
+                  py: 2.5,
+                  width: '100%',
                   display: 'flex',
                   alignItems: 'flex-start',
                   justifyContent: 'space-between',
@@ -123,14 +133,21 @@ const MyComment = () => {
                     )}
                   </Typography>
                 </Box>
-                <Box>
+                <Box
+                  sx={{
+                    width: 120,
+                    height: 120,
+                    ml: 2,
+                    borderRadius: 2,
+                    overflow: 'hidden',
+                  }}
+                >
                   <img
                     src={comment.postTitleImageUrl}
                     alt={comment.postTitle}
                     style={{
-                      width: 100,
-                      height: 100,
-                      borderRadius: 2,
+                      width: '100%',
+                      height: '100%',
                       objectFit: 'cover',
                       p: 2,
                     }}

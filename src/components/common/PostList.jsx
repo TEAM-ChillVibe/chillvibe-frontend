@@ -1,17 +1,11 @@
 import { useEffect, useState } from 'react';
-import { Box, Typography } from '@mui/material';
+import { Box, CircularProgress, Typography } from '@mui/material';
 import usePostStore from '../../store/usePostStore';
 import PostListItem from './ListItem/PostListItem';
 
 const PostList = ({ selectedHashtag, sortOrder }) => {
-  const {
-    posts,
-    isLoading,
-    error,
-    loadPosts,
-    loadPostsByHashtagId,
-    loadPostsByUserId,
-  } = usePostStore();
+  const { posts, isLoading, error, loadPosts, loadPostsByHashtagId } =
+    usePostStore();
   const [loading, setLoading] = useState(false);
 
   const loadPostsData = async () => {
@@ -35,7 +29,18 @@ const PostList = ({ selectedHashtag, sortOrder }) => {
 
   return (
     <Box sx={{ width: '100%' }}>
-      {posts.length > 0 ? (
+      {isLoading ? (
+        <Box
+          sx={{
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            py: 10,
+          }}
+        >
+          <CircularProgress color="secondary" />
+        </Box>
+      ) : posts.length > 0 ? (
         posts.map(post => <PostListItem key={post.id} post={post} />)
       ) : (
         <Box
