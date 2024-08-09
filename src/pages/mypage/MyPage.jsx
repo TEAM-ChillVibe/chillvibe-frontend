@@ -22,14 +22,14 @@ const MyPage = () => {
   };
 
   // user 정보 가져오기
-  const { user, fetchUserInfo } = useUserStore(state => ({
+  const { user, fetchMyInfo } = useUserStore(state => ({
     user: state.user,
-    fetchUserInfo: state.fetchUserInfo,
+    fetchMyInfo: state.fetchMyInfo,
   }));
 
   useEffect(() => {
-    fetchUserInfo();
-  }, [fetchUserInfo]);
+    fetchMyInfo();
+  }, [fetchMyInfo]);
 
   return (
     <BaseContainer>

@@ -21,8 +21,8 @@ const useUserStore = create(
         }
       },
 
-      // 사용자 정보 초기화
-      fetchUserInfo: async () => {
+      // 내 정보 초기화
+      fetchMyInfo: async () => {
         try {
           const userData = await myInfo();
           set({ user: userData, isAuthenticated: true });
