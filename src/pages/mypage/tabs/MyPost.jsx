@@ -1,10 +1,18 @@
 import { useEffect, useState } from 'react';
-import { Box, Button, Pagination, Typography } from '@mui/material';
+import {
+  Alert,
+  Box,
+  Button,
+  CircularProgress,
+  Pagination,
+  Snackbar,
+  Typography,
+} from '@mui/material';
 import MyPostListItem from '../../../components/common/ListItem/MyPostListItem';
 import usePostStore from '../../../store/usePostStore';
 
 // 페이지네이션 단위 고정값
-const itemsPerPage = 6;
+const itemsPerPage = 10;
 
 const MyPost = ({ user }) => {
   const { posts, loadPostsByUserId, isLoading, error } = usePostStore(
@@ -16,23 +24,44 @@ const MyPost = ({ user }) => {
     }),
   );
 
-  // Pagination
+  // 현재 페이지 관리
   const [page, setPage] = useState(1);
 
+  // 스낵바 관리
+  const [snackbar, setSnackbar] = useState({
+    open: false,
+    message: '',
+    severity: 'success',
+  });
+
+  // 에러 처리
+  useEffect(() => {
+    if (error) {
+      setSnackbar({
+        open: true,
+        message: '데이터 로딩에 실패했습니다. 다시 시도해 주세요.',
+        severity: 'error',
+      });
+    }
+  }, [error]);
+
+  // 데이터 로딩
   useEffect(() => {
     if (user && user.userId) {
       loadPostsByUserId(user.userId, page - 1, itemsPerPage);
     }
   }, [user, page, loadPostsByUserId]);
 
+  // 페이지 핸들러
   const handlePageChange = (event, newPage) => {
     setPage(newPage);
   };
 
-  // Calculate the indices of the items to display
+  // 인덱스 계산
   const startIndex = (page - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
   const currentPosts = posts.slice(startIndex, endIndex);
+  const totalPages = Math.ceil(posts.length / itemsPerPage);
 
   return (
     <Box sx={{ width: '100%' }}>
@@ -50,26 +79,42 @@ const MyPost = ({ user }) => {
         </Button>
       </Box>
       <Box sx={{ width: '100%', my: 2 }}>
-        {posts.length === 0 ? (
+        {isLoading ? (
+          <CircularProgress color="secondary" />
+        ) : posts.length === 0 ? (
           <Typography variant="body1" sx={{ textAlign: 'center', my: 15 }}>
             아직 게시물이 없습니다.
           </Typography>
         ) : (
           <>
-            {posts.map(post => (
+            {currentPosts.map(post => (
               <MyPostListItem key={post.id} post={post} />
             ))}
             <Box sx={{ display: 'flex', justifyContent: 'center', mt: 4 }}>
               <Pagination
-                count={Math.ceil(posts.length / itemsPerPage)}
+                count={totalPages}
                 page={page}
                 onChange={handlePageChange}
-                // color="primary"
+                color="primary"
               />
             </Box>
           </>
         )}
       </Box>
+
+      <Snackbar
+        open={snackbar.open}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+        autoHideDuration={6000}
+        onClose={() => setSnackbar(prev => ({ ...prev, open: false }))}
+      >
+        <Alert
+          onClose={() => setSnackbar(prev => ({ ...prev, open: false }))}
+          severity={snackbar.severity}
+        >
+          {snackbar.message}
+        </Alert>
+      </Snackbar>
     </Box>
   );
 };
