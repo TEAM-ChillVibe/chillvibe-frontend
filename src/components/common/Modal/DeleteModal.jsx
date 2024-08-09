@@ -23,6 +23,7 @@ const DeleteModal = ({ isOpen, onClose, onDelete }) => {
     borderRadius: '8px',
     textAlign: 'center',
     width: '400px',
+    border: '2px solid #fff',
   };
 
   const modalActionsStyle = {

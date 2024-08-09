@@ -177,26 +177,6 @@ const PostDetail = () => {
           <Typography>No tracks available</Typography>
         )}
       </List>
-
-<<<<<<< HEAD
-      <Typography variant="h6" sx={{ mt: 3, mb: 2 }}>
-        Comments
-      </Typography>
-      {/* <List>
-        {post.comments &&
-          post.comments.map(comment => (
-            <ListItem key={comment.id}>
-              <ListItemText
-                primary={comment.content}
-                secondary={comment.userNickname}
-              />
-            </ListItem>
-          ))}
-      </List> */}
-      <Box sx={{ width: '100%', mt: -10 }}>
-        <Comment />
-      </Box>
-=======
       {/* 사용자 정보 */}
       {post.user && (
         <Box
@@ -235,10 +215,19 @@ const PostDetail = () => {
         </Box>
       )}
       {/* 댓글 섹션 */}
-      <Typography variant="h6" sx={{ mt: 4, fontWeight: 'bold' }}>
+      <Typography variant="h6" sx={{ mt: 3, mb: 2 }}>
         Comments
       </Typography>
-      <Comment postId={postId} />
+      {/* <List>
+        {post.comments &&
+          post.comments.map(comment => (
+            <ListItem key={comment.id}>
+              <ListItemText
+                primary={comment.content}
+                secondary={comment.userNickname}
+              />
+            </ListItem>
+          ))}
 
       {/* 삭제 모달 */}
       <DeleteModal
@@ -246,7 +235,6 @@ const PostDetail = () => {
         onClose={closeModal}
         onDelete={handleDelete}
       />
->>>>>>> feature/post
     </BaseContainer>
   );
 };
