@@ -7,7 +7,7 @@ import {
 } from '../../../api/playlist/playlistApi';
 import BaseContainer from '../../../components/layout/BaseContainer';
 import SimpleModal from '../../../components/common/Modal/SimpleModal';
-
+import { formatDate, formatRelativeTime } from '../../../utils/reusableFn';
 import {
   Box,
   Typography,
@@ -98,7 +98,7 @@ const PlaylistDetail = () => {
       navigate('/my-page');
     } catch (error) {
       console.error('Failed to delete playlist:', error);
-      // TODO: 사용자에게 삭제 실패 메시지 표시
+      // TODO: 사용자에게 삭제 실패 메시지 표시.
     }
     setIsDeleteModalOpen(false);
   };
@@ -149,11 +149,8 @@ const PlaylistDetail = () => {
           <Typography variant="subtitle1" color="text.secondary">
             트랙 {playlistData.trackCount}개
           </Typography>
-          <Typography variant="body2">
-            Created: {playlistData.createdAt || 'N/A'}
-          </Typography>
-          <Typography variant="body2">
-            Modified: {playlistData.modifiedAt || 'N/A'}
+          <Typography variant="subtitle" color="text.secondary">
+            {formatDate(playlistData.modifiedAt)} 수정
           </Typography>
         </Box>
       </Card>
