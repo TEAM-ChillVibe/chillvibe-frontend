@@ -9,6 +9,7 @@ import BaseContainer from '../../../components/layout/BaseContainer';
 import SimpleModal from '../../../components/common/Modal/SimpleModal';
 import { formatDate, formatRelativeTime } from '../../../utils/reusableFn';
 import {
+  Alert,
   Box,
   Typography,
   Card,
@@ -16,6 +17,7 @@ import {
   List,
   ListItem,
   Button,
+  Snackbar,
 } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import TrackListEditItem from '../../../components/common/ListItem/TrackListEditItem';
@@ -28,6 +30,11 @@ const PlaylistDetail = () => {
   const [tracksToDelete, setTracksToDelete] = useState([]);
   const [isSaveModalOpen, setIsSaveModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [snackbar, setSnackbar] = useState({
+    open: false,
+    message: '',
+    severity: 'success',
+  });
 
   useEffect(() => {
     const fetchPlaylistData = async () => {
@@ -72,13 +79,20 @@ const PlaylistDetail = () => {
       if (tracksToDelete.length > 0) {
         await removeTracksFromPlaylist(playlistId, tracksToDelete);
         setTracksToDelete([]);
+        setSnackbar({
+          open: true,
+          message: '플레이리스트 저장에 성공했습니다.',
+          severity: 'success',
+        });
       }
-      console.log('Changes saved successfully');
-      window.location.reload();
-      // TODO: 사용자에게 저장 성공 메시지 표시
+      const updatedData = await getPlaylistForEditing(playlistId);
+      setPlaylistData(updatedData);
     } catch (error) {
-      console.error('Failed to save changes:', error);
-      // TODO: 사용자에게 저장 실패 메시지 표시
+      setSnackbar({
+        open: true,
+        message: '플레이리스트 저장에 실패했습니다. 다시 시도해주세요.',
+        severity: 'error',
+      });
     }
     setIsSaveModalOpen(false);
   };
@@ -94,11 +108,13 @@ const PlaylistDetail = () => {
   const handleConfirmDelete = async () => {
     try {
       await deletePlaylist(playlistId);
-      console.log('Playlist deleted successfully');
       navigate('/my-page');
     } catch (error) {
-      console.error('Failed to delete playlist:', error);
-      // TODO: 사용자에게 삭제 실패 메시지 표시.
+      setSnackbar({
+        open: true,
+        message: '플레이리스트 삭제에 실패했습니다. 다시 시도해주세요.',
+        severity: 'error',
+      });
     }
     setIsDeleteModalOpen(false);
   };
@@ -143,7 +159,7 @@ const PlaylistDetail = () => {
             justifyContent: 'space-between',
           }}
         >
-          <Typography variant="title" component="div" sx={{ color: 'black' }}>
+          <Typography variant="title" component="div">
             {playlistData.title}
           </Typography>
           <Typography variant="subtitle1" color="text.secondary">
@@ -229,6 +245,21 @@ const PlaylistDetail = () => {
         onPrimaryClick={handleConfirmDelete}
         onSecondaryClick={handleCancelDelete}
       />
+
+      {/* 플레이리스트 저장 확인 스낵바 */}
+      <Snackbar
+        open={snackbar.open}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+        autoHideDuration={6000}
+        onClose={() => setSnackbar(prev => ({ ...prev, open: false }))}
+      >
+        <Alert
+          onClose={() => setSnackbar(prev => ({ ...prev, open: false }))}
+          severity={snackbar.severity}
+        >
+          {snackbar.message}
+        </Alert>
+      </Snackbar>
     </BaseContainer>
   );
 };
