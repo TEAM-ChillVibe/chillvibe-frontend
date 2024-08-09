@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { createPost } from '../../api/post/postApi';
-import { getUserPlaylistsForSelection } from '../../api/playlist/playlistApi';
+import { getUserPlaylists } from '../../api/playlist/playlistApi';
 import { fetchAllHashtags } from '../../api/hashtag/hashtagApi';
 
 import {
@@ -26,6 +26,7 @@ const NewPost = () => {
   const [playlists, setPlaylists] = useState([]);
   const [selectedHashtags, setSelectedHashtags] = useState([]);
   const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(0);
   const itemsPerPage = 6; // 페이지당 표시할 플레이리스트 수
   const addPost = usePostStore(state => state.addPost);
   const navigate = useNavigate();
@@ -34,16 +35,17 @@ const NewPost = () => {
   useEffect(() => {
     const fetchPlaylists = async () => {
       try {
-        const response = await getUserPlaylistsForSelection();
-        console.log(response);
-        setPlaylists(response);
+        const response = await getUserPlaylists(page - 1, itemsPerPage);
+        console.log('Fetched playlists:', response);
+        setPlaylists(response.content || []);
+        setTotalPages(response.totalPages || 0);
       } catch (error) {
         console.error('Error fetching playlists:', error);
       }
     };
 
     fetchPlaylists();
-  }, []);
+  }, [page]);
 
   const handleSubmit = async e => {
     e.preventDefault();
