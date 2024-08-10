@@ -1,41 +1,48 @@
 import { useEffect, useState } from 'react';
-import { Box, Typography } from '@mui/material';
+import { Box, CircularProgress, Typography } from '@mui/material';
 import usePostStore from '../../store/usePostStore';
 import PostListItem from './ListItem/PostListItem';
+import { fetchAllPosts, fetchPostsByHashtagId } from '../../api/post/postApi';
 
 const PostList = ({ selectedHashtag, sortOrder }) => {
-  const {
-    posts,
-    isLoading,
-    error,
-    loadPosts,
-    loadPostsByHashtagId,
-    loadPostsByUserId,
-  } = usePostStore();
+  const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(false);
 
-  const loadPostsData = async () => {
-    setLoading(true);
-    try {
-      if (selectedHashtag) {
-        await loadPostsByHashtagId(selectedHashtag, sortOrder);
-      } else {
-        await loadPosts(sortOrder);
-      }
-    } catch (error) {
-      console.error(error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
   useEffect(() => {
-    loadPostsData();
+    const fetchPosts = async () => {
+      setLoading(true);
+      try {
+        if (selectedHashtag) {
+          const data = await fetchPostsByHashtagId(selectedHashtag, sortOrder);
+          setPosts(data.content);
+        } else {
+          const data = await fetchAllPosts(sortOrder);
+          setPosts(data.content);
+        }
+      } catch (error) {
+        console.log(error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchPosts();
   }, [selectedHashtag, sortOrder]);
 
   return (
     <Box sx={{ width: '100%' }}>
-      {posts.length > 0 ? (
+      {loading ? (
+        <Box
+          sx={{
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            py: 10,
+          }}
+        >
+          <CircularProgress color="secondary" />
+        </Box>
+      ) : posts.length > 0 ? (
         posts.map(post => <PostListItem key={post.id} post={post} />)
       ) : (
         <Box

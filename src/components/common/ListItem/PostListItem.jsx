@@ -1,17 +1,20 @@
 import { Avatar, Box, Typography } from '@mui/material';
 import albumSample from '../albumSample.jpeg';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import HashtagChips from '../HashtagChips';
 import { fetchHashtagsOfPost } from '../../../api/hashtag/hashtagApi';
 import { formatRelativeTime } from '../../../utils/reusableFn';
 import LikeButton from '../Button/LikeButton';
 import { useEffect } from 'react';
-import useLikeStore from '../../../store/useLikeStore';
+import usePostStore from '../../../store/usePostStore';
 
 function PostListItem({ post }) {
-  const { id, title, createdAt, trackCount, user, likeCount } = post;
+  const { id, title, createdAt, trackCount, user, likeCount, thumbnailUrl } =
+    post;
   const navigate = useNavigate();
-  const { initializeLikedPosts } = useLikeStore(state => ({
+  const location = useLocation();
+
+  const { initializeLikedPosts } = usePostStore(state => ({
     initializeLikedPosts: state.initializeLikedPosts,
   }));
 
@@ -27,8 +30,14 @@ function PostListItem({ post }) {
     navigate(`/user/${user.id}`);
   };
 
-  const handleChipClick = () => {
-    navigate(`/all-tags/`);
+  const handleChipClick = tagId => {
+    localStorage.setItem('selectedHashtag', tagId);
+
+    if (location.pathname === '/all-tags') {
+      window.location.reload();
+    } else {
+      navigate('/all-tags');
+    }
   };
 
   return (
@@ -54,7 +63,7 @@ function PostListItem({ post }) {
       >
         {/* 이미지 소스 수정 필요 */}
         <img
-          src={albumSample}
+          src={thumbnailUrl}
           alt={'Track img'}
           style={{ width: '100%', height: '100%', objectFit: 'cover' }}
         />

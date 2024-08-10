@@ -55,9 +55,10 @@ export const createPost = async postCreateRequestDto => {
 export const updatePost = async (postId, postUpdateRequestDto) => {
   try {
     const response = await axiosWithToken.put(
-      '/api/posts/${postId}',
+      `/api/posts/${postId}`,
       postUpdateRequestDto,
     );
+    console.log('Update successful:', response.data);
     return response.data;
   } catch (error) {
     console.error('Failed to update post:', error);
@@ -156,6 +157,16 @@ export const fetchMyLikedPosts = async (page = 0, size = 10) => {
     return response.data;
   } catch (error) {
     console.error('Error fetching liked posts:', error);
+    throw error;
+  }
+};
+
+export const fetchPostsInMainPage = async () => {
+  try {
+    const response = await axiosWithToken.get('/api/posts/main');
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching playlists:', error);
     throw error;
   }
 };

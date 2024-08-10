@@ -1,12 +1,12 @@
-import useLikeStore from '../../../store/useLikeStore';
 import IconButton from '@mui/material/IconButton';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import { useEffect, useState } from 'react';
 import { Box, Typography } from '@mui/material';
+import usePostStore from '../../../store/usePostStore';
 
 const LikeButton = ({ postId, initialLikeCount }) => {
-  const { toggleLike, isPostLiked, initializeLikedPosts } = useLikeStore(
+  const { toggleLike, isPostLiked, initializeLikedPosts } = usePostStore(
     state => ({
       toggleLike: state.toggleLike,
       isPostLiked: state.isPostLiked,

@@ -16,16 +16,15 @@ import {
 } from '@mui/material';
 import { Delete, Edit } from '@mui/icons-material';
 import IconButton from '@mui/material/IconButton';
+import { useParams } from 'react-router-dom';
 
 const Comment = () => {
-  // const { postId } = useParams(); // URL에서 postId를 가져옴
+  const { postId } = useParams(); // URL에서 postId를 가져옴
   const [comments, setComments] = useState([]);
   const [newComment, setNewComment] = useState('');
   const [editingCommentId, setEditingCommentId] = useState(null);
   const [editingContent, setEditingContent] = useState('');
   const [userId, setUserId] = useState(null);
-
-  const postId = 1;
 
   useEffect(() => {
     // 토큰 디코딩하여 사용자 ID 가져오기
@@ -51,10 +50,8 @@ const Comment = () => {
     createComment({ content: newComment, postId })
       .then(response => {
         setComments(prevComments => {
-          // 새로운 댓글을 추가한 후, 전체 목록을 최신순으로 정렬
-          const updatedComments = [...prevComments, response].sort(
-            (a, b) => new Date(b.createdAt) - new Date(a.createdAt),
-          );
+          // 새로운 댓글을 추가한 후, 전체 목록의 마지막에 추가
+          const updatedComments = [...prevComments, response];
           return updatedComments;
         });
         setNewComment('');
@@ -126,7 +123,7 @@ const Comment = () => {
               />
               <Box sx={{ flexGrow: 1 }}>
                 <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
-                  <Typography variant="h6">
+                  <Typography variant="h6" sx={{ fontSize: '1rem' }}>
                     {comment.userNickname} ({getMaskedEmail(comment.userEmail)})
                   </Typography>
                 </Box>
@@ -147,7 +144,11 @@ const Comment = () => {
                   </>
                 ) : (
                   <>
-                    <Typography variant="body1" paragraph>
+                    <Typography
+                      variant="body1"
+                      paragraph
+                      sx={{ marginBottom: '7px' }}
+                    >
                       {comment.content}
                     </Typography>
                     <Typography variant="caption" color="textSecondary">

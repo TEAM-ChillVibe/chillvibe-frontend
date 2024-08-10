@@ -2,7 +2,7 @@ import { Box, Typography } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 
 function PlaylistListItemMini({ playlist }) {
-  const { id, title, trackCount, thumbnailUrls = [] } = playlist;
+  const { id, title, trackCount, thumbnailUrl } = playlist;
   const navigate = useNavigate();
 
   const handleNavigateToPlaylist = () => {
@@ -22,9 +22,6 @@ function PlaylistListItemMini({ playlist }) {
     >
       <Box
         sx={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(2, 1fr)', // 2열 설정
-          gridTemplateRows: 'repeat(2, 1fr)', // 2행 설정
           width: 80,
           height: 80,
           mr: 2,
@@ -33,18 +30,11 @@ function PlaylistListItemMini({ playlist }) {
           order: 1,
         }}
       >
-        {thumbnailUrls.slice(0, 4).map((url, index) => (
-          <Box
-            key={index}
-            sx={{ width: '100%', height: '100%', overflow: 'hidden' }}
-          >
-            <img
-              src={url}
-              alt={index}
-              style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-            />
-          </Box>
-        ))}
+        <img
+          src={thumbnailUrl} // 첫 번째 썸네일 이미지만 사용
+          alt={title}
+          style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+        />
       </Box>
 
       <Box

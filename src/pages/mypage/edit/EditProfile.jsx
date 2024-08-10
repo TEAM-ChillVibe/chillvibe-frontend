@@ -48,22 +48,8 @@ const EditProfile = () => {
     fetchUserData();
   }, []);
 
-  const handleHashtagClick = tagId => {
-    setSelectedHashtags(prevSelected =>
-      prevSelected.includes(tagId)
-        ? prevSelected.filter(id => id !== tagId)
-        : [...prevSelected, tagId],
-    );
-  };
-
-  const fetchHashtags = async () => {
-    try {
-      const response = await fetchAllHashtags();
-      return response;
-    } catch (error) {
-      console.error('Error fetching hashtags:', error);
-      return [];
-    }
+  const handleHashtagClick = selectedHashtags => {
+    setSelectedHashtags(selectedHashtags);
   };
 
   const handleImageChange = event => {
@@ -194,9 +180,8 @@ const EditProfile = () => {
             margin="normal"
           />
           <HashtagChips
-            fetchHashtags={fetchHashtags}
-            selectedHashtags={hashtagIds}
-            onHashtagClick={handleHashtagClick}
+            fetchHashtags={fetchAllHashtags}
+            onChipClick={handleHashtagClick}
             multiSelectMode={true}
           />
           <Box

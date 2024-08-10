@@ -1,16 +1,8 @@
-import { useEffect, useState } from 'react';
-import {
-  Alert,
-  Box,
-  CircularProgress,
-  Pagination,
-  Snackbar,
-  Typography,
-} from '@mui/material';
+import React, { useEffect, useState } from 'react';
+import { Box, CircularProgress, Pagination, Typography } from '@mui/material';
 import PostListItem from '../../../components/common/ListItem/PostListItem';
-import usePostStore from '../../../store/usePostStore';
-import useLikeStore from '../../../store/useLikeStore';
 import { fetchMyLikedPosts } from '../../../api/post/postApi';
+import SnackbarAlert from '../../../components/common/Alert/SnackbarAlert';
 
 // 페이지네이션 단위 고정값
 const itemsPerPage = 10;
@@ -69,7 +61,16 @@ const MyLikedPost = () => {
       </Box>
       <Box sx={{ width: '100%', my: 2 }}>
         {isLoading ? (
-          <CircularProgress color="secondary" />
+          <Box
+            sx={{
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              py: 10,
+            }}
+          >
+            <CircularProgress color="secondary" />
+          </Box>
         ) : likedPosts.length === 0 ? (
           <Typography variant="body1" sx={{ textAlign: 'center', my: 15 }}>
             아직 좋아요 한 게시물이 없습니다.
@@ -91,19 +92,12 @@ const MyLikedPost = () => {
         )}
       </Box>
 
-      <Snackbar
+      <SnackbarAlert
         open={snackbar.open}
-        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
-        autoHideDuration={6000}
         onClose={() => setSnackbar(prev => ({ ...prev, open: false }))}
-      >
-        <Alert
-          onClose={() => setSnackbar(prev => ({ ...prev, open: false }))}
-          severity={snackbar.severity}
-        >
-          {snackbar.message}
-        </Alert>
-      </Snackbar>
+        message={snackbar.message}
+        severity={snackbar.severity}
+      />
     </Box>
   );
 };
