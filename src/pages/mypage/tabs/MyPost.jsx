@@ -10,19 +10,24 @@ import {
 } from '@mui/material';
 import MyPostListItem from '../../../components/common/ListItem/MyPostListItem';
 import usePostStore from '../../../store/usePostStore';
+import { fetchPostsByUserId } from '../../../api/post/postApi';
 
 // 페이지네이션 단위 고정값
 const itemsPerPage = 10;
 
 const MyPost = ({ user }) => {
-  const { posts, loadPostsByUserId, isLoading, error } = usePostStore(
-    state => ({
-      posts: state.posts,
-      loadPostsByUserId: state.loadPostsByUserId,
-      isLoading: state.isLoading,
-      error: state.error,
-    }),
-  );
+  // const { posts, loadPostsByUserId, isLoading, error } = usePostStore(
+  //   state => ({
+  //     posts: state.posts,
+  //     loadPostsByUserId: state.loadPostsByUserId,
+  //     isLoading: state.isLoading,
+  //     error: state.error,
+  //   }),
+  // );
+
+  const [posts, setPosts] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
 
   // 현재 페이지 관리
   const [page, setPage] = useState(1);
@@ -45,12 +50,25 @@ const MyPost = ({ user }) => {
     }
   }, [error]);
 
-  // 데이터 로딩
   useEffect(() => {
-    if (user && user.userId) {
-      loadPostsByUserId(user.userId, page - 1, itemsPerPage);
-    }
-  }, [user, page, loadPostsByUserId]);
+    const fetchposts = async () => {
+      setIsLoading(true);
+      try {
+        const data = await fetchPostsByUserId(page - 1, itemsPerPage);
+        setPosts(data.content);
+      } catch (error) {
+        setSnackbar({
+          open: true,
+          message: '내 게시글 로딩에 실패했습니다. 다시 시도해 주세요.',
+          severity: 'error',
+        });
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchposts();
+  }, []);
 
   // 페이지 핸들러
   const handlePageChange = (event, newPage) => {

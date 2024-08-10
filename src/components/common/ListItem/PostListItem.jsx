@@ -6,12 +6,12 @@ import { fetchHashtagsOfPost } from '../../../api/hashtag/hashtagApi';
 import { formatRelativeTime } from '../../../utils/reusableFn';
 import LikeButton from '../Button/LikeButton';
 import { useEffect } from 'react';
-import useLikeStore from '../../../store/useLikeStore';
+import usePostStore from '../../../store/usePostStore';
 
 function PostListItem({ post }) {
   const { id, title, createdAt, trackCount, user, likeCount } = post;
   const navigate = useNavigate();
-  const { initializeLikedPosts } = useLikeStore(state => ({
+  const { initializeLikedPosts } = usePostStore(state => ({
     initializeLikedPosts: state.initializeLikedPosts,
   }));
 

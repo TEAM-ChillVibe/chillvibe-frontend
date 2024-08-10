@@ -8,8 +8,6 @@ import {
   Typography,
 } from '@mui/material';
 import PostListItem from '../../../components/common/ListItem/PostListItem';
-import usePostStore from '../../../store/usePostStore';
-import useLikeStore from '../../../store/useLikeStore';
 import { fetchMyLikedPosts } from '../../../api/post/postApi';
 
 // 페이지네이션 단위 고정값
