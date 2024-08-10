@@ -7,9 +7,8 @@ import {
 } from '../../../api/playlist/playlistApi';
 import BaseContainer from '../../../components/layout/BaseContainer';
 import SimpleModal from '../../../components/common/Modal/SimpleModal';
-import { formatDate, formatRelativeTime } from '../../../utils/reusableFn';
+import { formatDate } from '../../../utils/reusableFn';
 import {
-  Alert,
   Box,
   Typography,
   Card,
@@ -17,10 +16,10 @@ import {
   List,
   ListItem,
   Button,
-  Snackbar,
 } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import TrackListEditItem from '../../../components/common/ListItem/TrackListEditItem';
+import SnackbarAlert from '../../../components/common/Alert/SnackbarAlert';
 
 const PlaylistDetail = () => {
   const { playlistId } = useParams();
@@ -247,19 +246,12 @@ const PlaylistDetail = () => {
       />
 
       {/* 플레이리스트 저장 확인 스낵바 */}
-      <Snackbar
+      <SnackbarAlert
         open={snackbar.open}
-        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
-        autoHideDuration={6000}
         onClose={() => setSnackbar(prev => ({ ...prev, open: false }))}
-      >
-        <Alert
-          onClose={() => setSnackbar(prev => ({ ...prev, open: false }))}
-          severity={snackbar.severity}
-        >
-          {snackbar.message}
-        </Alert>
-      </Snackbar>
+        message={snackbar.message}
+        severity={snackbar.severity}
+      />
     </BaseContainer>
   );
 };

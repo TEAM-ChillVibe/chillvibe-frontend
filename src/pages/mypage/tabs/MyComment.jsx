@@ -5,12 +5,11 @@ import {
   Avatar,
   Pagination,
   CircularProgress,
-  Snackbar,
-  Alert,
 } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { getCommentsByUser } from '../../../api/comment/commentApi';
 import { formatDate } from '../../../utils/reusableFn';
+import SnackbarAlert from '../../../components/common/Alert/SnackbarAlert';
 
 // 페이지네이션 단위 고정값
 const itemsPerPage = 10;
@@ -166,19 +165,12 @@ const MyComment = () => {
         )}
       </Box>
 
-      <Snackbar
+      <SnackbarAlert
         open={snackbar.open}
-        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
-        autoHideDuration={6000}
         onClose={() => setSnackbar(prev => ({ ...prev, open: false }))}
-      >
-        <Alert
-          onClose={() => setSnackbar(prev => ({ ...prev, open: false }))}
-          severity={snackbar.severity}
-        >
-          {snackbar.message}
-        </Alert>
-      </Snackbar>
+        message={snackbar.message}
+        severity={snackbar.severity}
+      />
     </Box>
   );
 };

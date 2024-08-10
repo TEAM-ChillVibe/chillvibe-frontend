@@ -1,14 +1,8 @@
-import { useEffect, useState } from 'react';
-import {
-  Alert,
-  Box,
-  CircularProgress,
-  Pagination,
-  Snackbar,
-  Typography,
-} from '@mui/material';
+import React, { useEffect, useState } from 'react';
+import { Box, CircularProgress, Pagination, Typography } from '@mui/material';
 import PostListItem from '../../../components/common/ListItem/PostListItem';
 import { fetchMyLikedPosts } from '../../../api/post/postApi';
+import SnackbarAlert from '../../../components/common/Alert/SnackbarAlert';
 
 // 페이지네이션 단위 고정값
 const itemsPerPage = 10;
@@ -98,19 +92,12 @@ const MyLikedPost = () => {
         )}
       </Box>
 
-      <Snackbar
+      <SnackbarAlert
         open={snackbar.open}
-        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
-        autoHideDuration={6000}
         onClose={() => setSnackbar(prev => ({ ...prev, open: false }))}
-      >
-        <Alert
-          onClose={() => setSnackbar(prev => ({ ...prev, open: false }))}
-          severity={snackbar.severity}
-        >
-          {snackbar.message}
-        </Alert>
-      </Snackbar>
+        message={snackbar.message}
+        severity={snackbar.severity}
+      />
     </Box>
   );
 };
