@@ -65,7 +65,7 @@ const Router = () => {
         <Route path="/all-tags" element={<AllTags />} />
         <Route path="/popular-tags" element={<PopularTags />} />
         <Route path="/new-post" element={<NewPost />} />
-        <Route path="/edit-post" element={<EditPost />} />
+        <Route path="/edit-post/:postId" element={<EditPost />} />
         <Route path="/post/:postId" element={<PostDetail />} />
         <Route
           path="/my-page/playlist/:playlistId"
