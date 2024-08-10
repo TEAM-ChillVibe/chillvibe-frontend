@@ -159,3 +159,13 @@ export const fetchMyLikedPosts = async (page = 0, size = 10) => {
     throw error;
   }
 };
+
+export const fetchPostsInMainPage = async () => {
+  try {
+    const response = await axiosWithToken.get('/api/posts/main');
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching playlists:', error);
+    throw error;
+  }
+};
