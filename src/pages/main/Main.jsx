@@ -3,17 +3,17 @@ import { useNavigate } from 'react-router-dom';
 import { Typography, Grid, Box } from '@mui/material';
 import BaseContainer from '../../components/layout/BaseContainer';
 import PostListItemMini from '../../components/common/ListItem/PostListItemMini';
-import HashtagChips from '../../components/common/HashtagChips';
+//import HashtagChips from '../../components/common/HashtagChips';
 import TrackListItem from '../../components/common/ListItem/TrackListItem';
 import { fetchPostsInMainPage } from '../../api/post/postApi';
-import { fetchPopularHashtags } from '../../api/hashtag/hashtagApi';
+//import { fetchPopularHashtags } from '../../api/hashtag/hashtagApi';
 
 // 지금 가장 인기있는 플레이리스트
 const Main = () => {
   const [playlists, setPlaylists] = useState([]);
   const [tracks, setTracks] = useState([]);
   const navigate = useNavigate();
-  const [hashtags, setHashtags] = useState([]);
+  //const [hashtags, setHashtags] = useState([]);
 
   useEffect(() => {
     const getPostsInMainPage = async () => {
@@ -27,17 +27,17 @@ const Main = () => {
     getPostsInMainPage();
   }, []);
 
-  useEffect(() => {
-    const getPopularHashtags = async () => {
-      try {
-        const data = await fetchPopularHashtags(0, 10);
-        setHashtags(data);
-      } catch (error) {
-        console.error('Error fetching popular hashtags:', error);
-      }
-    };
-    getPopularHashtags();
-  }, []);
+  // useEffect(() => {
+  //   const getPopularHashtags = async () => {
+  //     try {
+  //       const data = await fetchPopularHashtags(0, 10);
+  //       setHashtags(data);
+  //     } catch (error) {
+  //       console.error('Error fetching popular hashtags:', error);
+  //     }
+  //   };
+  //   getPopularHashtags();
+  // }, []);
 
   //추천 트랙 부분
   const fetchTracks = async () => {
@@ -103,8 +103,12 @@ const Main = () => {
   }, []);
 
   const handlePlaylistClick = id => {
-    navigate(`/playlist/${id}`);
+    navigate(`/post/${id}`);
   };
+
+  // const handleChipClick = selectedTags => {
+  //   console.log('Selected tags:', selectedTags);
+  // };
 
   const handleTrackClick = id => {
     navigate(`/track/${id}`);
@@ -144,7 +148,7 @@ const Main = () => {
       >
         요즘 인기있는 태그
       </Typography>
-      <HashtagChips hashtags={hashtags} />
+      {/* <HashtagChips hashtags={hashtags} /> */}
       <Grid container spacing={2}>
         {playlists.length > 0 ? (
           playlists.map(playlist => (
