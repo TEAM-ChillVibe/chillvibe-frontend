@@ -55,10 +55,10 @@ axiosWithToken.interceptors.response.use(
 
       try {
         // 토큰 재발급 요청
-        const response = await axiosWithoutToken.post('/reissue');
+        const response = await axiosWithoutToken.post('/api/reissue');
 
         // 재발급 응답 헤더에 포함된 access토큰 가져와서
-        const newAccessToken = response.headers['Authorization'].split(' ')[1];
+        const newAccessToken = response.headers['authorization'].split(' ')[1];
 
         // localStorage에 세팅
         localStorage.setItem('access', newAccessToken);

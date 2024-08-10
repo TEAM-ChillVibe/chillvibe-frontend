@@ -20,8 +20,11 @@ const UserPage = () => {
     const fetchUserData = async () => {
       try {
         setLoading(true);
-        const userResponse = await userInfo(userId);
-        const postResponse = await fetchPostsByUserId(userId);
+        // 병렬로 api 호출
+        const [userResponse, postResponse] = await Promise.all([
+          userInfo(userId),
+          fetchPostsByUserId(userId),
+        ]);
 
         setUser(userResponse.data);
         setPostList(postResponse.content);
