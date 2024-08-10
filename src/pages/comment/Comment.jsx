@@ -1,7 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
 import BaseContainer from '../../components/layout/BaseContainer';
-import axios from 'axios';
+import {
+  getCommentsByPost,
+  createComment,
+  updateComment,
+  deleteComment,
+} from '../../api/comment/commentApi';
 import {
   Avatar,
   Box,
@@ -12,6 +16,7 @@ import {
 } from '@mui/material';
 import { Delete, Edit } from '@mui/icons-material';
 import IconButton from '@mui/material/IconButton';
+import { useParams } from 'react-router-dom';
 
 const Comment = () => {
   const { postId } = useParams(); // URL에서 postId를 가져옴
@@ -21,19 +26,18 @@ const Comment = () => {
   const [editingContent, setEditingContent] = useState('');
   const [userId, setUserId] = useState(null);
 
-  const token =
-    'eyJhbGciOiJIUzI1NiJ9.eyJjYXRlZ29yeSI6ImFjY2VzcyIsInN1YiI6IjEiLCJlbWFpbCI6InRlc3RAZXhhbXBsZS5jb20iLCJpYXQiOjE3MjI1NzA4ODAsImV4cCI6MTcyMjU3MzA0MH0.f4KzeDrKOdVWUSR-7FWZXCyAMgqmQSlNjVco4-vF2I4';
-
   useEffect(() => {
     // 토큰 디코딩하여 사용자 ID 가져오기
-    const decodedToken = JSON.parse(atob(token.split('.')[1]));
-    setUserId(decodedToken.sub); // sub => 사용자 ID 나타냄
-    console.log('Decoded User ID:', decodedToken.sub);
+    const token = localStorage.getItem('access');
+    if (token) {
+      const decodedToken = JSON.parse(atob(token.split('.')[1]));
+      setUserId(decodedToken.sub); // sub => 사용자 ID 나타냄
+      console.log('Decoded User ID:', decodedToken.sub);
+    }
 
     // 댓글 데이터를 가져오는 함수 (API 요청)
-    axios
-      .get(`http://localhost:8080/api/comments/byPost?postId=1`)
-      .then(response => setComments(response.data))
+    getCommentsByPost(postId)
+      .then(response => setComments(response))
       .catch(error => console.error('Error fetching comments:', error));
   }, [postId]);
 
@@ -43,22 +47,11 @@ const Comment = () => {
 
   // 생성
   const handleCommentSubmit = () => {
-    // localStorage에서 토큰 가져옴
-    // const token = localStorage.getItem('authToken');
-    axios
-      .post(
-        'http://localhost:8080/api/comments',
-        { content: newComment, postId: 1 },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        },
-      )
+    createComment({ content: newComment, postId })
       .then(response => {
         setComments(prevComments => {
           // 새로운 댓글을 추가한 후, 전체 목록을 최신순으로 정렬
-          const updatedComments = [...prevComments, response.data].sort(
+          const updatedComments = [...prevComments, response].sort(
             (a, b) => new Date(b.createdAt) - new Date(a.createdAt),
           );
           return updatedComments;
@@ -79,25 +72,15 @@ const Comment = () => {
 
   // 수정
   const handleEditSubmit = () => {
-    // const token = localStorage.getItem('authToken');
-    axios
-      .put(
-        `http://localhost:8080/api/comments/${editingCommentId}`,
-        { content: editingContent },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        },
-      )
+    updateComment(editingCommentId, { content: editingContent })
       .then(response => {
         setComments(prevComments => {
           const updatedComments = prevComments.map(comment =>
             comment.id == editingCommentId
               ? {
                   ...comment,
-                  content: response.data.content,
-                  modifiedAt: response.data.modifiedAt,
+                  content: response.content,
+                  modifiedAt: response.modifiedAt,
                 }
               : comment,
           );
@@ -113,13 +96,7 @@ const Comment = () => {
   // 삭제
   const handleDelete = id => {
     if (window.confirm('댓글을 삭제하시겠습니까?')) {
-      // const token = localStorage.getItem('authToken');
-      axios
-        .delete(`http://localhost:8080/api/comments/${id}`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        })
+      deleteComment(id)
         .then(() => {
           setComments(comments.filter(comment => comment.id !== id));
         })
@@ -138,21 +115,17 @@ const Comment = () => {
 
   return (
     <BaseContainer>
-      <Box sx={{ width: '100%' }}>
-        <Typography variant="h5" sx={{ pb: 2 }}>
-          Comments
-        </Typography>
+      <Box sx={{ width: '170%' }}>
         {comments.map(comment => (
           <Paper key={comment.id} sx={{ p: 2, mb: 2 }}>
             <Box sx={{ display: 'flex', alignItems: 'flex-start' }}>
               <Avatar
                 src={comment.userProfileUrl}
-                alt="Profile"
                 sx={{ width: 55, height: 55, mr: 2 }}
               />
               <Box sx={{ flexGrow: 1 }}>
                 <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
-                  <Typography variant="h6">
+                  <Typography variant="h6" sx={{ fontSize: '1rem' }}>
                     {comment.userNickname} ({getMaskedEmail(comment.userEmail)})
                   </Typography>
                 </Box>
@@ -173,7 +146,11 @@ const Comment = () => {
                   </>
                 ) : (
                   <>
-                    <Typography variant="body1" paragraph>
+                    <Typography
+                      variant="body1"
+                      paragraph
+                      sx={{ marginBottom: '7px' }}
+                    >
                       {comment.content}
                     </Typography>
                     <Typography variant="caption" color="textSecondary">
@@ -189,16 +166,21 @@ const Comment = () => {
                 <Box
                   sx={{
                     display: 'flex',
-                    flexDirection: 'column',
+                    flexDirection: 'row',
                     alignItems: 'center',
+                    justifyContent: 'center',
                   }}
                 >
                   <IconButton
+                    size="small"
                     onClick={() => handleEdit(comment.id, comment.content)}
                   >
                     <Edit />
                   </IconButton>
-                  <IconButton onClick={() => handleDelete(comment.id)}>
+                  <IconButton
+                    size="small"
+                    onClick={() => handleDelete(comment.id)}
+                  >
                     <Delete />
                   </IconButton>
                 </Box>

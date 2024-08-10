@@ -1,21 +1,23 @@
-import { Box } from '@mui/material';
+import { Alert, Box, Snackbar } from '@mui/material';
 
 import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
 import Avatar from '@mui/material/Avatar';
 import useMusicPlayerStore from '../../../store/useMusicPlayerStore';
 import { Pause, PlayArrow, PlaylistAdd } from '@mui/icons-material';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import DropdownModal from '../Modal/DropdownModal';
+import {
+  addTrackToPlaylist,
+  getUserPlaylistsForSelection,
+} from '../../../api/playlist/playlistApi';
 
 function TrackListItem({ music }) {
-  const { title, artist, albumCover, duration, audioSrc } = music;
-
+  // 뮤직플레이어 설정
+  const { name, artist, thumbnailUrl, duration, previewUrl } = music;
   const { isPlaying, currentTrack, playTrack, togglePlay } =
     useMusicPlayerStore();
-
-  const isCurrentTrack = currentTrack && currentTrack.audioSrc === audioSrc;
-
+  const isCurrentTrack = currentTrack && currentTrack.previewUrl === previewUrl;
   const handlePlayPause = () => {
     if (isCurrentTrack) {
       togglePlay();
@@ -27,24 +29,50 @@ function TrackListItem({ music }) {
   // 플레이리스트에 트랙 추가 모달 상태관리
   const [isModalOpen, setIsModalOpen] = useState(false);
 
+  const [playlists, setPlaylists] = useState([]);
+  const [selectedValue, setSelectedValue] = useState('');
+
+  useEffect(() => {
+    const fetchPlaylists = async () => {
+      try {
+        const data = await getUserPlaylistsForSelection();
+        setPlaylists(data);
+      } catch (error) {
+        console.error('플레이리스트 로딩 실패');
+      }
+    };
+
+    fetchPlaylists();
+  }, []);
+
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => setIsModalOpen(false);
-
-  const options = [
-    { label: 'my playlist 1', value: '1' },
-    { label: 'my playlist 2', value: '2' },
-    { label: 'my playlist 3', value: '3' },
-  ];
-
-  const [selectedValue, setSelectedValue] = useState('');
 
   const handleChange = event => {
     setSelectedValue(event.target.value);
   };
 
-  // 저장 버튼
-  const handlePrimaryClick = () => {
-    closeModal();
+  // 스낵바
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState('');
+
+  // 추가 버튼
+  const handlePrimaryClick = async () => {
+    console.log('Selected Value:', selectedValue);
+    console.log('Music Object:', music);
+
+    if (selectedValue) {
+      try {
+        await addTrackToPlaylist(selectedValue, music);
+        setSnackbarMessage('트랙이 플레이리스트에 추가되었습니다!');
+        setSnackbarOpen(true);
+      } catch (error) {
+        setSnackbarMessage('트랙 추가에 실패했습니다. 다시 시도해 주세요.');
+        setSnackbarOpen(true);
+      } finally {
+        closeModal();
+      }
+    }
   };
 
   // 취소 버튼
@@ -52,11 +80,11 @@ function TrackListItem({ music }) {
     closeModal();
   };
 
-  // Description
-  const modalDescription = `"${title} - ${artist}"\n를 추가할 플레이리스트를 선택해주세요.`;
+  const modalTrack = `"${name} - ${artist}"`;
+  const modalDescription = `를 추가할 플레이리스트를 선택해주세요.`;
 
   return (
-    <Box sx={{ display: 'flex', alignItems: 'center', width: '100%', p: 2 }}>
+    <Box sx={{ display: 'flex', alignItems: 'center', width: '100%', py: 2 }}>
       <Box sx={{ display: 'flex', alignItems: 'center', flexGrow: 1 }}>
         <IconButton aria-label="play/pause" onClick={handlePlayPause}>
           {isCurrentTrack && isPlaying ? (
@@ -66,13 +94,13 @@ function TrackListItem({ music }) {
           )}
         </IconButton>
         <Avatar
-          alt={title}
-          src={albumCover}
-          sx={{ width: 56, height: 56, mr: 2, borderRadius: 1 }}
+          alt={name}
+          src={thumbnailUrl}
+          sx={{ width: 56, height: 56, ml: 1, mr: 2, borderRadius: 1 }}
         />
         <Box sx={{ display: 'flex', flexDirection: 'column' }}>
           <Typography variant="subtitle1" noWrap>
-            {title}
+            {name}
           </Typography>
           <Typography variant="body2" color="text.secondary" noWrap>
             {artist}
@@ -90,16 +118,47 @@ function TrackListItem({ music }) {
           open={isModalOpen}
           onClose={closeModal}
           title="Select Playlist"
-          description={modalDescription}
-          options={options}
+          description={
+            <Box
+              sx={{
+                display: 'flex',
+                flexDirection: 'column',
+                height: 'auto',
+                gap: 0.5,
+              }}
+            >
+              <Typography variant="body1" sx={{ fontWeight: 'bold' }}>
+                {modalTrack}
+              </Typography>
+              <Typography variant="body2">{modalDescription}</Typography>
+            </Box>
+          }
+          options={playlists.map(playlist => ({
+            label: playlist.title,
+            value: playlist.id,
+          }))}
           selectedValue={selectedValue}
           onChange={handleChange}
-          primaryButtonText="저장"
+          primaryButtonText="추가"
           onPrimaryClick={handlePrimaryClick}
           secondaryButtonText="취소"
           onSecondaryClick={handleSecondaryClick}
         />
       </Box>
+
+      <Snackbar
+        open={snackbarOpen}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+        autoHideDuration={6000}
+        onClose={() => setSnackbarOpen(false)}
+      >
+        <Alert
+          onClose={() => setSnackbarOpen(false)}
+          severity={snackbarMessage.includes('실패') ? 'error' : 'success'}
+        >
+          {snackbarMessage}
+        </Alert>
+      </Snackbar>
     </Box>
   );
 }

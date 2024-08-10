@@ -1,19 +1,54 @@
-import create from 'zustand';
+import { create } from 'zustand';
+import { reauth } from '../api/auth/authApi';
+import { devtools } from 'zustand/middleware';
+import { myInfo } from '../api/user/userApi';
 
-const useUserStore = create(set => ({
-  // 기본 상태: 비로그인 상태
-  user: null,
+const useUserStore = create(
+  devtools(
+    set => ({
+      user: null,
+      isAuthenticated: false,
 
-  // 기본 상태: 로그인 상태로 설정 (ui 확인용)
-  // user: {
-  //   name: 'John Doe', // 예시 사용자 이름
-  // },
+      initialize: async () => {
+        const accessToken = localStorage.getItem('access');
+        if (accessToken) {
+          try {
+            const userData = await reauth();
+            set({ user: userData, isAuthenticated: true });
+          } catch (error) {
+            set({ user: null, isAuthenticated: false });
+          }
+        }
+      },
 
-  // 사용자 정보를 설정하는 함수
-  setUser: user => set({ user }),
+      // 내 정보 초기화
+      fetchMyInfo: async () => {
+        try {
+          const userData = await myInfo();
+          set({ user: userData, isAuthenticated: true });
+        } catch (error) {
+          set({ user: null, isAuthenticated: false });
+        }
+      },
 
-  // 사용자 정보를 삭제하는 함수 (로그아웃 시 호출)
-  clearUser: () => set({ user: null }),
-}));
+      login: user => {
+        set({ user, isAuthenticated: true });
+      },
+
+      logout: () => {
+        set({ user: null, isAuthenticated: false });
+      },
+
+      setUser: user => {
+        set({ user });
+      },
+
+      clearUser: () => {
+        set({ user: null });
+      },
+    }),
+    { name: 'UserStore' },
+  ),
+);
 
 export default useUserStore;

@@ -1,8 +1,16 @@
-import { Box, Chip, Typography } from '@mui/material';
+import { Box, Typography } from '@mui/material';
 import albumSample from '../albumSample.jpeg';
+import HashtagChips from '../HashtagChips';
+import { fetchHashtagsOfPost } from '../../../api/hashtag/hashtagApi';
+import { useNavigate } from 'react-router-dom';
 
 function PostListItemMini({ post }) {
-  const { title, hashtags, user } = post;
+  const { id, title, user, thumbnailUrl } = post;
+  const navigate = useNavigate();
+
+  const handleChipClick = () => {
+    navigate(`/all-tags/`);
+  };
 
   return (
     <Box
@@ -24,8 +32,8 @@ function PostListItemMini({ post }) {
         }}
       >
         <img
-          src={albumSample}
-          alt={'Track img'}
+          src={thumbnailUrl || albumSample} // 썸네일 URL이 없으면 기본 이미지 사용
+          alt={'Thumbnail'}
           style={{ width: '100%', height: '100%', objectFit: 'cover' }}
         />
       </Box>
@@ -43,12 +51,11 @@ function PostListItemMini({ post }) {
         <Typography variant="subtitle1" component="div" noWrap>
           {title}
         </Typography>
-        <Typography variant="body2">{user.name}</Typography>
-        <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1, mt: 0.5 }}>
-          {hashtags.map(hashtags => (
-            <Chip key={hashtags} label={hashtags} size="small" />
-          ))}
-        </Box>
+        <Typography variant="body2">{user.nickname}</Typography>
+        <HashtagChips
+          fetchHashtags={() => fetchHashtagsOfPost(id)}
+          onChipClick={handleChipClick}
+        />
       </Box>
     </Box>
   );

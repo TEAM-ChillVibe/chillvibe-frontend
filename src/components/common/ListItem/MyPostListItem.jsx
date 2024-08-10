@@ -1,14 +1,21 @@
 import { Box, Chip, Typography } from '@mui/material';
-import FavoriteIcon from '@mui/icons-material/Favorite';
 import albumSample from '../albumSample.jpeg';
 import { useNavigate } from 'react-router-dom';
+import LikeButton from '../Button/LikeButton';
+import HashtagChips from '../HashtagChips';
+import { fetchHashtagsOfUser } from '../../../api/hashtag/hashtagApi';
+import { formatDate } from '../../../utils/reusableFn';
 
-function MyPostListItem({ post }) {
-  const { id, title, createdAt, trackCount, hashtags, likes } = post;
+function MyPostListItem({ user, post }) {
+  const { id, title, createdAt, trackCount, hashtags, likeCount } = post;
   const navigate = useNavigate();
 
   const handleNavigateToPost = () => {
     navigate(`/post/${id}`);
+  };
+
+  const handleChipClick = () => {
+    navigate(`/all-tags/`);
   };
 
   return (
@@ -61,11 +68,10 @@ function MyPostListItem({ post }) {
         <Typography variant="body2" sx={{ mb: 1 }}>
           트랙 {trackCount}개
         </Typography>
-        <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
-          {hashtags.map(hashtags => (
-            <Chip key={hashtags} label={hashtags} size="small" />
-          ))}
-        </Box>
+        <HashtagChips
+          fetchHashtags={() => fetchHashtagsOfUser(user.userId)}
+          onChipClick={handleChipClick}
+        />
       </Box>
       <Box
         sx={{
@@ -88,12 +94,9 @@ function MyPostListItem({ post }) {
           }}
         >
           <Typography variant="body3" color="text.secondary" sx={{ mb: 2 }}>
-            {createdAt}
+            {formatDate(createdAt)}
           </Typography>
-          <Box sx={{ display: 'flex', alignItems: 'center' }}>
-            <FavoriteIcon sx={{ fontSize: 14, mr: 0.5 }} />
-            <Typography variant="body2">{likes.toLocaleString()}</Typography>
-          </Box>
+          <LikeButton postId={id} initialLikeCount={likeCount} />
         </Box>
       </Box>
     </Box>

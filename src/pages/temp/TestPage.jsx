@@ -9,6 +9,8 @@ import SimpleModal from '../../components/common/Modal/SimpleModal';
 import FormModal from '../../components/common/Modal/FormModal';
 import DropdownModal from '../../components/common/Modal/DropdownModal';
 import PlaylistListItemMini from '../../components/common/ListItem/PlaylistListItemMini';
+import HashtagChips from '../../components/common/HashtagChips';
+import { fetchAllHashtags } from '../../api/hashtag/hashtagApi';
 
 function TestPage() {
   // HANDLE FUNCTIONS ================================================
@@ -74,7 +76,7 @@ function TestPage() {
     id: 1,
     nickname: 'Julie Han',
     introduction: 'testing userprofile now',
-    hashtags: ['#tag1', '#tag2', '#tag3'],
+    hashtags: ['tag1', 'tag2', 'tag3'],
   };
 
   // Track List
@@ -115,9 +117,9 @@ function TestPage() {
     {
       id: 1,
       title: '여름밤 드라이브 플레이리스트',
-      date: '2024년 7월 25일',
+      createdAt: '2024-07-25T14:30:00Z',
       trackCount: 15,
-      hashtags: ['#팝', '#여름', '#드라이브'],
+      hashtags: ['팝', '여름', '드라이브'],
       user: {
         id: 2,
         name: 'Alice',
@@ -128,9 +130,9 @@ function TestPage() {
     {
       id: 2,
       title: '집중력 향상을 위한 클래식 음악',
-      date: '2024년 7월 20일',
+      createdAt: '2024-07-20T09:15:00Z',
       trackCount: 8,
-      hashtags: ['#클래식', '#집중', '#공부'],
+      hashtags: ['클래식', '집중', '공부'],
       user: {
         id: 3,
         name: 'Bob',
@@ -145,22 +147,52 @@ function TestPage() {
     {
       id: 1,
       title: 'Summer Hits 2024',
-      trackCount: 15,
+      trackCount: 4,
+      thumbnailUrls: [
+        'https://via.placeholder.com/150?text=Playlist+Image+1',
+        'https://via.placeholder.com/150?text=Playlist+Image+2',
+        'https://via.placeholder.com/150?text=Playlist+Image+3',
+        'https://via.placeholder.com/150?text=Playlist+Image+4',
+      ],
     },
     {
       id: 2,
       title: 'Chill Vibes',
-      trackCount: 30,
+      trackCount: 3,
+      thumbnailUrls: [
+        'https://via.placeholder.com/150?text=Playlist+Image+5',
+        'https://via.placeholder.com/150?text=Playlist+Image+6',
+        'https://via.placeholder.com/150?text=Playlist+Image+7',
+      ],
     },
     {
       id: 3,
       title: 'Workout Beats',
-      trackCount: 20,
+      trackCount: 2,
+      thumbnailUrls: [
+        'https://via.placeholder.com/150?text=Playlist+Image+8',
+        'https://via.placeholder.com/150?text=Playlist+Image+9',
+      ],
+    },
+    {
+      id: 4,
+      title: 'Workout Beats',
+      trackCount: 1,
+      thumbnailUrls: ['https://via.placeholder.com/150?text=Playlist+Image+10'],
+    },
+    {
+      id: 5,
+      title: 'Workout Beats',
+      trackCount: 0,
+      thumbnailUrls: [],
     },
   ];
 
   return (
     <BaseContainer>
+      {/* get all Hashtags */}
+      <HashtagChips fetchHashtags={fetchAllHashtags} />
+
       {/* 사용자 프로필 */}
       <Typography
         variant="title"

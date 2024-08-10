@@ -14,12 +14,15 @@ import {
 } from '@mui/material';
 import { AddPhotoAlternate } from '@mui/icons-material';
 import IconButton from '@mui/material/IconButton';
+import { signup } from '../../../api/auth/authApi';
+import defaultImage from '../../../assets/default-profile.png';
 
 const Signup = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [nickname, setNickname] = useState('');
+  const [introduction] = useState('');
   const [passwordMatchError, setPasswordMatchError] = useState('');
   const [profileImage, setProfileImage] = useState(null);
   const [imagePreview, setImagePreview] = useState('');
@@ -28,6 +31,8 @@ const Signup = () => {
   const [privacyPolicyAccepted, setPrivacyPolicyAccepted] = useState(false);
   const [allAccepted, setAllAccepted] = useState(false);
   const navigate = useNavigate();
+
+  const defaultProfileImage = defaultImage;
 
   // 프로필 이미지 변경 핸들러
   const handleImageChange = event => {
@@ -57,7 +62,7 @@ const Signup = () => {
   };
 
   // 회원가입 버튼 액션
-  const handleSubmit = event => {
+  const handleSubmit = async event => {
     event.preventDefault();
 
     // 비밀번호 확인
@@ -68,6 +73,54 @@ const Signup = () => {
     setPasswordMatchError('');
 
     // 회원가입 정보를 서버로 전송하는 로직 추가
+    const formData = new FormData();
+
+    const joinDto = {
+      email,
+      password,
+      nickname,
+      introduction,
+    };
+
+    formData.append('joinDto', JSON.stringify(joinDto));
+
+    if (profileImage) {
+      formData.append('profileImg', profileImage);
+    } else {
+      const defaultImageBlob = await fetch(defaultProfileImage).then(res =>
+        res.blob(),
+      );
+      formData.append(
+        'profileImg',
+        defaultImageBlob,
+        'default-profile-image.png',
+      );
+    }
+
+    try {
+      // 회원가입 요청
+      await signup(formData);
+      // 성공 시, 로그인 화면으로 이동
+      alert('회원가입 되었습니다.');
+      navigate('/login');
+    } catch (error) {
+      // 에러 처리
+      if (error.response) {
+        // 서버에서 응답이 온 경우
+        if (error.response.status === 409) {
+          // 409 Conflict 에러 발생 시
+          alert('이미 가입된 이메일입니다.');
+        } else {
+          // 다른 상태 코드에 대한 일반적인 에러 처리
+          alert(
+            `회원가입 실패: ${error.response.status} ${error.response.statusText}`,
+          );
+        }
+      } else {
+        // 서버 응답이 없는 경우 (네트워크 오류 등)
+        alert('회원가입 요청 처리 중 오류가 발생했습니다.');
+      }
+    }
   };
 
   // 입력 여부 확인 (버튼 활성화용)

@@ -6,6 +6,7 @@ import MyPlaylist from './tabs/MyPlaylist';
 import MyPost from './tabs/MyPost';
 import MyLikedPost from './tabs/MyLikedPost';
 import MyComment from './tabs/MyComment';
+import useUserStore from '../../store/useUserStore';
 
 const MyPage = () => {
   // 탭 상태 관리
@@ -20,12 +21,15 @@ const MyPage = () => {
     localStorage.setItem('currentTab', newValue);
   };
 
-  const user = {
-    id: 1,
-    nickname: 'Julie Han',
-    introduction: 'testing mypage profile',
-    hashtags: ['#tag1', '#tag2', '#tag3'],
-  };
+  // user 정보 가져오기
+  const { user, fetchMyInfo } = useUserStore(state => ({
+    user: state.user,
+    fetchMyInfo: state.fetchMyInfo,
+  }));
+
+  useEffect(() => {
+    fetchMyInfo();
+  }, [fetchMyInfo]);
 
   return (
     <BaseContainer>
@@ -66,7 +70,7 @@ const MyPage = () => {
         </Tabs>
         <Box sx={{ p: 3, my: 3 }}>
           {currentTab === 0 && <MyPlaylist />}
-          {currentTab === 1 && <MyPost />}
+          {currentTab === 1 && <MyPost user={user} />}
           {currentTab === 2 && <MyLikedPost />}
           {currentTab === 3 && <MyComment />}
         </Box>

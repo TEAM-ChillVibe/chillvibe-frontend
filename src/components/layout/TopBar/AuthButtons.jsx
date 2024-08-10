@@ -1,8 +1,9 @@
 import { Avatar, Box, Button, Menu, MenuItem, Typography } from '@mui/material';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import useUserStore from '../../../store/useUserStore';
 import { styled } from '@mui/material/styles';
 import { useState } from 'react';
+import { signout } from '../../../api/auth/authApi';
 
 const RoundedButton = styled(Button)(({ theme }) => ({
   textTransform: 'none',
@@ -16,9 +17,11 @@ const RoundedButton = styled(Button)(({ theme }) => ({
 }));
 
 const AuthButtons = ({ user }) => {
-  const { clearUser } = useUserStore(state => ({
-    clearUser: state.clearUser,
+  const { logout } = useUserStore(state => ({
+    logout: state.logout,
   }));
+
+  const navigate = useNavigate();
 
   const [anchorEl, setAnchorEl] = useState(null);
 
@@ -30,12 +33,25 @@ const AuthButtons = ({ user }) => {
     setAnchorEl(null);
   };
 
-  const handleLogout = () => {
-    clearUser();
-    localStorage.removeItem('accessToken');
-    localStorage.removeItem('user');
-    window.location.reload(); // 페이지 새로고침
-    handleMenuClose();
+  const handleLogout = async () => {
+    const confirmLogout = window.confirm('정말 로그아웃하시겠습니까?');
+    if (confirmLogout) {
+      try {
+        // 로그아웃 요청
+        await signout();
+
+        // 클라이언트 측 저장소와 쿠키 정리
+        localStorage.clear();
+
+        // 상태 업데이트 (로그아웃 상태로 변경)
+        logout();
+
+        handleMenuClose();
+        navigate('/'); // 홈페이지로 리디렉션
+      } catch (error) {
+        window.alert('로그아웃 중 오류가 발생했습니다. 다시 시도해 주세요.');
+      }
+    }
   };
 
   if (user) {
@@ -44,11 +60,11 @@ const AuthButtons = ({ user }) => {
       <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, pl: 1 }}>
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
           <Typography variant="body2" color="white">
-            {user.name}
+            {user.nickname}
           </Typography>
           <Avatar
-            alt={user.name}
-            src={user.profilePicture || '/static/images/avatar/placeholder.jpg'}
+            alt={user.nickname}
+            src={user.profileUrl || '/static/images/avatar/placeholder.jpg'}
             sx={{ width: 24, height: 24, cursor: 'pointer' }}
             onClick={handleMenuOpen}
           />
@@ -60,8 +76,6 @@ const AuthButtons = ({ user }) => {
           onClose={handleMenuClose}
           PaperProps={{
             sx: {
-              bgcolor: '#fff',
-              color: '#000',
               borderRadius: 1,
               marginTop: 1.5,
               paddingX: 1,

@@ -1,13 +1,20 @@
-import { Avatar, Box, Chip, Typography } from '@mui/material';
+import { Avatar, Box, Typography } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
+import HashtagChips from './HashtagChips';
+import { fetchHashtagsOfUser } from '../../api/hashtag/hashtagApi';
 
 function UserProfile({ user }) {
-  const { id, nickname, introduction, hashtags } = user;
-
   const navigate = useNavigate();
 
+  const { userId, email, nickname, profileUrl, introduction, hashtags } = user;
+
   const handleNavigateToUserPage = () => {
-    navigate(`/user/${id}`); // 절대경로 유저프로필로 이동
+    navigate(`/user/${userId}`); // 절대경로 유저프로필로 이동
+  };
+
+  const handleChipClick = tagId => {
+    localStorage.setItem('selectedHashtag', tagId);
+    navigate(`/all-tags/`);
   };
 
   return (
@@ -22,6 +29,7 @@ function UserProfile({ user }) {
     >
       <Avatar
         onClick={handleNavigateToUserPage}
+        src={profileUrl}
         sx={{
           width: 90,
           height: 90,
@@ -48,18 +56,10 @@ function UserProfile({ user }) {
         <Typography variant="body2" color="text.secondary">
           {introduction}
         </Typography>
-        <Box
-          sx={{
-            display: 'flex',
-            flexWrap: 'wrap',
-            gap: 1,
-            mt: 1,
-          }}
-        >
-          {hashtags.map(hashtag => (
-            <Chip key={hashtag} label={hashtag} size="small" />
-          ))}
-        </Box>
+        <HashtagChips
+          fetchHashtags={() => fetchHashtagsOfUser(userId)}
+          onChipClick={handleChipClick}
+        />
       </Box>
     </Box>
   );

@@ -1,11 +1,23 @@
-import { Avatar, Box, Chip, Typography } from '@mui/material';
-import FavoriteIcon from '@mui/icons-material/Favorite';
+import { Avatar, Box, Typography } from '@mui/material';
 import albumSample from '../albumSample.jpeg';
 import { useNavigate } from 'react-router-dom';
+import HashtagChips from '../HashtagChips';
+import { fetchHashtagsOfPost } from '../../../api/hashtag/hashtagApi';
+import { formatRelativeTime } from '../../../utils/reusableFn';
+import LikeButton from '../Button/LikeButton';
+import { useEffect } from 'react';
+import useLikeStore from '../../../store/useLikeStore';
 
 function PostListItem({ post }) {
-  const { id, title, createdAt, trackCount, hashtags, user, likes } = post;
+  const { id, title, createdAt, trackCount, user, likeCount } = post;
   const navigate = useNavigate();
+  const { initializeLikedPosts } = useLikeStore(state => ({
+    initializeLikedPosts: state.initializeLikedPosts,
+  }));
+
+  useEffect(() => {
+    initializeLikedPosts(); // 좋아요 목록 초기화
+  }, [initializeLikedPosts]);
 
   const handleNavigateToPost = () => {
     navigate(`/post/${id}`);
@@ -13,6 +25,11 @@ function PostListItem({ post }) {
 
   const handleNavigateToUserPage = () => {
     navigate(`/user/${user.id}`);
+  };
+
+  const handleChipClick = tagId => {
+    localStorage.setItem('selectedHashtag', tagId);
+    navigate(`/all-tags/`);
   };
 
   return (
@@ -63,16 +80,15 @@ function PostListItem({ post }) {
           {title}
         </Typography>
         <Typography variant="body3" color="text.secondary" sx={{ mb: 1 }}>
-          {createdAt}
+          {formatRelativeTime(createdAt)}
         </Typography>
         <Typography variant="body2" sx={{ mb: 1 }}>
           트랙 {trackCount}개
         </Typography>
-        <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
-          {hashtags.map(hashtags => (
-            <Chip key={hashtags} label={hashtags} size="small" />
-          ))}
-        </Box>
+        <HashtagChips
+          fetchHashtags={() => fetchHashtagsOfPost(id)}
+          onChipClick={handleChipClick}
+        />
       </Box>
       <Box
         sx={{
@@ -80,7 +96,7 @@ function PostListItem({ post }) {
           flexDirection: 'column',
           alignItems: 'flex-end',
           justifyContent: 'space-between',
-          my: 1,
+          mt: 0.5,
           order: 3,
         }}
       >
@@ -95,17 +111,16 @@ function PostListItem({ post }) {
             }}
           >
             <Avatar
-              alt={user.name}
-              src={user.avatar}
+              alt={user.nickname || 'Unknown User'}
+              src={user.profileUrl || ''}
               sx={{ width: 32, height: 32, mb: 1 }}
             />
-            <Typography variant="body2">{user.name}</Typography>
+            <Typography variant="body2">
+              {user.nickname || 'Unknown User'}
+            </Typography>
           </Box>
         </Box>
-        <Box sx={{ display: 'flex', alignItems: 'center' }}>
-          <FavoriteIcon sx={{ fontSize: 14, mr: 0.5 }} />
-          <Typography variant="body2">{likes.toLocaleString()}</Typography>
-        </Box>
+        <LikeButton postId={id} initialLikeCount={likeCount} />
       </Box>
     </Box>
   );

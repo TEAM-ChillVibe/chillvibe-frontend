@@ -1,21 +1,57 @@
-import BaseContainer from '../../components/layout/BaseContainer';
-import { Avatar, Box, Button, TextField } from '@mui/material';
+import BaseContainer from '../../../components/layout/BaseContainer';
+import {
+  Avatar,
+  Box,
+  Button,
+  TextField,
+  FormControlLabel,
+  Switch,
+} from '@mui/material';
 import IconButton from '@mui/material/IconButton';
 import { AddPhotoAlternate } from '@mui/icons-material';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { fetchAllHashtags } from '../../../api/hashtag/hashtagApi';
+import HashtagChips from '../../../components/common/HashtagChips';
+import { editProfile, myInfo } from '../../../api/user/userApi';
 
 const EditProfile = () => {
   const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
   const [nickname, setNickname] = useState('');
-  const [passwordMatchError, setPasswordMatchError] = useState('');
-  const [profileImage, setProfileImage] = useState(null);
+  const [introduction, setIntroduction] = useState('');
+  const [profileImage, setProfileImage] = useState('');
+  const [isPublic, setIsPublic] = useState(false);
   const [imagePreview, setImagePreview] = useState('');
+  const [hashtagIds, setSelectedHashtags] = useState([]);
   const navigate = useNavigate();
 
-  // 프로필 이미지 변경 핸들러
+  useEffect(() => {
+    // 사용자 정보를 가져오는 비동기 함수
+    const fetchUserData = async () => {
+      try {
+        const response = await myInfo();
+        const userData = response;
+
+        console.log(response);
+
+        // 사용자 정보 상태 업데이트
+        setEmail(userData.email);
+        setNickname(userData.nickname);
+        setIntroduction(userData.introduction || '');
+        setImagePreview(userData.profileUrl || '');
+        setIsPublic(userData.public);
+        const userHashtags = userData.hashtags.map(hashtag => hashtag.id);
+        setSelectedHashtags(userHashtags);
+      } catch (error) {}
+    };
+
+    fetchUserData();
+  }, []);
+
+  const handleHashtagClick = selectedHashtags => {
+    setSelectedHashtags(selectedHashtags);
+  };
+
   const handleImageChange = event => {
     const file = event.target.files[0];
     if (file) {
@@ -28,27 +64,44 @@ const EditProfile = () => {
     }
   };
 
-  // 취소 버튼 액션
   const handleCancel = () => {
     navigate(-1); // 이전 페이지로 이동
   };
 
-  // 저장 버튼 액션
-  const handleSubmit = event => {
+  const handleSubmit = async event => {
     event.preventDefault();
 
-    // 비밀번호 확인
-    if (password !== confirmPassword) {
-      setPasswordMatchError('비밀번호가 일치하지 않습니다.');
-      return;
-    }
-    setPasswordMatchError('');
+    // 사용자 정보 업데이트 API 호출
+    try {
+      const formData = new FormData();
+      const userUpdateDto = {
+        nickname,
+        introduction,
+        hashtagIds,
+        isPublic,
+      };
 
-    // 회원가입 정보를 서버로 전송하는 로직 추가
+      formData.append('userUpdateDto', JSON.stringify(userUpdateDto));
+
+      if (profileImage) {
+        formData.append('profileImg', profileImage);
+      }
+
+      if (window.confirm('정말로 회원정보를 수정하시겠습니까?')) {
+        await editProfile(formData);
+        alert('회원정보가 수정되었습니다.');
+        navigate('/my-page');
+      }
+    } catch (error) {
+      alert('프로필 업데이트에 실패했습니다. 다시 시도해 주세요.');
+    }
   };
 
-  // 입력 여부 확인 (버튼 활성화용)
-  const isFormValid = email && password && nickname;
+  const isFormValid = email && nickname;
+
+  const handleChangePassword = () => {
+    navigate('/edit-password'); // 비밀번호 변경 페이지로 이동
+  };
 
   return (
     <BaseContainer>
@@ -111,42 +164,43 @@ const EditProfile = () => {
           <TextField
             label="이메일"
             fullWidth
-            // value={email}
-            value="email@example.com"
+            value={email}
             InputProps={{
               readOnly: true,
             }}
             margin="normal"
           />
           <TextField
-            label="비밀번호"
-            fullWidth
-            type="password"
-            required
-            value={password}
-            onChange={e => setPassword(e.target.value)}
-            margin="normal"
-          />
-          <TextField
-            label="비밀번호 확인"
-            fullWidth
-            type="password"
-            required
-            value={confirmPassword}
-            onChange={e => setConfirmPassword(e.target.value)}
-            margin="normal"
-            error={!!passwordMatchError}
-            helperText={passwordMatchError}
-          />
-          <TextField
             label="소개글"
             fullWidth
             multiline
             rows={5}
-            value={confirmPassword}
-            onChange={e => setConfirmPassword(e.target.value)}
+            value={introduction}
+            onChange={e => setIntroduction(e.target.value)}
             margin="normal"
           />
+          <HashtagChips
+            fetchHashtags={fetchAllHashtags}
+            onChipClick={handleHashtagClick}
+            multiSelectMode={true}
+          />
+          <Box
+            display="flex"
+            justifyContent="center"
+            alignItems="center"
+            sx={{ mt: 5 }}
+          >
+            <FormControlLabel
+              label="게시글 공개"
+              labelPlacement="start"
+              control={
+                <Switch
+                  checked={isPublic}
+                  onChange={() => setIsPublic(prev => !prev)}
+                />
+              }
+            />
+          </Box>
           {/* 버튼 */}
           <Box sx={{ width: '100%', display: 'flex', mt: 5, gap: 2 }}>
             <Button
@@ -168,6 +222,15 @@ const EditProfile = () => {
             </Button>
           </Box>
         </form>
+        <Button
+          variant="text"
+          fullWidth
+          onClick={handleChangePassword}
+          sx={{ flex: 1, my: 5 }}
+          size="large"
+        >
+          비밀번호 변경
+        </Button>
       </Box>
     </BaseContainer>
   );
