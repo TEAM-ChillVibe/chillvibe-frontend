@@ -9,22 +9,12 @@ import {
   Typography,
 } from '@mui/material';
 import MyPostListItem from '../../../components/common/ListItem/MyPostListItem';
-import usePostStore from '../../../store/usePostStore';
 import { fetchPostsByUserId } from '../../../api/post/postApi';
 
 // 페이지네이션 단위 고정값
 const itemsPerPage = 10;
 
 const MyPost = ({ user }) => {
-  // const { posts, loadPostsByUserId, isLoading, error } = usePostStore(
-  //   state => ({
-  //     posts: state.posts,
-  //     loadPostsByUserId: state.loadPostsByUserId,
-  //     isLoading: state.isLoading,
-  //     error: state.error,
-  //   }),
-  // );
-
   const [posts, setPosts] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -39,22 +29,11 @@ const MyPost = ({ user }) => {
     severity: 'success',
   });
 
-  // 에러 처리
-  useEffect(() => {
-    if (error) {
-      setSnackbar({
-        open: true,
-        message: '데이터 로딩에 실패했습니다. 다시 시도해 주세요.',
-        severity: 'error',
-      });
-    }
-  }, [error]);
-
   useEffect(() => {
     const fetchposts = async () => {
       setIsLoading(true);
       try {
-        const data = await fetchPostsByUserId(page - 1, itemsPerPage);
+        const data = await fetchPostsByUserId(user.userId);
         setPosts(data.content);
       } catch (error) {
         setSnackbar({
