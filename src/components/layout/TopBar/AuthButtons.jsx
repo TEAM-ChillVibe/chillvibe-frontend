@@ -41,8 +41,7 @@ const AuthButtons = ({ user }) => {
         await signout();
 
         // 클라이언트 측 저장소와 쿠키 정리
-        localStorage.removeItem('access');
-        localStorage.removeItem('user');
+        localStorage.clear();
 
         // 상태 업데이트 (로그아웃 상태로 변경)
         logout();
