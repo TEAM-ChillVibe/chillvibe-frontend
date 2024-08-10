@@ -1,9 +1,11 @@
 import { useEffect, useState } from 'react';
 import { Fab, Zoom } from '@mui/material';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
+import useMusicPlayerStore from '../../../store/useMusicPlayerStore';
 
 function TopButton() {
   const [showButton, setShowButton] = useState(false);
+  const { isVisible: isMusicPlayerVisible } = useMusicPlayerStore();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -27,7 +29,12 @@ function TopButton() {
       <Fab
         size="medium"
         onClick={scrollToTop}
-        sx={{ position: 'fixed', bottom: 24, right: 24 }}
+        sx={{
+          position: 'fixed',
+          bottom: isMusicPlayerVisible ? 100 : 24,
+
+          right: 24,
+        }}
       >
         <KeyboardArrowUpIcon />
       </Fab>
