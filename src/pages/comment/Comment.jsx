@@ -50,10 +50,8 @@ const Comment = () => {
     createComment({ content: newComment, postId })
       .then(response => {
         setComments(prevComments => {
-          // 새로운 댓글을 추가한 후, 전체 목록을 최신순으로 정렬
-          const updatedComments = [...prevComments, response].sort(
-            (a, b) => new Date(b.createdAt) - new Date(a.createdAt),
-          );
+          // 새로운 댓글을 추가한 후, 전체 목록의 마지막에 추가
+          const updatedComments = [...prevComments, response];
           return updatedComments;
         });
         setNewComment('');
