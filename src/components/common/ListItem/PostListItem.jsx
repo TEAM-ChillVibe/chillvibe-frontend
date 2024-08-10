@@ -1,6 +1,6 @@
 import { Avatar, Box, Typography } from '@mui/material';
 import albumSample from '../albumSample.jpeg';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import HashtagChips from '../HashtagChips';
 import { fetchHashtagsOfPost } from '../../../api/hashtag/hashtagApi';
 import { formatRelativeTime } from '../../../utils/reusableFn';
@@ -11,6 +11,8 @@ import usePostStore from '../../../store/usePostStore';
 function PostListItem({ post }) {
   const { id, title, createdAt, trackCount, user, likeCount } = post;
   const navigate = useNavigate();
+  const location = useLocation();
+
   const { initializeLikedPosts } = usePostStore(state => ({
     initializeLikedPosts: state.initializeLikedPosts,
   }));
@@ -29,7 +31,12 @@ function PostListItem({ post }) {
 
   const handleChipClick = tagId => {
     localStorage.setItem('selectedHashtag', tagId);
-    navigate(`/all-tags/`);
+
+    if (location.pathname === '/all-tags') {
+      window.location.reload();
+    } else {
+      navigate('/all-tags');
+    }
   };
 
   return (

@@ -2,34 +2,33 @@ import { useEffect, useState } from 'react';
 import { Box, CircularProgress, Typography } from '@mui/material';
 import usePostStore from '../../store/usePostStore';
 import PostListItem from './ListItem/PostListItem';
+import { fetchPostsByHashtagId } from '../../api/post/postApi';
 
 const PostList = ({ selectedHashtag, sortOrder }) => {
-  const { posts, isLoading, error, loadPosts, loadPostsByHashtagId } =
-    usePostStore();
+  const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(false);
 
-  const loadPostsData = async () => {
-    setLoading(true);
-    try {
-      if (selectedHashtag) {
-        await loadPostsByHashtagId(selectedHashtag, sortOrder);
-      } else {
-        await loadPosts(sortOrder);
-      }
-    } catch (error) {
-      console.error(error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
   useEffect(() => {
-    loadPostsData();
+    const fetchPosts = async () => {
+      setLoading(true);
+      try {
+        const data = await fetchPostsByHashtagId(selectedHashtag, sortOrder);
+        setPosts(data.content);
+      } catch (error) {
+        console.log(error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (selectedHashtag) {
+      fetchPosts();
+    }
   }, [selectedHashtag, sortOrder]);
 
   return (
     <Box sx={{ width: '100%' }}>
-      {isLoading ? (
+      {loading ? (
         <Box
           sx={{
             display: 'flex',
