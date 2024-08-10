@@ -84,64 +84,71 @@ const EditPost = () => {
     <BaseContainer>
       <Typography variant="title">Edit Post</Typography>
       <Box
-        component="form"
-        onSubmit={handleSubmit}
-        sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}
+        sx={{
+          width: '70%',
+          minWidth: '400px',
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'center',
+          m: '0 auto',
+          p: 2,
+        }}
       >
-        <Typography variant="h6" sx={{ fontSize: '1.2rem' }}>
-          제목
-        </Typography>
-        <TextField
-          label="Title"
-          value={title}
-          onChange={e => setTitle(e.target.value)}
-          required
-        />
-        <Typography variant="h6" sx={{ fontSize: '1.2rem', marginTop: 2 }}>
-          플레이리스트 소개
-        </Typography>
-        <TextField
-          label="Description"
-          value={description}
-          onChange={e => setDescription(e.target.value)}
-          required
-          multiline
-          rows={4}
-        />
-        <Typography variant="h6" sx={{ fontSize: '1.2rem', marginTop: 3 }}>
-          태그 선택
-        </Typography>
-        <HashtagChips
-          fetchHashtags={fetchAllHashtags}
-          onChipClick={handleHashtagClick}
-          multiSelectMode={true}
-        />
-        <Typography variant="h6" sx={{ fontSize: '1.2rem', marginTop: 5 }}>
-          플레이리스트
-        </Typography>
-        <Box sx={{ mt: 2 }}>
-          {selectedPlaylist ? (
-            <PlaylistListItem playlist={selectedPlaylist} />
-          ) : (
-            <Typography variant="body2" sx={{ color: 'gray' }}>
-              선택된 플레이리스트가 없습니다.
-            </Typography>
-          )}
-        </Box>
         <Box
-          sx={{
-            display: 'flex',
-            justifyContent: 'center',
-            gap: 2,
-            marginTop: 8,
-          }}
+          component="form"
+          onSubmit={handleSubmit}
+          sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}
         >
-          <Button variant="outlined" onClick={handleCancel}>
-            취소
-          </Button>
-          <Button type="submit" variant="contained" color="primary">
-            수정
-          </Button>
+          <TextField
+            label="게시글 제목"
+            value={title}
+            onChange={e => setTitle(e.target.value)}
+            required
+          />
+          <TextField
+            label="플레이리스트 소개글"
+            value={description}
+            onChange={e => setDescription(e.target.value)}
+            required
+            multiline
+            minRows={4}
+          />
+          <Typography variant="h6" sx={{ fontSize: '1.2rem', mt: 1 }}>
+            해시태그 선택
+          </Typography>
+          <HashtagChips
+            fetchHashtags={fetchAllHashtags}
+            onChipClick={handleHashtagClick}
+            multiSelectMode={true}
+          />
+          <Typography variant="h6" sx={{ fontSize: '1.2rem', mt: 2, mb: 1 }}>
+            플레이리스트
+          </Typography>
+          <Box sx={{ mt: 2 }}>
+            {selectedPlaylist ? (
+              <PlaylistListItem playlist={selectedPlaylist} />
+            ) : (
+              <Typography variant="body2" sx={{ color: 'gray' }}>
+                선택된 플레이리스트가 없습니다.
+              </Typography>
+            )}
+          </Box>
+          <Box
+            sx={{
+              display: 'flex',
+              justifyContent: 'center',
+              gap: 2,
+              marginTop: 8,
+            }}
+          >
+            <Button variant="outlined" onClick={handleCancel}>
+              취소
+            </Button>
+            <Button type="submit" variant="contained" color="primary">
+              수정
+            </Button>
+          </Box>
         </Box>
       </Box>
       <Snackbar

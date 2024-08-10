@@ -61,7 +61,7 @@ const NewPost = () => {
       setOpenSnackbar(true);
       setTimeout(() => {
         navigate('/discover'); // 게시글 목록 페이지로 이동
-      }, 2000); // 3초 후에 페이지 이동
+      }, 3000); // 3초 후에 페이지 이동
     } catch (error) {
       console.error('Error creating post:', error);
     }
