@@ -19,6 +19,8 @@ import usePostStore from '../../store/usePostStore';
 import BaseContainer from '../../components/layout/BaseContainer';
 import PlaylistListItem from '../../components/common/ListItem/PlaylistListItem';
 
+const itemsPerPage = 6; // 페이지당 표시할 플레이리스트 수
+
 const NewPost = () => {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
@@ -27,7 +29,6 @@ const NewPost = () => {
   const [selectedHashtags, setSelectedHashtags] = useState([]);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
-  const itemsPerPage = 6; // 페이지당 표시할 플레이리스트 수
   const addPost = usePostStore(state => state.addPost);
   const navigate = useNavigate();
   const [openSnackbar, setOpenSnackbar] = useState(false);
@@ -36,7 +37,6 @@ const NewPost = () => {
     const fetchPlaylists = async () => {
       try {
         const response = await getUserPlaylists(page - 1, itemsPerPage);
-        console.log('Fetched playlists:', response);
         setPlaylists(response.content || []);
         setTotalPages(response.totalPages || 0);
       } catch (error) {
@@ -49,6 +49,9 @@ const NewPost = () => {
 
   const handleSubmit = async e => {
     e.preventDefault();
+
+    console.log('Selected Hashtags:', selectedHashtags);
+
     const newPost = {
       title,
       description,
@@ -61,28 +64,14 @@ const NewPost = () => {
       setOpenSnackbar(true);
       setTimeout(() => {
         navigate('/discover'); // 게시글 목록 페이지로 이동
-      }, 3000); // 3초 후에 페이지 이동
+      }, 1000); // 3초 후에 페이지 이동
     } catch (error) {
       console.error('Error creating post:', error);
     }
   };
 
-  const handleHashtagClick = tagId => {
-    setSelectedHashtags(prevSelected =>
-      prevSelected.includes(tagId)
-        ? prevSelected.filter(id => id !== tagId)
-        : [...prevSelected, tagId],
-    );
-  };
-
-  const fetchHashtags = async () => {
-    try {
-      const response = await fetchAllHashtags();
-      return response;
-    } catch (error) {
-      console.error('Error fetching hashtags:', error);
-      return [];
-    }
+  const handleHashtagClick = tagIds => {
+    setSelectedHashtags(tagIds);
   };
 
   const handleCancel = () => {
@@ -135,9 +124,9 @@ const NewPost = () => {
             해시태그 선택
           </Typography>
           <HashtagChips
-            fetchHashtags={fetchHashtags}
+            fetchHashtags={fetchAllHashtags}
             selectedHashtag={selectedHashtags}
-            onHashtagClick={handleHashtagClick}
+            onChipClick={handleHashtagClick}
             multiSelectMode={true}
           />
           <Typography variant="h6" sx={{ fontSize: '1.2rem', mt: 2, mb: 1 }}>
