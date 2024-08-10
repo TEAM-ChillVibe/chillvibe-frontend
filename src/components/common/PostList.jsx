@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { Box, CircularProgress, Typography } from '@mui/material';
 import usePostStore from '../../store/usePostStore';
 import PostListItem from './ListItem/PostListItem';
-import { fetchPostsByHashtagId } from '../../api/post/postApi';
+import { fetchAllPosts, fetchPostsByHashtagId } from '../../api/post/postApi';
 
 const PostList = ({ selectedHashtag, sortOrder }) => {
   const [posts, setPosts] = useState([]);
@@ -12,8 +12,13 @@ const PostList = ({ selectedHashtag, sortOrder }) => {
     const fetchPosts = async () => {
       setLoading(true);
       try {
-        const data = await fetchPostsByHashtagId(selectedHashtag, sortOrder);
-        setPosts(data.content);
+        if (selectedHashtag) {
+          const data = await fetchPostsByHashtagId(selectedHashtag, sortOrder);
+          setPosts(data.content);
+        } else {
+          const data = await fetchAllPosts(sortOrder);
+          setPosts(data.content);
+        }
       } catch (error) {
         console.log(error);
       } finally {
@@ -21,9 +26,7 @@ const PostList = ({ selectedHashtag, sortOrder }) => {
       }
     };
 
-    if (selectedHashtag) {
-      fetchPosts();
-    }
+    fetchPosts();
   }, [selectedHashtag, sortOrder]);
 
   return (
