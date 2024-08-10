@@ -1,4 +1,5 @@
 import { axiosWithToken, axiosWithoutToken } from '../../axios';
+import useUserStore from '../../store/useUserStore';
 
 // 회원가입
 export const signup = async formData => {
@@ -33,6 +34,10 @@ export const signout = async () => {
     const response = await axiosWithToken.post(`/logout`);
     return response;
   } catch (error) {
+    const { logout } = useUserStore.getState();
+    logout();
+    localStorage.clear();
+    window.location.href = '/';
     throw error;
   }
 };
