@@ -10,14 +10,13 @@ import {
   Box,
   Grid,
   Typography,
-  Snackbar,
-  Alert,
   Pagination,
 } from '@mui/material';
 import HashtagChips from '../../components/common/HashtagChips';
 import usePostStore from '../../store/usePostStore';
 import BaseContainer from '../../components/layout/BaseContainer';
 import PlaylistListItem from '../../components/common/ListItem/PlaylistListItem';
+import SnackbarAlert from '../../components/common/Alert/SnackbarAlert';
 
 const itemsPerPage = 6; // 페이지당 표시할 플레이리스트 수
 
@@ -31,7 +30,11 @@ const NewPost = () => {
   const [totalPages, setTotalPages] = useState(0);
   const addPost = usePostStore(state => state.addPost);
   const navigate = useNavigate();
-  const [openSnackbar, setOpenSnackbar] = useState(false);
+  const [snackbar, setSnackbar] = useState({
+    open: false,
+    message: '',
+    severity: 'success',
+  });
 
   useEffect(() => {
     const fetchPlaylists = async () => {
@@ -40,7 +43,11 @@ const NewPost = () => {
         setPlaylists(response.content || []);
         setTotalPages(response.totalPages || 0);
       } catch (error) {
-        console.error('Error fetching playlists:', error);
+        setSnackbar({
+          open: true,
+          message: '플레이리스트 불러오기를 실패했습니다. 다시 시도해 주세요.',
+          severity: 'error',
+        });
       }
     };
 
@@ -61,12 +68,20 @@ const NewPost = () => {
     try {
       const response = await createPost(newPost);
       addPost(response);
-      setOpenSnackbar(true);
+      setSnackbar({
+        open: true,
+        message: '게시글이 성공적으로 작성되었습니다!',
+        severity: 'success',
+      });
       setTimeout(() => {
         navigate('/discover'); // 게시글 목록 페이지로 이동
-      }, 1000); // 3초 후에 페이지 이동
+      }, 1000); // 1초 후에 페이지 이동
     } catch (error) {
-      console.error('Error creating post:', error);
+      setSnackbar({
+        open: true,
+        message: '게시글 작성에 실패했습니다. 다시 시도해 주세요.',
+        severity: 'error',
+      });
     }
   };
 
@@ -80,10 +95,6 @@ const NewPost = () => {
 
   const handlePageChange = (event, newPage) => {
     setPage(newPage);
-  };
-
-  const handleCloseSnackbar = () => {
-    setOpenSnackbar(false);
   };
 
   return (
@@ -176,19 +187,13 @@ const NewPost = () => {
           </Box>
         </Box>
       </Box>
-      <Snackbar
-        open={openSnackbar}
-        autoHideDuration={2000}
-        onClose={handleCloseSnackbar}
-      >
-        <Alert
-          onClose={handleCloseSnackbar}
-          severity="success"
-          sx={{ width: '100%' }}
-        >
-          게시글이 성공적으로 생성되었습니다!
-        </Alert>
-      </Snackbar>
+
+      <SnackbarAlert
+        open={snackbar.open}
+        onClose={() => setSnackbar(prev => ({ ...prev, open: false }))}
+        message={snackbar.message}
+        severity={snackbar.severity}
+      />
     </BaseContainer>
   );
 };

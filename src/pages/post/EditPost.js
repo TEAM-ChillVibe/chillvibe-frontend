@@ -4,17 +4,11 @@ import { fetchPostById, updatePost } from '../../api/post/postApi';
 import { getPlaylistByPostId } from '../../api/playlist/playlistApi';
 import { fetchAllHashtags } from '../../api/hashtag/hashtagApi';
 
-import {
-  TextField,
-  Button,
-  Box,
-  Typography,
-  Snackbar,
-  Alert,
-} from '@mui/material';
+import { TextField, Button, Box, Typography } from '@mui/material';
 import HashtagChips from '../../components/common/HashtagChips';
 import BaseContainer from '../../components/layout/BaseContainer';
 import PlaylistListItem from '../../components/common/ListItem/PlaylistListItem';
+import SnackbarAlert from '../../components/common/Alert/SnackbarAlert';
 
 const EditPost = () => {
   const { postId } = useParams();
@@ -23,10 +17,14 @@ const EditPost = () => {
   const [selectedPlaylist, setSelectedPlaylist] = useState(null);
   const [selectedHashtags, setSelectedHashtags] = useState([]);
   const navigate = useNavigate();
-  const [openSnackbar, setOpenSnackbar] = useState(false);
+  const [snackbar, setSnackbar] = useState({
+    open: false,
+    message: '',
+    severity: 'success',
+  });
 
   useEffect(() => {
-    const fetchPostData = async () => {
+    const fetchPlaylistData = async () => {
       try {
         const post = await fetchPostById(postId);
         setTitle(post.title);
@@ -46,7 +44,7 @@ const EditPost = () => {
       }
     };
 
-    fetchPostData();
+    fetchPlaylistData();
   }, [postId]);
 
   const handleSubmit = async e => {
@@ -56,15 +54,22 @@ const EditPost = () => {
       description,
       hashtagIds: selectedHashtags,
     };
-    console.log('updating post with data: ', updatedPost);
     try {
       await updatePost(postId, updatedPost);
-      setOpenSnackbar(true);
+      setSnackbar({
+        open: true,
+        message: '게시글이 성공적으로 수정되었습니다!',
+        severity: 'success',
+      });
       setTimeout(() => {
         navigate(`/post/${postId}`); // 게시글 상세 페이지로 이동
-      }, 2000); // 2초 후에 페이지 이동
+      }, 1000); // 1초 후에 페이지 이동
     } catch (error) {
-      console.error('Error updating post:', error);
+      setSnackbar({
+        open: true,
+        message: '게시글 수정에 실패했습니다. 다시 시도해 주세요.',
+        severity: 'error',
+      });
     }
   };
 
@@ -74,10 +79,6 @@ const EditPost = () => {
 
   const handleCancel = () => {
     navigate(-1); // 이전 페이지로 이동
-  };
-
-  const handleCloseSnackbar = () => {
-    setOpenSnackbar(false);
   };
 
   return (
@@ -151,19 +152,12 @@ const EditPost = () => {
           </Box>
         </Box>
       </Box>
-      <Snackbar
-        open={openSnackbar}
-        autoHideDuration={2000}
-        onClose={handleCloseSnackbar}
-      >
-        <Alert
-          onClose={handleCloseSnackbar}
-          severity="success"
-          sx={{ width: '100%' }}
-        >
-          게시글이 성공적으로 수정되었습니다!
-        </Alert>
-      </Snackbar>
+      <SnackbarAlert
+        open={snackbar.open}
+        onClose={() => setSnackbar(prev => ({ ...prev, open: false }))}
+        message={snackbar.message}
+        severity={snackbar.severity}
+      />
     </BaseContainer>
   );
 };

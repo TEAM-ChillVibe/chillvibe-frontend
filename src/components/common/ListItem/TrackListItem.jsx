@@ -1,16 +1,17 @@
-import { Alert, Box, Snackbar } from '@mui/material';
+import { Box } from '@mui/material';
 
 import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
 import Avatar from '@mui/material/Avatar';
 import useMusicPlayerStore from '../../../store/useMusicPlayerStore';
 import { Pause, PlayArrow, PlaylistAdd } from '@mui/icons-material';
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import DropdownModal from '../Modal/DropdownModal';
 import {
   addTrackToPlaylist,
   getUserPlaylistsForSelection,
 } from '../../../api/playlist/playlistApi';
+import SnackbarAlert from '../Alert/SnackbarAlert';
 
 function TrackListItem({ music }) {
   // 뮤직플레이어 설정
@@ -52,9 +53,11 @@ function TrackListItem({ music }) {
     setSelectedValue(event.target.value);
   };
 
-  // 스낵바
-  const [snackbarOpen, setSnackbarOpen] = useState(false);
-  const [snackbarMessage, setSnackbarMessage] = useState('');
+  const [snackbar, setSnackbar] = useState({
+    open: false,
+    message: '',
+    severity: 'success',
+  });
 
   // 추가 버튼
   const handlePrimaryClick = async () => {
@@ -64,11 +67,17 @@ function TrackListItem({ music }) {
     if (selectedValue) {
       try {
         await addTrackToPlaylist(selectedValue, music);
-        setSnackbarMessage('트랙이 플레이리스트에 추가되었습니다!');
-        setSnackbarOpen(true);
+        setSnackbar({
+          open: true,
+          message: '플레이리스트에 트랙이 추가되었습니다!',
+          severity: 'success',
+        });
       } catch (error) {
-        setSnackbarMessage('트랙 추가에 실패했습니다. 다시 시도해 주세요.');
-        setSnackbarOpen(true);
+        setSnackbar({
+          open: true,
+          message: '트랙이 추가에 실패했습니다. 다시 시도해 주세요.',
+          severity: 'error',
+        });
       } finally {
         closeModal();
       }
@@ -146,19 +155,12 @@ function TrackListItem({ music }) {
         />
       </Box>
 
-      <Snackbar
-        open={snackbarOpen}
-        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
-        autoHideDuration={6000}
-        onClose={() => setSnackbarOpen(false)}
-      >
-        <Alert
-          onClose={() => setSnackbarOpen(false)}
-          severity={snackbarMessage.includes('실패') ? 'error' : 'success'}
-        >
-          {snackbarMessage}
-        </Alert>
-      </Snackbar>
+      <SnackbarAlert
+        open={snackbar.open}
+        onClose={() => setSnackbar(prev => ({ ...prev, open: false }))}
+        message={snackbar.message}
+        severity={snackbar.severity}
+      />
     </Box>
   );
 }

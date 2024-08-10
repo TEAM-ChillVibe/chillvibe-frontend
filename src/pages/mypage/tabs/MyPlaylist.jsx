@@ -1,20 +1,19 @@
 import {
-  Alert,
   Box,
   Button,
   CircularProgress,
   Grid,
   Pagination,
-  Snackbar,
   Typography,
 } from '@mui/material';
 import PlaylistListItemMini from '../../../components/common/ListItem/PlaylistListItemMini';
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import FormModal from '../../../components/common/Modal/FormModal';
 import {
   createEmptyPlaylist,
   getUserPlaylists,
 } from '../../../api/playlist/playlistApi';
+import SnackbarAlert from '../../../components/common/Alert/SnackbarAlert';
 
 // 페이지네이션 단위 고정값
 const itemsPerPage = 10;
@@ -76,6 +75,11 @@ const MyPlaylist = () => {
       const data = await getUserPlaylists(0, itemsPerPage); // 첫 페이지의 플레이리스트를 가져옵니다.
       setPlaylists(data.content); // 업데이트된 플레이리스트 설정
       setTotalPages(data.totalPages); // 업데이트된 총 페이지 수 설정
+      setSnackbar({
+        open: true,
+        message: '새 플레이리스트가 생성되었습니다.',
+        severity: 'success',
+      });
     } catch (e) {
       setSnackbar({
         open: true,
@@ -171,19 +175,12 @@ const MyPlaylist = () => {
         )}
       </Box>
 
-      <Snackbar
+      <SnackbarAlert
         open={snackbar.open}
-        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
-        autoHideDuration={6000}
         onClose={() => setSnackbar(prev => ({ ...prev, open: false }))}
-      >
-        <Alert
-          onClose={() => setSnackbar(prev => ({ ...prev, open: false }))}
-          severity={snackbar.severity}
-        >
-          {snackbar.message}
-        </Alert>
-      </Snackbar>
+        message={snackbar.message}
+        severity={snackbar.severity}
+      />
     </Box>
   );
 };

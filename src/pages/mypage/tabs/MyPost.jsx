@@ -1,34 +1,38 @@
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
-  Alert,
   Box,
   Button,
   CircularProgress,
   Pagination,
-  Snackbar,
   Typography,
 } from '@mui/material';
 import MyPostListItem from '../../../components/common/ListItem/MyPostListItem';
 import { fetchPostsByUserId } from '../../../api/post/postApi';
+import SnackbarAlert from '../../../components/common/Alert/SnackbarAlert';
 
 // 페이지네이션 단위 고정값
 const itemsPerPage = 10;
 
 const MyPost = ({ user }) => {
+  // 로딩할 포스트 관리
   const [posts, setPosts] = useState([]);
+  // 로딩 상태 관리
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState(null);
-
-  // 현재 페이지 관리
-  const [page, setPage] = useState(1);
-
   // 스낵바 관리
   const [snackbar, setSnackbar] = useState({
     open: false,
     message: '',
     severity: 'success',
   });
+  // 현재 페이지 관리
+  const [page, setPage] = useState(1);
+  // 인덱스 계산
+  const startIndex = (page - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const currentPosts = posts.slice(startIndex, endIndex);
+  const totalPages = Math.ceil(posts.length / itemsPerPage);
 
+  // 페이지 로딩
   useEffect(() => {
     const fetchposts = async () => {
       setIsLoading(true);
@@ -47,18 +51,12 @@ const MyPost = ({ user }) => {
     };
 
     fetchposts();
-  }, []);
+  }, [user.userId]);
 
   // 페이지 핸들러
   const handlePageChange = (event, newPage) => {
     setPage(newPage);
   };
-
-  // 인덱스 계산
-  const startIndex = (page - 1) * itemsPerPage;
-  const endIndex = startIndex + itemsPerPage;
-  const currentPosts = posts.slice(startIndex, endIndex);
-  const totalPages = Math.ceil(posts.length / itemsPerPage);
 
   return (
     <Box sx={{ width: '100%' }}>
@@ -108,19 +106,12 @@ const MyPost = ({ user }) => {
         )}
       </Box>
 
-      <Snackbar
+      <SnackbarAlert
         open={snackbar.open}
-        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
-        autoHideDuration={6000}
         onClose={() => setSnackbar(prev => ({ ...prev, open: false }))}
-      >
-        <Alert
-          onClose={() => setSnackbar(prev => ({ ...prev, open: false }))}
-          severity={snackbar.severity}
-        >
-          {snackbar.message}
-        </Alert>
-      </Snackbar>
+        message={snackbar.message}
+        severity={snackbar.severity}
+      />
     </Box>
   );
 };
