@@ -9,7 +9,8 @@ import { useEffect } from 'react';
 import usePostStore from '../../../store/usePostStore';
 
 function PostListItem({ post }) {
-  const { id, title, createdAt, trackCount, user, likeCount } = post;
+  const { id, title, createdAt, trackCount, user, likeCount, thumbnailUrl } =
+    post;
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -62,7 +63,7 @@ function PostListItem({ post }) {
       >
         {/* 이미지 소스 수정 필요 */}
         <img
-          src={albumSample}
+          src={thumbnailUrl}
           alt={'Track img'}
           style={{ width: '100%', height: '100%', objectFit: 'cover' }}
         />

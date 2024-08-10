@@ -7,7 +7,15 @@ import { fetchHashtagsOfUser } from '../../../api/hashtag/hashtagApi';
 import { formatDate } from '../../../utils/reusableFn';
 
 function MyPostListItem({ user, post }) {
-  const { id, title, createdAt, trackCount, hashtags, likeCount } = post;
+  const {
+    id,
+    title,
+    createdAt,
+    trackCount,
+    hashtags,
+    likeCount,
+    thumbnailUrl,
+  } = post;
   const navigate = useNavigate();
 
   const handleNavigateToPost = () => {
@@ -41,7 +49,7 @@ function MyPostListItem({ user, post }) {
       >
         {/* 이미지 소스 수정 필요 */}
         <img
-          src={albumSample}
+          src={thumbnailUrl}
           alt={'Track img'}
           style={{ width: '100%', height: '100%', objectFit: 'cover' }}
         />
