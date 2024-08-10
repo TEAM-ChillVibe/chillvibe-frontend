@@ -49,6 +49,7 @@ const HashtagChips = ({
         'selectedHashtags',
         JSON.stringify(newSelectedHashtags),
       );
+      console.log('Updated selectedHashtags:', newSelectedHashtags); // 확인용 로그
 
       if (onChipClick) {
         onChipClick(newSelectedHashtags);
