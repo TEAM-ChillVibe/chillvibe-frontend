@@ -59,7 +59,7 @@ const MyComment = () => {
 
   // 댓글 클릭 핸들러
   const handleCommentClick = postId => {
-    navigate(`/posts/${postId}`); // 해당 게시글 페이지로 이동
+    navigate(`/post/${postId}`); // 해당 게시글 페이지로 이동
   };
 
   // 페이지 인덱스 계산

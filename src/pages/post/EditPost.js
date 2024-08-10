@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { fetchPostById, updatePost } from '../../api/post/postApi';
-import { getUserPlaylistsForSelection } from '../../api/playlist/playlistApi';
+import { getPlaylistByPostId } from '../../api/playlist/playlistApi';
 import { fetchAllHashtags } from '../../api/hashtag/hashtagApi';
 
 import {
@@ -21,7 +21,6 @@ const EditPost = () => {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [selectedPlaylist, setSelectedPlaylist] = useState(null);
-  const [playlists, setPlaylists] = useState([]);
   const [selectedHashtags, setSelectedHashtags] = useState([]);
   const navigate = useNavigate();
   const [openSnackbar, setOpenSnackbar] = useState(false);
@@ -30,10 +29,12 @@ const EditPost = () => {
     const fetchPostData = async () => {
       try {
         const post = await fetchPostById(postId);
-        console.log(post);
         setTitle(post.title);
         setDescription(post.description);
-        setSelectedPlaylist(post.playlists);
+
+        // postId를 이용해 연관된 플레이리스트 가져오기
+        const playlist = await getPlaylistByPostId(postId);
+        setSelectedPlaylist(playlist);
 
         // 로컬스토리지에서 선택된 해시태그 불러오기
         const storedHashtags = JSON.parse(
@@ -45,17 +46,7 @@ const EditPost = () => {
       }
     };
 
-    const fetchPlaylists = async () => {
-      try {
-        const response = await getUserPlaylistsForSelection();
-        setPlaylists(response);
-      } catch (error) {
-        console.error('Error fetching playlists:', error);
-      }
-    };
-
     fetchPostData();
-    fetchPlaylists();
   }, [postId]);
 
   const handleSubmit = async e => {
@@ -71,7 +62,7 @@ const EditPost = () => {
       setOpenSnackbar(true);
       setTimeout(() => {
         navigate(`/post/${postId}`); // 게시글 상세 페이지로 이동
-      }, 3000); // 2초 후에 페이지 이동
+      }, 2000); // 2초 후에 페이지 이동
     } catch (error) {
       console.error('Error updating post:', error);
     }

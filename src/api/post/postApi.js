@@ -55,9 +55,10 @@ export const createPost = async postCreateRequestDto => {
 export const updatePost = async (postId, postUpdateRequestDto) => {
   try {
     const response = await axiosWithToken.put(
-      '/api/posts/${postId}',
+      `/api/posts/${postId}`,
       postUpdateRequestDto,
     );
+    console.log('Update successful:', response.data);
     return response.data;
   } catch (error) {
     console.error('Failed to update post:', error);
