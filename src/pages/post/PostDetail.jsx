@@ -53,30 +53,20 @@ const PostDetail = () => {
         setPost(postResponse);
 
         const userResponse = await myInfo(); // 사용자 정보 가져오기
-        console.log('Fetched post data:', postResponse);
-        console.log('Fetched user data:', userResponse);
 
         // userResponse에 대한 구조 확인
         const postOwnerId = postResponse?.user?.userId;
         const currentUserId = userResponse?.userId || userResponse?.id; // 두 가지 경우 모두 확인
 
-        console.log('Post Owner ID:', postOwnerId);
-        console.log('Current User ID:', currentUserId);
-        console.log('Type of Post Owner ID:', typeof postOwnerId);
-        console.log('Type of Current User ID:', typeof currentUserId);
-
         if (postOwnerId && currentUserId) {
           if (String(postOwnerId) === String(currentUserId)) {
             // 동일한 타입으로 변환 후 비교
-            console.log('User is the owner of the post.');
             setIsOwner(true); // 사용자가 작성자인 경우
           } else {
-            console.log('User is NOT the owner of the post.');
             setIsOwner(false); // 사용자가 작성자가 아닌 경우
           }
         }
       } catch (error) {
-        console.error('Failed to fetch post or user data:', error);
         setError(error);
       } finally {
         setLoading(false);
@@ -179,7 +169,6 @@ const PostDetail = () => {
             ))}
         </Box>
       </Box>
-
       {/* 트랙 리스트 */}
       <Typography variant="h6" sx={{ mb: 2, fontWeight: 'bold' }}>
         Tracks
@@ -209,7 +198,6 @@ const PostDetail = () => {
           <Typography>No tracks available</Typography>
         )}
       </List>
-
       {/* 사용자 정보 */}
       {post.user && (
         <Box
@@ -246,26 +234,12 @@ const PostDetail = () => {
           </Box>
         </Box>
       )}
-
       {/* 댓글 섹션 */}
       <Typography variant="h6" sx={{ mt: 3, mb: 2 }}>
         Comments
       </Typography>
-      <List>
-        {post.comments && post.comments.length > 0 ? (
-          post.comments.map(comment => (
-            <ListItem key={comment.id}>
-              <ListItemText
-                primary={comment.content}
-                secondary={comment.userNickname}
-              />
-            </ListItem>
-          ))
-        ) : (
-          <Typography>No comments available.</Typography>
-        )}
-      </List>
-
+      <Comment postId={postId} sx={{ width: '100%' }} />
+      {/* postId를 prop으로 전달 */}
       {/* 삭제 모달 */}
       {isOwner && ( // isOwner가 true일 때만 모달 관련 코드를 렌더링
         <SimpleModal
