@@ -84,8 +84,9 @@ const PlaylistDetail = () => {
           severity: 'success',
         });
       }
-      const updatedData = await getPlaylistForEditing(playlistId);
-      setPlaylistData(updatedData);
+      setTimeout(() => {
+        navigate('/my-page');
+      }, 2000); // 저장하고 마이페이지로
     } catch (error) {
       setSnackbar({
         open: true,
