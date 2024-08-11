@@ -11,6 +11,7 @@ import {
   Grid,
   Typography,
   Pagination,
+  CircularProgress, // ✔️ 로딩 스피너 추가
 } from '@mui/material';
 import HashtagChips from '../../components/common/HashtagChips';
 import usePostStore from '../../store/usePostStore';
@@ -35,6 +36,7 @@ const NewPost = () => {
     message: '',
     severity: 'success',
   });
+  const [isSubmitting, setIsSubmitting] = useState(false); // ✔️ 제출 상태 관리
 
   useEffect(() => {
     const fetchPlaylists = async () => {
@@ -56,6 +58,11 @@ const NewPost = () => {
 
   const handleSubmit = async e => {
     e.preventDefault();
+
+    // 🔄 이미 제출 중이면 함수 종료
+    if (isSubmitting) return;
+
+    setIsSubmitting(true); // ✔️ 제출 상태 시작
 
     console.log('Selected Hashtags:', selectedHashtags);
 
@@ -82,6 +89,11 @@ const NewPost = () => {
         message: '게시글 작성에 실패했습니다. 다시 시도해 주세요.',
         severity: 'error',
       });
+    } finally {
+      // 로딩이 끝난 후에도 버튼이 잠시 비활성화되도록 지연 시간을 추가
+      setTimeout(() => {
+        setIsSubmitting(false); // ✔️ 제출 상태 종료
+      }, 1500); // 1.5초 지연 시간 추가
     }
   };
 
@@ -181,8 +193,18 @@ const NewPost = () => {
             <Button variant="outlined" onClick={handleCancel}>
               취소
             </Button>
-            <Button type="submit" variant="contained" color="primary">
-              작성
+            <Button
+              type="submit"
+              variant="contained"
+              color="primary"
+              disabled={isSubmitting} // ✔️ 로딩 중일 때 버튼 비활성화
+            >
+              {isSubmitting ? (
+                <CircularProgress size={24} color="inherit" />
+              ) : (
+                '작성'
+              )}
+              {/* ✔️ 로딩 중에는 로딩 스피너 표시 */}
             </Button>
           </Box>
         </Box>
