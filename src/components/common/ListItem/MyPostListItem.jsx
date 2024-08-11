@@ -3,7 +3,7 @@ import albumSample from '../albumSample.jpeg';
 import { useNavigate } from 'react-router-dom';
 import LikeButton from '../Button/LikeButton';
 import HashtagChips from '../HashtagChips';
-import { fetchHashtagsOfUser } from '../../../api/hashtag/hashtagApi';
+import { fetchHashtagsOfPost } from '../../../api/hashtag/hashtagApi';
 import { formatDate } from '../../../utils/reusableFn';
 
 function MyPostListItem({ user, post }) {
@@ -77,7 +77,7 @@ function MyPostListItem({ user, post }) {
           트랙 {trackCount}개
         </Typography>
         <HashtagChips
-          fetchHashtags={() => fetchHashtagsOfUser(user.userId)}
+          fetchHashtags={() => fetchHashtagsOfPost(post.id)}
           onChipClick={handleChipClick}
         />
       </Box>
