@@ -48,13 +48,23 @@ const SearchTracks = ({ results, onLoadMore }) => {
     }
   }, [results]);
 
-  const noResultsMessage =
-    !isLoading &&
-    (!results || !results.content || results.content.length === 0);
+  if (!results || !results.content || results.content.length === 0) {
+    return (
+      <Box
+        sx={{
+          display: 'flex',
+          justifyContent: 'center',
+          width: '100%',
+          mt: 4, // 상단 여백 추가
+        }}
+      >
+        <Typography>트랙 검색 결과가 없습니다.</Typography>
+      </Box>
+    );
+  }
 
   return (
     <Box sx={{ width: '100%' }}>
-      {noResultsMessage && <Typography>트랙 검색 결과가 없습니다.</Typography>}
       {results.content.map((track, index) => (
         <TrackListItem
           key={track.id}

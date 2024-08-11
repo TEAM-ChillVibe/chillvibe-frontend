@@ -55,7 +55,18 @@ const SearchPosts = ({ results, onLoadMore }) => {
   }, [results]);
 
   if (!results || !results.content || results.content.length === 0) {
-    return <Typography>게시글 검색 결과가 없습니다.</Typography>;
+    return (
+      <Box
+        sx={{
+          display: 'flex',
+          justifyContent: 'center',
+          width: '100%',
+          mt: 4, // 상단 여백 추가
+        }}
+      >
+        <Typography>게시글 검색 결과가 없습니다.</Typography>
+      </Box>
+    );
   }
 
   return (
@@ -68,17 +79,7 @@ const SearchPosts = ({ results, onLoadMore }) => {
             sx={{ mb: 1 }}
             ref={index === results.content.length - 1 ? lastItemRef : null}
           >
-            <PostListItem
-              post={{
-                ...post,
-                user: {
-                  id: post.user.id,
-                  name: post.user.nickname,
-                  avatar: post.user.profileUrl,
-                },
-                likes: post.likeCount,
-              }}
-            />
+            <PostListItem post={post} />
           </ListItem>
         ))}
       </List>
