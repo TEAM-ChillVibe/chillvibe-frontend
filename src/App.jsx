@@ -3,6 +3,8 @@ import Router from './Router';
 import Footer from './components/layout/Footer';
 import TopBar from './components/layout/TopBar/TopBar';
 import TopButton from './components/common/Button/TopButton';
+import NewPostButton from './components/common/Button/NewPostButton';
+import NewPlaylistButton from './components/common/Button/NewPlaylistButton';
 import MusicPlayer from './components/common/MusicPlayer/MusicPlayer';
 import useUserStore from './store/useUserStore';
 
@@ -32,6 +34,8 @@ function App() {
       <Router />
       <Footer />
       <TopButton />
+      <NewPostButton />
+      <NewPlaylistButton />
       <MusicPlayer />
     </div>
   );
