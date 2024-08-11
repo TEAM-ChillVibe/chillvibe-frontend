@@ -18,7 +18,7 @@ import TrackListItem from '../../components/common/ListItem/TrackListItem';
 import LikeButton from '../../components/common/Button/LikeButton';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
-import DeleteModal from '../../components/common/Modal/DeleteModal';
+import SimpleModal from '../../components/common/Modal/SimpleModal';
 
 const PostDetail = () => {
   const { postId } = useParams();
@@ -28,30 +28,8 @@ const PostDetail = () => {
   const [error, setError] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  // ✔️ 새로운 상태 추가: isOwner
+  // 현재 사용자가 포스트의 작성자인지 여부를 확인하는 상태
   const [isOwner, setIsOwner] = useState(false);
-
-  useEffect(() => {
-    const getPost = async () => {
-      try {
-        const response = await fetchPostById(postId);
-        console.log('Fetched post data:', response);
-        setPost(response);
-
-        // ✔️ 현재 사용자 정보 가져오기 및 작성자 여부 확인
-        const userData = await myInfo();
-        if (userData.id === response.user.id) {
-          setIsOwner(true); // 사용자가 작성자인 경우에만 true로 설정
-        }
-      } catch (error) {
-        setError(error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    getPost();
-  }, [postId]);
 
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => setIsModalOpen(false);
@@ -68,6 +46,39 @@ const PostDetail = () => {
     }
   };
 
+  useEffect(() => {
+    const getPost = async () => {
+      try {
+        const postResponse = await fetchPostById(postId); // 게시글 정보 가져오기
+        setPost(postResponse);
+
+        const userResponse = await myInfo(); // 사용자 정보 가져오기
+
+        // userResponse에 대한 구조 확인
+        const postOwnerId = postResponse?.user?.userId;
+        const currentUserId = userResponse?.userId || userResponse?.id; // 두 가지 경우 모두 확인
+
+        if (postOwnerId && currentUserId) {
+          if (String(postOwnerId) === String(currentUserId)) {
+            // 동일한 타입으로 변환 후 비교
+            setIsOwner(true); // 사용자가 작성자인 경우
+          } else {
+            setIsOwner(false); // 사용자가 작성자가 아닌 경우
+          }
+        }
+      } catch (error) {
+        setError(error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    getPost();
+  }, [postId]);
+
+  // 렌더링 전 상태를 확인합니다.
+  console.log('isOwner:', isOwner);
+
   if (loading) {
     return <Typography>Loading...</Typography>;
   }
@@ -78,8 +89,13 @@ const PostDetail = () => {
 
   return (
     <BaseContainer>
-      <Box sx={{ mb: 2 }}>
-        <Box display="flex" justifyContent="space-between" alignItems="center">
+      <Box sx={{ mb: 2, width: '100%' }}>
+        <Box
+          display="flex"
+          justifyContent="space-between"
+          alignItems="center"
+          sx={{ mb: 2, width: '100%' }}
+        >
           <Box>
             <Typography variant="h4" sx={{ fontWeight: 'bold', mb: 1 }}>
               {post.title}
@@ -88,36 +104,40 @@ const PostDetail = () => {
               트랙 {post.playlists.trackCount}개 | {post.createdAt}
             </Typography>
           </Box>
-          <Box display="flex" alignItems="center">
-            <Box display="flex" alignItems="center" sx={{ mr: 2 }}>
-              <LikeButton postId={postId} initialLikeCount={post.likeCount} />
+          {isOwner && (
+            <Box display="flex" alignItems="center">
+              <Box display="flex" alignItems="center" sx={{ mr: 2 }}>
+                <LikeButton postId={postId} initialLikeCount={post.likeCount} />
+              </Box>
+              <Button
+                variant="contained"
+                startIcon={<EditIcon />}
+                onClick={() => navigate(`/edit-post/${postId}`)}
+                sx={{
+                  color: '#fff',
+                  backgroundColor: '#555',
+                  mr: 2,
+                  '&:hover': { backgroundColor: '#777' },
+                }}
+              >
+                수정
+              </Button>
+              <Button
+                variant="contained"
+                startIcon={<DeleteIcon />}
+                onClick={openModal}
+                sx={{
+                  backgroundColor: '#D895FF',
+                  color: '#000',
+                  '&:hover': {
+                    backgroundColor: '#C27BFF',
+                  },
+                }}
+              >
+                삭제
+              </Button>
             </Box>
-            {isOwner && (
-              <>
-                <Button
-                  variant="contained" // `contained` 스타일로 변경
-                  startIcon={<EditIcon />}
-                  onClick={() => navigate(`/edit-post/${postId}`)}
-                  sx={{
-                    color: '#fff',
-                    backgroundColor: '#555', // 회색으로 설정
-                    mr: 2,
-                    '&:hover': { backgroundColor: '#777' }, // hover 시 조금 더 밝은 회색으로
-                  }}
-                >
-                  수정
-                </Button>
-                <Button
-                  variant="contained"
-                  color="error"
-                  startIcon={<DeleteIcon />}
-                  onClick={openModal}
-                >
-                  삭제
-                </Button>
-              </>
-            )}
-          </Box>
+          )}
         </Box>
 
         {/* 설명 텍스트 */}
@@ -149,7 +169,6 @@ const PostDetail = () => {
             ))}
         </Box>
       </Box>
-
       {/* 트랙 리스트 */}
       <Typography variant="h6" sx={{ mb: 2, fontWeight: 'bold' }}>
         Tracks
@@ -191,9 +210,8 @@ const PostDetail = () => {
             borderRadius: '8px',
           }}
         >
-          {/* Avatar와 사용자 이름에 Link를 추가 */}
           <Link
-            to={`/user/${post.user.id}`}
+            to={`/user/${post.user.userId}`}
             style={{ textDecoration: 'none', color: 'inherit' }}
           >
             <Avatar
@@ -204,7 +222,7 @@ const PostDetail = () => {
           </Link>
           <Box sx={{ ml: 2 }}>
             <Link
-              to={`/user/${post.user.id}`}
+              to={`/user/${post.user.userId}`}
               style={{ textDecoration: 'none', color: 'inherit' }}
             >
               <Typography variant="h6">{post.user.nickname}</Typography>
@@ -223,12 +241,21 @@ const PostDetail = () => {
       <Box sx={{ width: '100%', mt: -10 }}>
         <Comment />
       </Box>
+
+      {/* postId를 prop으로 전달 */}
       {/* 삭제 모달 */}
-      <DeleteModal
-        isOpen={isModalOpen}
-        onClose={closeModal}
-        onDelete={handleDelete}
-      />
+      {isOwner && ( // isOwner가 true일 때만 모달 관련 코드를 렌더링
+        <SimpleModal
+          open={isModalOpen}
+          onClose={closeModal}
+          title="Delete Post"
+          description={`정말 삭제하시겠습니까?\n삭제된 게시글은 복구할 수 없습니다.`}
+          primaryButtonText="삭제"
+          secondaryButtonText="취소"
+          onPrimaryClick={handleDelete}
+          onSecondaryClick={closeModal}
+        />
+      )}
     </BaseContainer>
   );
 };
