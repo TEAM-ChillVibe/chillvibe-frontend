@@ -31,6 +31,8 @@ const PostDetail = () => {
   // 현재 사용자가 포스트의 작성자인지 여부를 확인하는 상태
   const [isOwner, setIsOwner] = useState(false);
 
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => setIsModalOpen(false);
 
@@ -52,19 +54,27 @@ const PostDetail = () => {
         const postResponse = await fetchPostById(postId); // 게시글 정보 가져오기
         setPost(postResponse);
 
-        const userResponse = await myInfo(); // 사용자 정보 가져오기
+        try {
+          const userResponse = await myInfo(); // 사용자 정보 가져오기
 
-        // userResponse에 대한 구조 확인
-        const postOwnerId = postResponse?.user?.userId;
-        const currentUserId = userResponse?.userId || userResponse?.id; // 두 가지 경우 모두 확인
+          // userResponse에 대한 구조 확인
+          const postOwnerId = postResponse?.user?.userId;
+          const currentUserId = userResponse?.userId || userResponse?.id; // 두 가지 경우 모두 확인
 
-        if (postOwnerId && currentUserId) {
-          if (String(postOwnerId) === String(currentUserId)) {
-            // 동일한 타입으로 변환 후 비교
-            setIsOwner(true); // 사용자가 작성자인 경우
-          } else {
-            setIsOwner(false); // 사용자가 작성자가 아닌 경우
+          // ✔️ 변경된 부분: 사용자가 로그인했음을 확인
+          setIsLoggedIn(true);
+
+          if (postOwnerId && currentUserId) {
+            if (String(postOwnerId) === String(currentUserId)) {
+              // 동일한 타입으로 변환 후 비교
+              setIsOwner(true); // 사용자가 작성자인 경우
+            } else {
+              setIsOwner(false); // 사용자가 작성자가 아닌 경우
+            }
           }
+        } catch {
+          // 사용자가 로그인되지 않은 경우 (userResponse 가져오기 실패)
+          setIsLoggedIn(false);
         }
       } catch (error) {
         setError(error);
@@ -104,38 +114,42 @@ const PostDetail = () => {
               트랙 {post.playlists.trackCount}개 | {post.createdAt}
             </Typography>
           </Box>
-          {isOwner && (
+          {isLoggedIn && (
             <Box display="flex" alignItems="center">
               <Box display="flex" alignItems="center" sx={{ mr: 2 }}>
                 <LikeButton postId={postId} initialLikeCount={post.likeCount} />
               </Box>
-              <Button
-                variant="contained"
-                startIcon={<EditIcon />}
-                onClick={() => navigate(`/edit-post/${postId}`)}
-                sx={{
-                  color: '#fff',
-                  backgroundColor: '#555',
-                  mr: 2,
-                  '&:hover': { backgroundColor: '#777' },
-                }}
-              >
-                수정
-              </Button>
-              <Button
-                variant="contained"
-                startIcon={<DeleteIcon />}
-                onClick={openModal}
-                sx={{
-                  backgroundColor: '#D895FF',
-                  color: '#000',
-                  '&:hover': {
-                    backgroundColor: '#C27BFF',
-                  },
-                }}
-              >
-                삭제
-              </Button>
+              {isOwner && (
+                <>
+                  <Button
+                    variant="contained"
+                    startIcon={<EditIcon />}
+                    onClick={() => navigate(`/edit-post/${postId}`)}
+                    sx={{
+                      color: '#fff',
+                      backgroundColor: '#555',
+                      mr: 2,
+                      '&:hover': { backgroundColor: '#777' },
+                    }}
+                  >
+                    수정
+                  </Button>
+                  <Button
+                    variant="contained"
+                    startIcon={<DeleteIcon />}
+                    onClick={openModal}
+                    sx={{
+                      backgroundColor: '#D895FF',
+                      color: '#000',
+                      '&:hover': {
+                        backgroundColor: '#C27BFF',
+                      },
+                    }}
+                  >
+                    삭제
+                  </Button>
+                </>
+              )}
             </Box>
           )}
         </Box>
@@ -239,7 +253,7 @@ const PostDetail = () => {
         Comments
       </Typography>
       <Box sx={{ width: '100%', mt: -10 }}>
-        <Comment />
+        <Comment postId={postId} />
       </Box>
 
       {/* postId를 prop으로 전달 */}
