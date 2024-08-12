@@ -10,6 +10,7 @@ const SimpleModal = ({
   secondaryButtonText,
   onPrimaryClick,
   onSecondaryClick,
+  primaryButtonStyle = 'primary',
 }) => {
   return (
     <Modal
@@ -54,7 +55,11 @@ const SimpleModal = ({
           <Button onClick={onSecondaryClick} color="inherit">
             {secondaryButtonText}
           </Button>
-          <Button onClick={onPrimaryClick} variant="contained" color="primary">
+          <Button
+            onClick={onPrimaryClick}
+            variant="contained"
+            color={primaryButtonStyle}
+          >
             {primaryButtonText}
           </Button>
         </Box>

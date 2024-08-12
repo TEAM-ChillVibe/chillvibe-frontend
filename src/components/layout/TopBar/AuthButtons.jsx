@@ -2,8 +2,10 @@ import { Avatar, Box, Button, Menu, MenuItem, Typography } from '@mui/material';
 import { Link, useNavigate } from 'react-router-dom';
 import useUserStore from '../../../store/useUserStore';
 import { styled } from '@mui/material/styles';
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { signout } from '../../../api/auth/authApi';
+import SimpleModal from '../../common/Modal/SimpleModal';
+import SnackbarAlert from '../../common/Alert/SnackbarAlert';
 
 const RoundedButton = styled(Button)(({ theme }) => ({
   textTransform: 'none',
@@ -33,25 +35,41 @@ const AuthButtons = ({ user }) => {
     setAnchorEl(null);
   };
 
+  const [modalOpen, setModalOpen] = useState(false);
+  const handleModalOpen = () => setModalOpen(true);
+  const handleModalClose = () => setModalOpen(false);
+
+  const [snackbar, setSnackbar] = useState({
+    open: false,
+    message: '',
+    severity: 'error',
+  });
+
   const handleLogout = async () => {
-    const confirmLogout = window.confirm('정말 로그아웃하시겠습니까?');
-    if (confirmLogout) {
-      try {
-        // 로그아웃 요청
-        await signout();
+    // const confirmLogout = window.confirm('정말 로그아웃하시겠습니까?');
+    // if (confirmLogout) {
+    try {
+      // 로그아웃 요청
+      await signout();
 
-        // 클라이언트 측 저장소와 쿠키 정리
-        localStorage.clear();
+      // 클라이언트 측 저장소와 쿠키 정리
+      localStorage.clear();
 
-        // 상태 업데이트 (로그아웃 상태로 변경)
-        logout();
+      // 상태 업데이트 (로그아웃 상태로 변경)
+      logout();
 
-        handleMenuClose();
-        navigate('/'); // 홈페이지로 리디렉션
-      } catch (error) {
-        window.alert('로그아웃 중 오류가 발생했습니다. 다시 시도해 주세요.');
-      }
+      handleMenuClose();
+      navigate('/'); // 홈페이지로 리디렉션
+    } catch (error) {
+      setSnackbar({
+        open: true,
+        message: '로그아웃 중 오류가 발생했습니다. 다시 시도해 주세요.',
+        severity: 'error',
+      });
+    } finally {
+      handleModalClose();
     }
+    // }
   };
 
   if (user) {
@@ -102,7 +120,7 @@ const AuthButtons = ({ user }) => {
             My Page
           </MenuItem>
           <MenuItem
-            onClick={handleLogout}
+            onClick={handleModalOpen}
             sx={{
               fontSize: '0.8rem',
               justifyContent: 'flex-end',
@@ -111,6 +129,17 @@ const AuthButtons = ({ user }) => {
             Logout
           </MenuItem>
         </Menu>
+
+        <SimpleModal
+          open={modalOpen}
+          onClose={handleModalClose}
+          description="정말 로그아웃하시겠습니까?"
+          primaryButtonText="로그아웃"
+          secondaryButtonText="취소"
+          onPrimaryClick={handleLogout}
+          onSecondaryClick={handleModalClose}
+          primaryButtonStyle={'error'}
+        />
       </Box>
     );
   }
