@@ -6,6 +6,7 @@ import {
   TextField,
   FormControlLabel,
   Switch,
+  Typography,
 } from '@mui/material';
 import IconButton from '@mui/material/IconButton';
 import { AddPhotoAlternate } from '@mui/icons-material';
@@ -168,20 +169,21 @@ const EditProfile = () => {
           </Box>
           {/* 회원정보 입력 필드 */}
           <TextField
-            label="닉네임"
-            fullWidth
-            required
-            value={nickname}
-            onChange={e => setNickname(e.target.value)}
-            margin="normal"
-          />
-          <TextField
             label="이메일"
             fullWidth
             value={email}
             InputProps={{
               readOnly: true,
             }}
+            margin="normal"
+            disabled
+          />
+          <TextField
+            label="닉네임"
+            fullWidth
+            required
+            value={nickname}
+            onChange={e => setNickname(e.target.value)}
             margin="normal"
           />
           <TextField
@@ -193,6 +195,9 @@ const EditProfile = () => {
             onChange={e => setIntroduction(e.target.value)}
             margin="normal"
           />
+          <Typography variant="body1" sx={{ mt: 2, mb: 1 }}>
+            해시태그 선택
+          </Typography>
           <HashtagChips
             fetchHashtags={fetchAllHashtags}
             onChipClick={handleHashtagClick}

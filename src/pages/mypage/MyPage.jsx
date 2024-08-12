@@ -51,6 +51,8 @@ const MyPage = () => {
           sx={{ mx: 3 }}
         >
           <Button
+            variant="outlined"
+            size="small"
             href="/edit-profile"
             sx={{
               whiteSpace: 'nowrap',
@@ -59,9 +61,12 @@ const MyPage = () => {
             프로필 수정
           </Button>
           <Button
+            variant="outlined"
+            size="small"
             href="/edit-password"
             sx={{
               whiteSpace: 'nowrap',
+              mt: 1,
             }}
           >
             비밀번호 변경
