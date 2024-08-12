@@ -1,7 +1,7 @@
 import { Box, Typography } from '@mui/material';
 
 function PlaylistListItem({ playlist }) {
-  const { title, trackCount, thumbnailUrls = [] } = playlist;
+  const { title, trackCount, thumbnailUrl } = playlist;
 
   return (
     <Box
@@ -15,9 +15,6 @@ function PlaylistListItem({ playlist }) {
     >
       <Box
         sx={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(2, 1fr)', // 2열 설정
-          gridTemplateRows: 'repeat(2, 1fr)', // 2행 설정
           width: 80,
           height: 80,
           mr: 2,
@@ -26,18 +23,11 @@ function PlaylistListItem({ playlist }) {
           order: 1,
         }}
       >
-        {thumbnailUrls.slice(0, 4).map((url, index) => (
-          <Box
-            key={index}
-            sx={{ width: '100%', height: '100%', overflow: 'hidden' }}
-          >
-            <img
-              src={url}
-              alt={index}
-              style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-            />
-          </Box>
-        ))}
+        <img
+          src={thumbnailUrl} // 첫 번째 이미지 URL만 사용
+          alt="PlaylistThumbnail"
+          style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+        />
       </Box>
 
       <Box
