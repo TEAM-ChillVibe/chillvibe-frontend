@@ -128,7 +128,7 @@ const AuthButtons = ({ user }) => {
         <SimpleModal
           open={modalOpen}
           onClose={handleModalClose}
-          description="정말 로그아웃하시겠습니까?"
+          description="로그아웃하시겠습니까?"
           primaryButtonText="로그아웃"
           secondaryButtonText="취소"
           onPrimaryClick={handleLogout}

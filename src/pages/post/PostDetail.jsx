@@ -263,7 +263,7 @@ const PostDetail = () => {
           open={isModalOpen}
           onClose={closeModal}
           title="Delete Post"
-          description={`정말 삭제하시겠습니까?\n삭제된 게시글은 복구할 수 없습니다.`}
+          description={`게시글을 삭제하시겠습니까?\n삭제된 게시글은 복구할 수 없습니다.`}
           primaryButtonText="삭제"
           secondaryButtonText="취소"
           onPrimaryClick={handleDelete}

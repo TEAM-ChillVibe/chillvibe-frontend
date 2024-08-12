@@ -96,7 +96,7 @@ const EditProfile = () => {
         formData.append('profileImg', profileImage);
       }
 
-      if (window.confirm('정말로 회원정보를 수정하시겠습니까?')) {
+      if (window.confirm('회원정보를 수정하시겠습니까?')) {
         await editProfile(formData);
         setSnackbarMessage('회원정보가 수정되었습니다.');
         setSnackbarSeverity('success');
