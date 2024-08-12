@@ -1,10 +1,9 @@
-import { Box, Chip, Typography } from '@mui/material';
-import albumSample from '../albumSample.jpeg';
+import { Box, Typography } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import LikeButton from '../Button/LikeButton';
-import HashtagChips from '../HashtagChips';
 import { fetchHashtagsOfPost } from '../../../api/hashtag/hashtagApi';
 import { formatDate } from '../../../utils/reusableFn';
+import SingleHashtagChips from '../HashtagChips/SingleHashtagChips';
 
 function MyPostListItem({ user, post }) {
   const {
@@ -22,8 +21,8 @@ function MyPostListItem({ user, post }) {
     navigate(`/post/${id}`);
   };
 
-  const handleChipClick = () => {
-    navigate(`/all-tags/`);
+  const handleHashtagClick = hashtag => {
+    navigate(`/all-tags?hashtag=${hashtag.id}`);
   };
 
   return (
@@ -76,9 +75,9 @@ function MyPostListItem({ user, post }) {
         <Typography variant="body2" sx={{ mb: 1 }}>
           트랙 {trackCount}개
         </Typography>
-        <HashtagChips
+        <SingleHashtagChips
           fetchHashtags={() => fetchHashtagsOfPost(post.id)}
-          onChipClick={handleChipClick}
+          onChipClick={handleHashtagClick}
         />
       </Box>
       <Box

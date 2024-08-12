@@ -1,30 +1,31 @@
 import BaseContainer from '../../components/layout/BaseContainer';
 import { Box, Button, Typography } from '@mui/material';
-import HashtagChips from '../../components/common/HashtagChips';
 import { fetchPopularHashtags } from '../../api/hashtag/hashtagApi';
 import PostList from '../../components/common/PostList';
 import { useEffect, useState } from 'react';
+import SingleHashtagChips from '../../components/common/HashtagChips/SingleHashtagChips';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 const PopularTags = () => {
   const [sortOrder, setSortOrder] = useState('latest');
   const [selectedHashtag, setSelectedHashtag] = useState(null);
+  const location = useLocation();
+  const navigate = useNavigate();
 
   useEffect(() => {
-    const storedHashtag = localStorage.getItem('selectedHashtag');
-    if (storedHashtag) {
-      setSelectedHashtag(storedHashtag);
-    }
-  }, []);
+    const queryParams = new URLSearchParams(location.search);
+    const hashtag = queryParams.get('hashtag');
+    setSelectedHashtag(hashtag);
+  }, [location.search]);
 
-  const handleHashtagClick = hashtagId => {
-    localStorage.setItem('selectedHashtag', hashtagId);
-    setSelectedHashtag(hashtagId);
+  const handleHashtagClick = hashtag => {
+    navigate(`/popular-tags?hashtag=${hashtag.id}`);
   };
 
   return (
     <BaseContainer>
       <Typography variant="title">Popular Tags Now</Typography>
-      <HashtagChips
+      <SingleHashtagChips
         fetchHashtags={fetchPopularHashtags}
         onChipClick={handleHashtagClick}
       />

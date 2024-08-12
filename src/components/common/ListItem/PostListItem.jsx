@@ -1,18 +1,16 @@
 import { Avatar, Box, Typography } from '@mui/material';
-import albumSample from '../albumSample.jpeg';
-import { useLocation, useNavigate } from 'react-router-dom';
-import HashtagChips from '../HashtagChips';
+import { useNavigate } from 'react-router-dom';
 import { fetchHashtagsOfPost } from '../../../api/hashtag/hashtagApi';
 import { formatRelativeTime } from '../../../utils/reusableFn';
 import LikeButton from '../Button/LikeButton';
 import { useEffect } from 'react';
 import usePostStore from '../../../store/usePostStore';
+import SingleHashtagChips from '../HashtagChips/SingleHashtagChips';
 
 function PostListItem({ post }) {
   const { id, title, createdAt, trackCount, user, likeCount, thumbnailUrl } =
     post;
   const navigate = useNavigate();
-  const location = useLocation();
 
   const { initializeLikedPosts } = usePostStore(state => ({
     initializeLikedPosts: state.initializeLikedPosts,
@@ -30,14 +28,8 @@ function PostListItem({ post }) {
     navigate(`/user/${user.id}`);
   };
 
-  const handleChipClick = tagId => {
-    localStorage.setItem('selectedHashtag', tagId);
-
-    if (location.pathname === '/all-tags') {
-      window.location.reload();
-    } else {
-      navigate('/all-tags');
-    }
+  const handleHashtagClick = hashtag => {
+    navigate(`/all-tags?hashtag=${hashtag.id}`);
   };
 
   return (
@@ -93,9 +85,9 @@ function PostListItem({ post }) {
         <Typography variant="body2" sx={{ mb: 1 }}>
           트랙 {trackCount}개
         </Typography>
-        <HashtagChips
+        <SingleHashtagChips
           fetchHashtags={() => fetchHashtagsOfPost(id)}
-          onChipClick={handleChipClick}
+          onChipClick={handleHashtagClick}
         />
       </Box>
       <Box

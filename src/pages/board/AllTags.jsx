@@ -1,30 +1,31 @@
 import BaseContainer from '../../components/layout/BaseContainer';
 import { Box, Button, Typography } from '@mui/material';
 import PostList from '../../components/common/PostList';
-import HashtagChips from '../../components/common/HashtagChips';
 import { fetchAllHashtags } from '../../api/hashtag/hashtagApi';
 import { useEffect, useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
+import SingleHashtagChips from '../../components/common/HashtagChips/SingleHashtagChips';
 
 const AllTags = () => {
   const [sortOrder, setSortOrder] = useState('latest');
   const [selectedHashtag, setSelectedHashtag] = useState(null);
+  const location = useLocation();
+  const navigate = useNavigate();
 
   useEffect(() => {
-    const storedHashtag = localStorage.getItem('selectedHashtag');
-    if (storedHashtag) {
-      setSelectedHashtag(storedHashtag);
-    }
-  }, []);
+    const queryParams = new URLSearchParams(location.search);
+    const hashtag = queryParams.get('hashtag');
+    setSelectedHashtag(hashtag);
+  }, [location.search]);
 
-  const handleHashtagClick = hashtagId => {
-    localStorage.setItem('selectedHashtag', hashtagId);
-    setSelectedHashtag(hashtagId);
+  const handleHashtagClick = hashtag => {
+    navigate(`/all-tags?hashtag=${hashtag.id}`);
   };
 
   return (
     <BaseContainer>
       <Typography variant="title">All Tags</Typography>
-      <HashtagChips
+      <SingleHashtagChips
         fetchHashtags={fetchAllHashtags}
         onChipClick={handleHashtagClick}
       />
