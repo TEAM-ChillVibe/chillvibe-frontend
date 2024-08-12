@@ -1,4 +1,3 @@
-import useSortingStore from '../../store/useSortingStore';
 import BaseContainer from '../../components/layout/BaseContainer';
 import { Box, Button, Typography } from '@mui/material';
 import PostList from '../../components/common/PostList';
@@ -7,7 +6,7 @@ import { fetchAllHashtags } from '../../api/hashtag/hashtagApi';
 import { useEffect, useState } from 'react';
 
 const AllTags = () => {
-  const { sortOrder, setSortOrder } = useSortingStore();
+  const [sortOrder, setSortOrder] = useState('latest');
   const [selectedHashtag, setSelectedHashtag] = useState(null);
 
   useEffect(() => {
@@ -24,7 +23,7 @@ const AllTags = () => {
 
   return (
     <BaseContainer>
-      <Typography variant="title">태그별 플레이리스트</Typography>
+      <Typography variant="title">All Tags</Typography>
       <HashtagChips
         fetchHashtags={fetchAllHashtags}
         onChipClick={handleHashtagClick}

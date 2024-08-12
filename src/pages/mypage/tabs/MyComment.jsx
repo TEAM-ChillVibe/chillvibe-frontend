@@ -12,7 +12,7 @@ import { formatDate } from '../../../utils/reusableFn';
 import SnackbarAlert from '../../../components/common/Alert/SnackbarAlert';
 
 // 페이지네이션 단위 고정값
-const itemsPerPage = 10;
+const itemsPerPage = 5;
 
 const MyComment = () => {
   // 페이지 이동
@@ -35,7 +35,8 @@ const MyComment = () => {
     const fetchComments = async () => {
       setIsLoading(true);
       try {
-        const data = await getCommentsByUser(); // userId는 axiosWithToken에서 자동으로 처리
+        const data = await getCommentsByUser();
+        console.log(data);
         setComments(data);
       } catch (error) {
         setSnackbar({
@@ -159,6 +160,7 @@ const MyComment = () => {
                 count={totalPages}
                 page={page}
                 onChange={handlePageChange}
+                color="primary"
               />
             </Box>
           </>

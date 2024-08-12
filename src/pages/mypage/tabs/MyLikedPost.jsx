@@ -5,7 +5,7 @@ import { fetchMyLikedPosts } from '../../../api/post/postApi';
 import SnackbarAlert from '../../../components/common/Alert/SnackbarAlert';
 
 // 페이지네이션 단위 고정값
-const itemsPerPage = 10;
+const itemsPerPage = 5;
 
 const MyLikedPost = () => {
   // 페이지
@@ -27,10 +27,9 @@ const MyLikedPost = () => {
     const loadLikedPosts = async () => {
       setIsLoading(true);
       try {
-        const response = await fetchMyLikedPosts(page - 1, itemsPerPage);
-        console.log('fetched:::', response);
-        setLikedPosts(response.content);
-        setTotalPages(response.totalPages);
+        const data = await fetchMyLikedPosts(page - 1, itemsPerPage);
+        setLikedPosts(data.content);
+        setTotalPages(data.page.totalPages);
       } catch (error) {
         setSnackbar({
           open: true,

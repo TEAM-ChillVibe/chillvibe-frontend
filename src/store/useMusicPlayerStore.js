@@ -11,7 +11,7 @@ const useMusicPlayerStore = create((set, get) => ({
   currentTrack: null,
   currentTime: 0,
   duration: 0,
-  volume: 1,
+  volume: 0.7,
   isMuted: false,
   audioRef: useAudio(),
 
@@ -96,13 +96,6 @@ const useMusicPlayerStore = create((set, get) => ({
 
     audioRef.addEventListener('ended', onEnded);
 
-    // return () => {
-    //   clearInterval(intervalId);
-    //   audioRef.ontimeupdate = null;
-    //   audioRef.removeEventListener('loadedmetadata', () => {
-    //     onDurationChange(audioRef.duration);
-    //   });
-    // };
     return cleanup;
   },
 

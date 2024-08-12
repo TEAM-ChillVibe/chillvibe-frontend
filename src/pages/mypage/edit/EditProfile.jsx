@@ -6,6 +6,7 @@ import {
   TextField,
   FormControlLabel,
   Switch,
+  Typography,
 } from '@mui/material';
 import IconButton from '@mui/material/IconButton';
 import { AddPhotoAlternate } from '@mui/icons-material';
@@ -93,7 +94,7 @@ const EditProfile = () => {
         formData.append('profileImg', profileImage);
       }
 
-      if (window.confirm('정말로 회원정보를 수정하시겠습니까?')) {
+      if (window.confirm('회원정보를 수정하시겠습니까?')) {
         await editProfile(formData);
         setSnackbarMessage('회원정보가 수정되었습니다.');
         setSnackbarSeverity('success');
@@ -110,10 +111,6 @@ const EditProfile = () => {
   };
 
   const isFormValid = email && nickname;
-
-  const handleChangePassword = () => {
-    navigate('/edit-password'); // 비밀번호 변경 페이지로 이동
-  };
 
   const handleCloseSnackbar = () => {
     setOpenSnackbar(false);
@@ -170,20 +167,21 @@ const EditProfile = () => {
           </Box>
           {/* 회원정보 입력 필드 */}
           <TextField
-            label="닉네임"
-            fullWidth
-            required
-            value={nickname}
-            onChange={e => setNickname(e.target.value)}
-            margin="normal"
-          />
-          <TextField
             label="이메일"
             fullWidth
             value={email}
             InputProps={{
               readOnly: true,
             }}
+            margin="normal"
+            disabled
+          />
+          <TextField
+            label="닉네임"
+            fullWidth
+            required
+            value={nickname}
+            onChange={e => setNickname(e.target.value)}
             margin="normal"
           />
           <TextField
@@ -195,6 +193,9 @@ const EditProfile = () => {
             onChange={e => setIntroduction(e.target.value)}
             margin="normal"
           />
+          <Typography variant="body1" sx={{ mt: 2, mb: 1 }}>
+            해시태그 선택
+          </Typography>
           <HashtagChips
             fetchHashtags={fetchAllHashtags}
             onChipClick={handleHashtagClick}
@@ -203,12 +204,12 @@ const EditProfile = () => {
           />
           <Box
             display="flex"
-            justifyContent="center"
+            flexDirection="column"
             alignItems="center"
             sx={{ mt: 5 }}
           >
             <FormControlLabel
-              label="게시글 공개"
+              label="내 게시글 공개"
               labelPlacement="start"
               control={
                 <Switch
@@ -239,15 +240,6 @@ const EditProfile = () => {
             </Button>
           </Box>
         </form>
-        <Button
-          variant="text"
-          fullWidth
-          onClick={handleChangePassword}
-          sx={{ flex: 1, my: 5 }}
-          size="large"
-        >
-          비밀번호 변경
-        </Button>
       </Box>
       <SnackbarAlert
         open={openSnackbar}

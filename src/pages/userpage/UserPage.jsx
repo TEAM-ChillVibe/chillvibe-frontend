@@ -208,14 +208,20 @@ const UserPage = () => {
   // 무한스크롤을 위한 마지막 요소 참조 콜백
   const lastPostElementRef = useCallback(
     node => {
-      if (loading) return;
-      if (observer.current) observer.current.disconnect();
+      if (loading) {
+        return;
+      }
+      if (observer.current) {
+        observer.current.disconnect();
+      }
       observer.current = new IntersectionObserver(entries => {
         if (entries[0].isIntersecting && hasMore) {
           setPage(prevPage => prevPage + 1);
         }
       });
-      if (node) observer.current.observe(node);
+      if (node) {
+        observer.current.observe(node);
+      }
     },
     [loading, hasMore],
   );
@@ -357,25 +363,16 @@ const UserPage = () => {
   // 공개 계정일 경우 사용자 프로필과 게시글 목록 표시
   return (
     <BaseContainer>
-      <Box
-        sx={{
-          width: '100%',
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          mb: 2,
-        }}
-      >
-        <UserProfile user={user} />
-      </Box>
-      <Typography variant="subtitleMypage">Posts</Typography>
-      <Box sx={{ width: '100%', my: 2 }}>
+      <UserProfile user={user} />
+      <Typography variant="title">Posts</Typography>
+      <Box sx={{ width: '100%' }}>
         <Box
           sx={{
             display: 'flex',
             alignItems: 'center',
             flexDirection: 'row',
             gap: 1,
+            mb: 2,
           }}
         >
           <Typography
@@ -411,7 +408,6 @@ const UserPage = () => {
                 ref={index === postList.length - 1 ? lastPostElementRef : null}
                 key={post.id}
               >
-                <Divider sx={{ width: '100%', my: 1 }} />
                 <PostListItem post={post} />
               </Box>
             ))}

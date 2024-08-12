@@ -1,4 +1,3 @@
-import useSortingStore from '../../store/useSortingStore';
 import BaseContainer from '../../components/layout/BaseContainer';
 import { Box, Button, Typography } from '@mui/material';
 import HashtagChips from '../../components/common/HashtagChips';
@@ -7,7 +6,7 @@ import PostList from '../../components/common/PostList';
 import { useEffect, useState } from 'react';
 
 const PopularTags = () => {
-  const { sortOrder, setSortOrder } = useSortingStore();
+  const [sortOrder, setSortOrder] = useState('latest');
   const [selectedHashtag, setSelectedHashtag] = useState(null);
 
   useEffect(() => {
@@ -24,7 +23,7 @@ const PopularTags = () => {
 
   return (
     <BaseContainer>
-      <Typography variant="title">인기 태그별 플레이리스트</Typography>
+      <Typography variant="title">Popular Tags Now</Typography>
       <HashtagChips
         fetchHashtags={fetchPopularHashtags}
         onChipClick={handleHashtagClick}

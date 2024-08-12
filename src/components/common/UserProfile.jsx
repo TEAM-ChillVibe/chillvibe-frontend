@@ -31,8 +31,8 @@ function UserProfile({ user }) {
         onClick={handleNavigateToUserPage}
         src={profileUrl}
         sx={{
-          width: 90,
-          height: 90,
+          width: 100,
+          height: 100,
           mr: 3,
           cursor: 'pointer',
         }}
@@ -41,7 +41,7 @@ function UserProfile({ user }) {
         sx={{
           display: 'flex',
           flexDirection: 'column',
-          gap: 0.5,
+          gap: 1,
         }}
       >
         <Typography

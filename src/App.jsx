@@ -7,6 +7,7 @@ import NewPostButton from './components/common/Button/NewPostButton';
 import NewPlaylistButton from './components/common/Button/NewPlaylistButton';
 import MusicPlayer from './components/common/MusicPlayer/MusicPlayer';
 import useUserStore from './store/useUserStore';
+import MusicPlayerFloating from './components/common/MusicPlayer/MusicPlayerFloating';
 
 function App() {
   const initialize = useUserStore(state => state.initialize);
@@ -36,7 +37,7 @@ function App() {
       <TopButton />
       <NewPostButton />
       <NewPlaylistButton />
-      <MusicPlayer />
+      <MusicPlayerFloating />
     </div>
   );
 }
