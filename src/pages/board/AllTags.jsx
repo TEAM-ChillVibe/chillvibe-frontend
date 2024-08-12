@@ -1,32 +1,37 @@
 import BaseContainer from '../../components/layout/BaseContainer';
 import { Box, Button, Typography } from '@mui/material';
 import PostList from '../../components/common/PostList';
-import HashtagChips from '../../components/common/HashtagChips';
 import { fetchAllHashtags } from '../../api/hashtag/hashtagApi';
 import { useEffect, useState } from 'react';
+import { useLocation } from 'react-router-dom';
+import SingleHashtagChips from '../../components/common/HashtagChips/SingleHashtagChips';
 
 const AllTags = () => {
   const [sortOrder, setSortOrder] = useState('latest');
   const [selectedHashtag, setSelectedHashtag] = useState(null);
+  const location = useLocation();
 
   useEffect(() => {
-    const storedHashtag = localStorage.getItem('selectedHashtag');
-    if (storedHashtag) {
-      setSelectedHashtag(storedHashtag);
-    }
-  }, []);
-
-  const handleHashtagClick = hashtagId => {
-    localStorage.setItem('selectedHashtag', hashtagId);
+    const queryParams = new URLSearchParams(location.search);
+    const hashtagId = queryParams.get('hashtag');
     setSelectedHashtag(hashtagId);
+  }, [location.search]);
+
+  useEffect(() => {
+    console.log('selectedhashtag', selectedHashtag);
+  }, [selectedHashtag]);
+
+  const handleHashtagClick = hashtag => {
+    setSelectedHashtag(hashtag.id);
   };
 
   return (
     <BaseContainer>
       <Typography variant="title">All Tags</Typography>
-      <HashtagChips
+      <SingleHashtagChips
         fetchHashtags={fetchAllHashtags}
         onChipClick={handleHashtagClick}
+        selectedHashtag={selectedHashtag}
       />
       <Box
         sx={{
@@ -48,6 +53,7 @@ const AllTags = () => {
             sx={{
               cursor: 'pointer',
               fontWeight: sortOrder === 'latest' ? 'bold' : 'noramal',
+              color: sortOrder === 'latest' ? 'primary.main' : 'text.primary',
               mr: 1,
             }}
             onClick={() => setSortOrder('latest')}
@@ -59,6 +65,7 @@ const AllTags = () => {
             sx={{
               cursor: 'pointer',
               fontWeight: sortOrder === 'popular' ? 'bold' : 'noramal',
+              color: sortOrder === 'popular' ? 'primary.main' : 'text.primary',
             }}
             onClick={() => setSortOrder('popular')}
           >

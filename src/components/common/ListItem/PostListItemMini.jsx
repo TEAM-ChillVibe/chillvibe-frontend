@@ -1,15 +1,15 @@
 import { Box, Typography } from '@mui/material';
 import albumSample from '../albumSample.jpeg';
-import HashtagChips from '../HashtagChips';
 import { fetchHashtagsOfPost } from '../../../api/hashtag/hashtagApi';
 import { useNavigate } from 'react-router-dom';
+import SingleHashtagChips from '../HashtagChips/SingleHashtagChips';
 
 function PostListItemMini({ post }) {
   const { id, title, user, thumbnailUrl } = post;
   const navigate = useNavigate();
 
-  const handleChipClick = () => {
-    navigate(`/all-tags/`);
+  const handleHashtagClick = hashtag => {
+    navigate(`/all-tags?hashtag=${hashtag.id}`);
   };
 
   return (
@@ -52,9 +52,9 @@ function PostListItemMini({ post }) {
           {title}
         </Typography>
         <Typography variant="body2">{user.nickname}</Typography>
-        <HashtagChips
+        <SingleHashtagChips
           fetchHashtags={() => fetchHashtagsOfPost(id)}
-          onChipClick={handleChipClick}
+          onChipClick={handleHashtagClick}
         />
       </Box>
     </Box>

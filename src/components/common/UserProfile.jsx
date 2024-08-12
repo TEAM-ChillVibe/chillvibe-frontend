@@ -1,7 +1,7 @@
 import { Avatar, Box, Typography } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
-import HashtagChips from './HashtagChips';
 import { fetchHashtagsOfUser } from '../../api/hashtag/hashtagApi';
+import SingleHashtagChips from './HashtagChips/SingleHashtagChips';
 
 function UserProfile({ user }) {
   const navigate = useNavigate();
@@ -12,9 +12,8 @@ function UserProfile({ user }) {
     navigate(`/user/${userId}`); // 절대경로 유저프로필로 이동
   };
 
-  const handleChipClick = tagId => {
-    localStorage.setItem('selectedHashtag', tagId);
-    navigate(`/all-tags/`);
+  const handleHashtagClick = hashtag => {
+    navigate(`/all-tags?hashtag=${hashtag.id}`);
   };
 
   return (
@@ -56,9 +55,9 @@ function UserProfile({ user }) {
         <Typography variant="body2" color="text.secondary">
           {introduction}
         </Typography>
-        <HashtagChips
+        <SingleHashtagChips
           fetchHashtags={() => fetchHashtagsOfUser(userId)}
-          onChipClick={handleChipClick}
+          onChipClick={handleHashtagClick}
         />
       </Box>
     </Box>

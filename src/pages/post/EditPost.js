@@ -2,13 +2,16 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { fetchPostById, updatePost } from '../../api/post/postApi';
 import { getPlaylistByPostId } from '../../api/playlist/playlistApi';
-import { fetchAllHashtags } from '../../api/hashtag/hashtagApi';
+import {
+  fetchAllHashtags,
+  fetchHashtagsOfPost,
+} from '../../api/hashtag/hashtagApi';
 
 import { TextField, Button, Box, Typography } from '@mui/material';
-import HashtagChips from '../../components/common/HashtagChips';
 import BaseContainer from '../../components/layout/BaseContainer';
 import PlaylistListItem from '../../components/common/ListItem/PlaylistListItem';
 import SnackbarAlert from '../../components/common/Alert/SnackbarAlert';
+import MultiHashtagChips from '../../components/common/HashtagChips/MultiHashtagChips';
 
 const EditPost = () => {
   const { postId } = useParams();
@@ -30,15 +33,13 @@ const EditPost = () => {
         setTitle(post.title);
         setDescription(post.description);
 
+        const hashtags = await fetchHashtagsOfPost(postId);
+        const hashtagIds = hashtags.map(hashtag => hashtag.id);
+        setSelectedHashtags(hashtagIds || []);
+
         // postId를 이용해 연관된 플레이리스트 가져오기
         const playlist = await getPlaylistByPostId(postId);
         setSelectedPlaylist(playlist);
-
-        // 로컬스토리지에서 선택된 해시태그 불러오기
-        const storedHashtags = JSON.parse(
-          localStorage.getItem('selectedHashtags') || '[]',
-        );
-        setSelectedHashtags(storedHashtags);
       } catch (error) {
         console.error('Error fetching post data:', error);
       }
@@ -70,11 +71,13 @@ const EditPost = () => {
         message: '게시글 수정에 실패했습니다. 다시 시도해 주세요.',
         severity: 'error',
       });
+    } finally {
+      setSelectedHashtags([]);
     }
   };
 
-  const handleHashtagClick = selectedHashtags => {
-    setSelectedHashtags(selectedHashtags);
+  const handleSelectionChange = newSelection => {
+    setSelectedHashtags(newSelection);
   };
 
   const handleCancel = () => {
@@ -118,10 +121,10 @@ const EditPost = () => {
           <Typography variant="h6" sx={{ fontSize: '1.2rem', mt: 1 }}>
             해시태그 선택
           </Typography>
-          <HashtagChips
+          <MultiHashtagChips
             fetchHashtags={fetchAllHashtags}
-            onChipClick={handleHashtagClick}
-            multiSelectMode={true}
+            selectedHashtags={selectedHashtags}
+            onSelectionChange={handleSelectionChange}
           />
           <Typography variant="h6" sx={{ fontSize: '1.2rem', mt: 2, mb: 1 }}>
             플레이리스트

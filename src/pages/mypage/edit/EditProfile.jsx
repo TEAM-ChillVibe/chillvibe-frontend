@@ -13,9 +13,9 @@ import { AddPhotoAlternate } from '@mui/icons-material';
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { fetchAllHashtags } from '../../../api/hashtag/hashtagApi';
-import HashtagChips from '../../../components/common/HashtagChips';
 import { editProfile, myInfo } from '../../../api/user/userApi';
 import SnackbarAlert from '../../../components/common/Alert/SnackbarAlert';
+import MultiHashtagChips from '../../../components/common/HashtagChips/MultiHashtagChips';
 
 const EditProfile = () => {
   const [email, setEmail] = useState('');
@@ -24,7 +24,7 @@ const EditProfile = () => {
   const [profileImage, setProfileImage] = useState('');
   const [isPublic, setIsPublic] = useState(false);
   const [imagePreview, setImagePreview] = useState('');
-  const [hashtagIds, setSelectedHashtags] = useState([]);
+  const [selectedHashtags, setSelectedHashtags] = useState([]);
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');
   const [snackbarSeverity, setSnackbarSeverity] = useState('success');
@@ -55,10 +55,6 @@ const EditProfile = () => {
     fetchUserData();
   }, []);
 
-  const handleHashtagClick = selectedHashtags => {
-    setSelectedHashtags(selectedHashtags);
-  };
-
   const handleImageChange = event => {
     const file = event.target.files[0];
     if (file) {
@@ -84,7 +80,7 @@ const EditProfile = () => {
       const userUpdateDto = {
         nickname,
         introduction,
-        hashtagIds,
+        hashtagIds: selectedHashtags,
         isPublic,
       };
 
@@ -114,6 +110,10 @@ const EditProfile = () => {
 
   const handleCloseSnackbar = () => {
     setOpenSnackbar(false);
+  };
+
+  const handleSelectionChange = newSelection => {
+    setSelectedHashtags(newSelection);
   };
 
   return (
@@ -196,11 +196,10 @@ const EditProfile = () => {
           <Typography variant="body1" sx={{ mt: 2, mb: 1 }}>
             해시태그 선택
           </Typography>
-          <HashtagChips
+          <MultiHashtagChips
             fetchHashtags={fetchAllHashtags}
-            onChipClick={handleHashtagClick}
-            multiSelectMode={true}
-            selectedHashtags={hashtagIds}
+            selectedHashtags={selectedHashtags}
+            onSelectionChange={handleSelectionChange}
           />
           <Box
             display="flex"

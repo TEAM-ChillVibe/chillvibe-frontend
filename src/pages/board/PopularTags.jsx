@@ -1,32 +1,27 @@
 import BaseContainer from '../../components/layout/BaseContainer';
 import { Box, Button, Typography } from '@mui/material';
-import HashtagChips from '../../components/common/HashtagChips';
 import { fetchPopularHashtags } from '../../api/hashtag/hashtagApi';
 import PostList from '../../components/common/PostList';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
+import SingleHashtagChips from '../../components/common/HashtagChips/SingleHashtagChips';
+import { useNavigate } from 'react-router-dom';
 
 const PopularTags = () => {
   const [sortOrder, setSortOrder] = useState('latest');
   const [selectedHashtag, setSelectedHashtag] = useState(null);
+  const navigate = useNavigate();
 
-  useEffect(() => {
-    const storedHashtag = localStorage.getItem('selectedHashtag');
-    if (storedHashtag) {
-      setSelectedHashtag(storedHashtag);
-    }
-  }, []);
-
-  const handleHashtagClick = hashtagId => {
-    localStorage.setItem('selectedHashtag', hashtagId);
-    setSelectedHashtag(hashtagId);
+  const handleHashtagClick = hashtag => {
+    navigate(`/popular-tags?hashtag=${hashtag.id}`);
   };
 
   return (
     <BaseContainer>
       <Typography variant="title">Popular Tags Now</Typography>
-      <HashtagChips
+      <SingleHashtagChips
         fetchHashtags={fetchPopularHashtags}
         onChipClick={handleHashtagClick}
+        selectedHashtag={selectedHashtag}
       />
       <Box
         sx={{
@@ -48,6 +43,7 @@ const PopularTags = () => {
             sx={{
               cursor: 'pointer',
               fontWeight: sortOrder === 'latest' ? 'bold' : 'noramal',
+              color: sortOrder === 'latest' ? 'primary.main' : 'text.primary',
               mr: 1,
             }}
             onClick={() => setSortOrder('latest')}
@@ -59,6 +55,7 @@ const PopularTags = () => {
             sx={{
               cursor: 'pointer',
               fontWeight: sortOrder === 'popular' ? 'bold' : 'noramal',
+              color: sortOrder === 'popular' ? 'primary.main' : 'text.primary',
             }}
             onClick={() => setSortOrder('popular')}
           >

@@ -148,7 +148,6 @@ const Main = () => {
       >
         요즘 인기있는 태그
       </Typography>
-      {/* <HashtagChips hashtags={hashtags} /> */}
       <Grid container spacing={2}>
         {playlists.length > 0 ? (
           playlists.map(playlist => (
