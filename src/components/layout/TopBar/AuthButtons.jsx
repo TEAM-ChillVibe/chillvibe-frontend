@@ -46,8 +46,6 @@ const AuthButtons = ({ user }) => {
   });
 
   const handleLogout = async () => {
-    // const confirmLogout = window.confirm('정말 로그아웃하시겠습니까?');
-    // if (confirmLogout) {
     try {
       // 로그아웃 요청
       await signout();
@@ -69,7 +67,6 @@ const AuthButtons = ({ user }) => {
     } finally {
       handleModalClose();
     }
-    // }
   };
 
   if (user) {
@@ -87,7 +84,6 @@ const AuthButtons = ({ user }) => {
             onClick={handleMenuOpen}
           />
         </Box>
-
         <Menu
           anchorEl={anchorEl}
           open={Boolean(anchorEl)}
@@ -129,7 +125,6 @@ const AuthButtons = ({ user }) => {
             Logout
           </MenuItem>
         </Menu>
-
         <SimpleModal
           open={modalOpen}
           onClose={handleModalClose}
@@ -139,6 +134,13 @@ const AuthButtons = ({ user }) => {
           onPrimaryClick={handleLogout}
           onSecondaryClick={handleModalClose}
           primaryButtonStyle={'error'}
+        />
+
+        <SnackbarAlert
+          open={snackbar.open}
+          onClose={() => setSnackbar(prev => ({ ...prev, open: false }))}
+          message={snackbar.message}
+          severity={snackbar.severity}
         />
       </Box>
     );
