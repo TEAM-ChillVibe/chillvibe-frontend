@@ -61,7 +61,7 @@ const PostDetail = () => {
           const postOwnerId = postResponse?.user?.userId;
           const currentUserId = userResponse?.userId || userResponse?.id; // 두 가지 경우 모두 확인
 
-          // ✔️ 변경된 부분: 사용자가 로그인했음을 확인
+          // 사용자가 로그인했음을 확인
           setIsLoggedIn(true);
 
           if (postOwnerId && currentUserId) {
