@@ -1,6 +1,6 @@
 import { Box, Typography, Chip } from '@mui/material';
 import albumSample from '../albumSample.jpeg';
-import HashtagChips from '../HashtagChips';
+import SingleHashtagChips from '../HashtagChips/SingleHashtagChips';
 import { useNavigate } from 'react-router-dom';
 import { fetchHashtagsOfPost } from '../../../api/hashtag/hashtagApi';
 
