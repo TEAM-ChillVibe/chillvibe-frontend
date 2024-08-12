@@ -29,6 +29,7 @@ const Discover = () => {
             sx={{
               cursor: 'pointer',
               fontWeight: sortOrder === 'latest' ? 'bold' : 'normal',
+              color: sortOrder === 'latest' ? 'primary.main' : 'text.primary',
               mr: 1,
             }}
             onClick={() => setSortOrder('latest')}
@@ -40,6 +41,7 @@ const Discover = () => {
             sx={{
               cursor: 'pointer',
               fontWeight: sortOrder === 'popular' ? 'bold' : 'normal',
+              color: sortOrder === 'popular' ? 'primary.main' : 'text.primary',
             }}
             onClick={() => setSortOrder('popular')}
           >

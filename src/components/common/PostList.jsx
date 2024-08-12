@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 import { Box, CircularProgress, Typography } from '@mui/material';
-import usePostStore from '../../store/usePostStore';
 import PostListItem from './ListItem/PostListItem';
 import { fetchAllPosts, fetchPostsByHashtagId } from '../../api/post/postApi';
 
@@ -43,7 +42,13 @@ const PostList = ({ selectedHashtag, sortOrder }) => {
           <CircularProgress color="secondary" />
         </Box>
       ) : posts.length > 0 ? (
-        posts.map(post => <PostListItem key={post.id} post={post} />)
+        posts.map(post => (
+          <PostListItem
+            key={post.id}
+            post={post}
+            selectedHashtag={selectedHashtag}
+          />
+        ))
       ) : (
         <Box
           sx={{

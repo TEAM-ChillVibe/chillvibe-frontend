@@ -7,7 +7,7 @@ import { useEffect } from 'react';
 import usePostStore from '../../../store/usePostStore';
 import SingleHashtagChips from '../HashtagChips/SingleHashtagChips';
 
-function PostListItem({ post }) {
+function PostListItem({ post, selectedHashtag }) {
   const { id, title, createdAt, trackCount, user, likeCount, thumbnailUrl } =
     post;
   const navigate = useNavigate();
@@ -88,6 +88,7 @@ function PostListItem({ post }) {
         <SingleHashtagChips
           fetchHashtags={() => fetchHashtagsOfPost(id)}
           onChipClick={handleHashtagClick}
+          selectedHashtag={selectedHashtag}
         />
       </Box>
       <Box

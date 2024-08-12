@@ -2,21 +2,14 @@ import BaseContainer from '../../components/layout/BaseContainer';
 import { Box, Button, Typography } from '@mui/material';
 import { fetchPopularHashtags } from '../../api/hashtag/hashtagApi';
 import PostList from '../../components/common/PostList';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import SingleHashtagChips from '../../components/common/HashtagChips/SingleHashtagChips';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 const PopularTags = () => {
   const [sortOrder, setSortOrder] = useState('latest');
   const [selectedHashtag, setSelectedHashtag] = useState(null);
-  const location = useLocation();
   const navigate = useNavigate();
-
-  useEffect(() => {
-    const queryParams = new URLSearchParams(location.search);
-    const hashtag = queryParams.get('hashtag');
-    setSelectedHashtag(hashtag);
-  }, [location.search]);
 
   const handleHashtagClick = hashtag => {
     navigate(`/popular-tags?hashtag=${hashtag.id}`);
@@ -28,6 +21,7 @@ const PopularTags = () => {
       <SingleHashtagChips
         fetchHashtags={fetchPopularHashtags}
         onChipClick={handleHashtagClick}
+        selectedHashtag={selectedHashtag}
       />
       <Box
         sx={{
@@ -49,6 +43,7 @@ const PopularTags = () => {
             sx={{
               cursor: 'pointer',
               fontWeight: sortOrder === 'latest' ? 'bold' : 'noramal',
+              color: sortOrder === 'latest' ? 'primary.main' : 'text.primary',
               mr: 1,
             }}
             onClick={() => setSortOrder('latest')}
@@ -60,6 +55,7 @@ const PopularTags = () => {
             sx={{
               cursor: 'pointer',
               fontWeight: sortOrder === 'popular' ? 'bold' : 'noramal',
+              color: sortOrder === 'popular' ? 'primary.main' : 'text.primary',
             }}
             onClick={() => setSortOrder('popular')}
           >

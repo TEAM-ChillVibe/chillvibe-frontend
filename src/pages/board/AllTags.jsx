@@ -3,23 +3,26 @@ import { Box, Button, Typography } from '@mui/material';
 import PostList from '../../components/common/PostList';
 import { fetchAllHashtags } from '../../api/hashtag/hashtagApi';
 import { useEffect, useState } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import SingleHashtagChips from '../../components/common/HashtagChips/SingleHashtagChips';
 
 const AllTags = () => {
   const [sortOrder, setSortOrder] = useState('latest');
   const [selectedHashtag, setSelectedHashtag] = useState(null);
   const location = useLocation();
-  const navigate = useNavigate();
 
   useEffect(() => {
     const queryParams = new URLSearchParams(location.search);
-    const hashtag = queryParams.get('hashtag');
-    setSelectedHashtag(hashtag);
+    const hashtagId = queryParams.get('hashtag');
+    setSelectedHashtag(hashtagId);
   }, [location.search]);
 
+  useEffect(() => {
+    console.log('selectedhashtag', selectedHashtag);
+  }, [selectedHashtag]);
+
   const handleHashtagClick = hashtag => {
-    navigate(`/all-tags?hashtag=${hashtag.id}`);
+    setSelectedHashtag(hashtag.id);
   };
 
   return (
@@ -28,6 +31,7 @@ const AllTags = () => {
       <SingleHashtagChips
         fetchHashtags={fetchAllHashtags}
         onChipClick={handleHashtagClick}
+        selectedHashtag={selectedHashtag}
       />
       <Box
         sx={{
@@ -49,6 +53,7 @@ const AllTags = () => {
             sx={{
               cursor: 'pointer',
               fontWeight: sortOrder === 'latest' ? 'bold' : 'noramal',
+              color: sortOrder === 'latest' ? 'primary.main' : 'text.primary',
               mr: 1,
             }}
             onClick={() => setSortOrder('latest')}
@@ -60,6 +65,7 @@ const AllTags = () => {
             sx={{
               cursor: 'pointer',
               fontWeight: sortOrder === 'popular' ? 'bold' : 'noramal',
+              color: sortOrder === 'popular' ? 'primary.main' : 'text.primary',
             }}
             onClick={() => setSortOrder('popular')}
           >
