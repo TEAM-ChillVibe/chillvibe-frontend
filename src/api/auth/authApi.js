@@ -69,3 +69,13 @@ export const reauth = async () => {
     throw error;
   }
 };
+
+// 토큰 재발급
+export const reissue = async () => {
+  try {
+    const response = await axiosWithoutToken.post(`/api/reissue`);
+    return response;
+  } catch (error) {
+    throw error;
+  }
+};
