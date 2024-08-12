@@ -9,8 +9,6 @@ import SimpleModal from '../../components/common/Modal/SimpleModal';
 import FormModal from '../../components/common/Modal/FormModal';
 import DropdownModal from '../../components/common/Modal/DropdownModal';
 import PlaylistListItemMini from '../../components/common/ListItem/PlaylistListItemMini';
-import HashtagChips from '../../components/common/HashtagChips';
-import { fetchAllHashtags } from '../../api/hashtag/hashtagApi';
 
 function TestPage() {
   // HANDLE FUNCTIONS ================================================
@@ -190,9 +188,6 @@ function TestPage() {
 
   return (
     <BaseContainer>
-      {/* get all Hashtags */}
-      <HashtagChips fetchHashtags={fetchAllHashtags} />
-
       {/* 사용자 프로필 */}
       <Typography
         variant="title"

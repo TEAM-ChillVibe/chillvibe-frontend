@@ -13,11 +13,11 @@ import {
   Pagination,
   CircularProgress, // ✔️ 로딩 스피너 추가
 } from '@mui/material';
-import HashtagChips from '../../components/common/HashtagChips';
 import usePostStore from '../../store/usePostStore';
 import BaseContainer from '../../components/layout/BaseContainer';
 import PlaylistListItem from '../../components/common/ListItem/PlaylistListItem';
 import SnackbarAlert from '../../components/common/Alert/SnackbarAlert';
+import MultiHashtagChips from '../../components/common/HashtagChips/MultiHashtagChips';
 
 const itemsPerPage = 6; // 페이지당 표시할 플레이리스트 수
 
@@ -60,7 +60,9 @@ const NewPost = () => {
     e.preventDefault();
 
     // 🔄 이미 제출 중이면 함수 종료
-    if (isSubmitting) return;
+    if (isSubmitting) {
+      return;
+    }
 
     setIsSubmitting(true); // ✔️ 제출 상태 시작
 
@@ -94,11 +96,12 @@ const NewPost = () => {
       setTimeout(() => {
         setIsSubmitting(false); // ✔️ 제출 상태 종료
       }, 1500); // 1.5초 지연 시간 추가
+      setSelectedHashtags([]);
     }
   };
 
-  const handleHashtagClick = tagIds => {
-    setSelectedHashtags(tagIds);
+  const handleSelectionChange = newSelection => {
+    setSelectedHashtags(newSelection);
   };
 
   const handleCancel = () => {
@@ -146,11 +149,10 @@ const NewPost = () => {
           <Typography variant="h6" sx={{ fontSize: '1.2rem', mt: 1 }}>
             해시태그 선택
           </Typography>
-          <HashtagChips
+          <MultiHashtagChips
             fetchHashtags={fetchAllHashtags}
-            selectedHashtag={selectedHashtags}
-            onChipClick={handleHashtagClick}
-            multiSelectMode={true}
+            selectedHashtags={selectedHashtags}
+            onSelectionChange={handleSelectionChange}
           />
           <Typography variant="h6" sx={{ fontSize: '1.2rem', mt: 2, mb: 1 }}>
             플레이리스트 선택
