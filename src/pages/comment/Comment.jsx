@@ -13,10 +13,14 @@ import {
   Paper,
   TextField,
   Typography,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
 } from '@mui/material';
 import { Delete, Edit } from '@mui/icons-material';
 import IconButton from '@mui/material/IconButton';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 
 const Comment = () => {
   const { postId } = useParams(); // URL에서 postId를 가져옴
@@ -25,6 +29,8 @@ const Comment = () => {
   const [editingCommentId, setEditingCommentId] = useState(null);
   const [editingContent, setEditingContent] = useState('');
   const [userId, setUserId] = useState(null);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     // 토큰 디코딩하여 사용자 ID 가져오기
@@ -43,6 +49,18 @@ const Comment = () => {
 
   const handleNewCommentChange = e => {
     setNewComment(e.target.value);
+  };
+
+  const handleCommentClick = () => {
+    if (!userId) {
+      setIsDialogOpen(true); // 비로그인 상태에서 다이얼로그 열기
+    }
+  };
+
+  const handleDialogClose = () => {
+    setIsDialogOpen(false);
+    navigate('/login'); // 로그인 페이지로 이동
+    window.scrollTo(0, 0); // 페이지 이동 후 맨위로 스크롤
   };
 
   // 생성
@@ -194,6 +212,7 @@ const Comment = () => {
           placeholder="Write a new comment"
           value={newComment}
           onChange={handleNewCommentChange}
+          onClick={handleCommentClick}
           sx={{ mb: 2 }}
         />
         <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
@@ -202,6 +221,39 @@ const Comment = () => {
           </Button>
         </Box>
       </Box>
+      <Dialog
+        open={isDialogOpen}
+        onClose={() => setIsDialogOpen(false)}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+        sx={{
+          '& .MuiPaper-root': {
+            borderRadius: '15px', // 팝업 창의 모서리를 둥글게 설정
+          },
+        }}
+      >
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+            댓글을 작성하려면 로그인해야 합니다. 로그인 페이지로
+            이동하시겠습니까?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button
+            onClick={() => setIsDialogOpen(false)}
+            sx={{ borderRadius: '20px' }}
+          >
+            취소
+          </Button>
+          <Button
+            onClick={handleDialogClose}
+            autoFocus
+            sx={{ borderRadius: '20px' }}
+          >
+            확인
+          </Button>
+        </DialogActions>
+      </Dialog>
     </BaseContainer>
   );
 };
