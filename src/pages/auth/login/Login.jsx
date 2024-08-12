@@ -4,10 +4,14 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { signin } from '../../../api/auth/authApi';
 import useUserStore from '../../../store/useUserStore';
+import SnackbarAlert from '../../../components/common/Alert/SnackbarAlert';
 
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [openSnackbar, setOpenSnackbar] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState('');
+  const [snackbarSeverity, setSnackbarSeverity] = useState('success');
   const navigate = useNavigate();
 
   // 회원가입 버튼 액션
@@ -31,19 +35,30 @@ const Login = () => {
 
       const userData = response.data;
       useUserStore.getState().login(userData);
-      alert('로그인 완료');
-      navigate('/');
+      setSnackbarMessage('로그인 완료');
+      setSnackbarSeverity('success');
+      setOpenSnackbar(true);
+      setTimeout(() => {
+        navigate('/');
+      }, 1500);
     } catch (error) {
       if (error.response) {
-        alert('로그인 실패. 이메일 또는 비밀번호를 확인하세요.');
+        setSnackbarMessage('로그인 실패. 이메일 또는 비밀번호를 확인하세요.');
+        setSnackbarSeverity('error');
       } else {
-        alert('서버와의 연결에 문제가 발생했습니다.');
+        setSnackbarMessage('서버와의 연결에 문제가 발생했습니다.');
+        setSnackbarSeverity('error');
       }
+      setOpenSnackbar(true);
     }
   };
 
   // 입력 여부 확인 (버튼 활성화용)
   const isFormValid = email && password;
+
+  const handleCloseSnackbar = () => {
+    setOpenSnackbar(false);
+  };
 
   return (
     <BaseContainer>
@@ -96,6 +111,12 @@ const Login = () => {
             </Button>
           </Box>
         </form>
+        <SnackbarAlert
+          open={openSnackbar}
+          onClose={handleCloseSnackbar}
+          message={snackbarMessage}
+          severity={snackbarSeverity}
+        />
       </Box>
     </BaseContainer>
   );

@@ -5,6 +5,7 @@ const HashtagChips = ({
   fetchHashtags,
   onChipClick,
   multiSelectMode = false,
+  selectedHashtags: initialSelectedHashtags = [],
 }) => {
   const [hashtags, setHashtags] = useState([]);
   const [selectedHashtags, setSelectedHashtags] = useState([]);
@@ -12,17 +13,18 @@ const HashtagChips = ({
 
   useEffect(() => {
     if (multiSelectMode) {
-      const storedHashtags = JSON.parse(
-        localStorage.getItem('selectedHashtags') || '[]',
-      );
-      setSelectedHashtags(storedHashtags);
+      // const storedHashtags = JSON.parse(
+      //   localStorage.getItem('selectedHashtags') || '[]',
+      // );
+      // setSelectedHashtags(storedHashtags);
+      setSelectedHashtags(initialSelectedHashtags);
     } else {
       const storedHashtag = localStorage.getItem('selectedHashtag');
       if (storedHashtag) {
         setSelectedHashtag(storedHashtag);
       }
     }
-  }, [multiSelectMode]);
+  }, [initialSelectedHashtags, multiSelectMode]);
 
   useEffect(() => {
     const loadHashtags = async () => {
