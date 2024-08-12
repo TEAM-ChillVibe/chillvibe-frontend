@@ -5,9 +5,13 @@ import FormModal from '../../../components/common/Modal/FormModal';
 import { createEmptyPlaylist } from '../../../api/playlist/playlistApi';
 import SnackbarAlert from '../../../components/common/Alert/SnackbarAlert';
 import useMusicPlayerStore from '../../../store/useMusicPlayerStore';
+import useUserStore from '../../../store/useUserStore';
+import { useNavigate } from 'react-router-dom';
 
 const NewPlaylistButton = () => {
+  const navigate = useNavigate();
   const { isVisible: isMusicPlayerVisible } = useMusicPlayerStore();
+  const { isAuthenticated } = useUserStore();
 
   // 모달 상태
   const [open, setOpen] = useState(false);
@@ -19,7 +23,18 @@ const NewPlaylistButton = () => {
   });
 
   // 모달 핸들러
-  const handleOpen = () => setOpen(true);
+  const handleOpen = () => {
+    if (!isAuthenticated) {
+      setSnackbar({
+        open: true,
+        message: '로그인이 필요한 서비스입니다.',
+        severity: 'warning',
+      });
+      navigate('/login');
+    } else {
+      setOpen(true);
+    }
+  };
   const handleClose = () => {
     setOpen(false);
     setPlaylistTitle(''); // 모달 닫을 때 폼 필드 초기화
