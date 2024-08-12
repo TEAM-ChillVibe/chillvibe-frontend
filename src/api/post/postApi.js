@@ -25,10 +25,15 @@ export const fetchPostById = async postId => {
 };
 
 // 특정 유저 게시글 조회 (페이지네이션 지원)
-export const fetchPostsByUserId = async (userId, page = 0, size = 10) => {
+export const fetchPostsByUserId = async (
+  userId,
+  sortBy = 'latest',
+  page = 0,
+  size = 10,
+) => {
   try {
     const response = await axiosWithoutToken.get(`/api/posts/user/${userId}`, {
-      params: { page, size },
+      params: { sortBy, page, size },
     });
     return response.data;
   } catch (error) {
