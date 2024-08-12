@@ -1,5 +1,11 @@
 import React, { useRef, useEffect, useState } from 'react';
-import { Box, Typography, CircularProgress } from '@mui/material';
+import {
+  List,
+  ListItem,
+  Box,
+  Typography,
+  CircularProgress,
+} from '@mui/material';
 import TrackListItem from '../../../components/common/ListItem/TrackListItem';
 
 const SearchTracks = ({ results, onLoadMore }) => {
@@ -65,20 +71,29 @@ const SearchTracks = ({ results, onLoadMore }) => {
 
   return (
     <Box sx={{ width: '100%', overflow: 'hidden' }}>
-      {results.content.map((track, index) => (
-        <TrackListItem
-          key={track.id}
-          music={{
-            id: track.id,
-            name: track.name,
-            artist: track.artist,
-            thumbnailUrl: track.thumbnailUrl,
-            duration: track.duration,
-            previewUrl: track.previewUrl,
-            trackId: track.trackId,
-          }}
-        />
-      ))}
+      <List sx={{ width: '100%', bgcolor: 'background.paper' }}>
+        {results.content.map((track, index) => (
+          <ListItem
+            key={track.id}
+            disablePadding
+            sx={{ mb: 1 }}
+            ref={index === results.content.length - 1 ? lastItemRef : null}
+          >
+            <TrackListItem
+              key={track.id}
+              music={{
+                id: track.id,
+                name: track.name,
+                artist: track.artist,
+                thumbnailUrl: track.thumbnailUrl,
+                duration: track.duration,
+                previewUrl: track.previewUrl,
+                trackId: track.trackId,
+              }}
+            />
+          </ListItem>
+        ))}
+      </List>
       {isLoading && !isLastPage && (
         <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2 }}>
           <CircularProgress />
