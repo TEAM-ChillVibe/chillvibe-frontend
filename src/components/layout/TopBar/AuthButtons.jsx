@@ -49,7 +49,8 @@ const AuthButtons = ({ user }) => {
         handleMenuClose();
         navigate('/'); // 홈페이지로 리디렉션
       } catch (error) {
-        window.alert('로그아웃 중 오류가 발생했습니다. 다시 시도해 주세요.');
+        logout();
+        // window.alert('로그아웃 중 오류가 발생했습니다. 다시 시도해 주세요.');
       }
     }
   };

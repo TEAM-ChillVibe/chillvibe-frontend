@@ -183,7 +183,7 @@
 // export default UserPage;
 
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { Box, Typography, CircularProgress, Divider } from '@mui/material';
 import LockIcon from '@mui/icons-material/Lock';
 import BaseContainer from '../../components/layout/BaseContainer';
@@ -203,6 +203,7 @@ const UserPage = () => {
   const [page, setPage] = useState(0); // 현재 페이지 번호
   const [hasMore, setHasMore] = useState(true); // 추가 데이터 존재 여부
   const observer = useRef(); // Intersaction Observer 참조
+  const navigate = useNavigate();
 
   // 무한스크롤을 위한 마지막 요소 참조 콜백
   const lastPostElementRef = useCallback(
@@ -227,6 +228,7 @@ const UserPage = () => {
       setPostList(prevPosts => [...prevPosts, ...response.content]);
       setHasMore(response.content.length > 0);
     } catch (err) {
+      navigate('/500');
       setError('게시글을 가져오는 데 실패했습니다.');
     } finally {
       setLoading(false);
@@ -242,6 +244,7 @@ const UserPage = () => {
         setUser(userResponse.data);
         setIsPublic(userResponse.data.public);
       } catch (err) {
+        navigate('/404');
         setError('사용자 정보를 가져오는 데 실패했습니다.');
       } finally {
         setLoading(false);
