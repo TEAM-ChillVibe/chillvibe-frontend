@@ -41,8 +41,9 @@ const MyPlaylist = () => {
     const fetchPlaylists = async () => {
       try {
         const data = await getUserPlaylists(page - 1, itemsPerPage);
+        console.log(data);
         setPlaylists(data.content);
-        setTotalPages(data.totalPages);
+        setTotalPages(data.page.totalPages);
       } catch (error) {
         setSnackbar({
           open: true,
@@ -74,7 +75,7 @@ const MyPlaylist = () => {
       setPage(1); // 생성 후 첫페이지로 이동
       const data = await getUserPlaylists(0, itemsPerPage); // 첫 페이지의 플레이리스트를 가져옵니다.
       setPlaylists(data.content); // 업데이트된 플레이리스트 설정
-      setTotalPages(data.totalPages); // 업데이트된 총 페이지 수 설정
+      setTotalPages(data.page.totalPages); // 업데이트된 총 페이지 수 설정
       setSnackbar({
         open: true,
         message: '새 플레이리스트가 생성되었습니다.',

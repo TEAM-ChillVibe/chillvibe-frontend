@@ -11,7 +11,7 @@ import { fetchPostsByUserId } from '../../../api/post/postApi';
 import SnackbarAlert from '../../../components/common/Alert/SnackbarAlert';
 
 // 페이지네이션 단위 고정값
-const itemsPerPage = 10;
+const itemsPerPage = 5;
 
 const MyPost = ({ user }) => {
   // 로딩할 포스트 관리
@@ -24,21 +24,23 @@ const MyPost = ({ user }) => {
     message: '',
     severity: 'success',
   });
-  // 현재 페이지 관리
+  // 페이지 관리
   const [page, setPage] = useState(1);
-  // 인덱스 계산
-  const startIndex = (page - 1) * itemsPerPage;
-  const endIndex = startIndex + itemsPerPage;
-  const currentPosts = posts.slice(startIndex, endIndex);
-  const totalPages = Math.ceil(posts.length / itemsPerPage);
+  const [totalPages, setTotalPages] = useState(0);
 
   // 페이지 로딩
   useEffect(() => {
     const fetchposts = async () => {
       setIsLoading(true);
       try {
-        const data = await fetchPostsByUserId(user.userId);
+        const data = await fetchPostsByUserId(
+          user.userId,
+          'latest',
+          page - 1,
+          itemsPerPage,
+        );
         setPosts(data.content);
+        setTotalPages(data.page.totalPages);
       } catch (error) {
         setSnackbar({
           open: true,
@@ -51,7 +53,7 @@ const MyPost = ({ user }) => {
     };
 
     fetchposts();
-  }, [user.userId]);
+  }, [user.userId, page]);
 
   // 페이지 핸들러
   const handlePageChange = (event, newPage) => {
@@ -91,7 +93,7 @@ const MyPost = ({ user }) => {
           </Typography>
         ) : (
           <>
-            {currentPosts.map(post => (
+            {posts.map(post => (
               <MyPostListItem user={user} key={post.id} post={post} />
             ))}
             <Box sx={{ display: 'flex', justifyContent: 'center', mt: 4 }}>
