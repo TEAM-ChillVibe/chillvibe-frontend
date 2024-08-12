@@ -28,6 +28,7 @@ function TopButton() {
     <Zoom in={showButton}>
       <Fab
         size="medium"
+        color="primary"
         onClick={scrollToTop}
         sx={{
           position: 'fixed',

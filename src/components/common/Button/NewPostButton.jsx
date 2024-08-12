@@ -34,7 +34,7 @@ const NewPostButton = () => {
     <>
       <Fab
         size="medium"
-        // color="secondary"
+        color="primary"
         aria-label="new post"
         onClick={handleClick}
         sx={{

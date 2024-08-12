@@ -76,7 +76,7 @@ const NewPlaylistButton = () => {
     <Box>
       <Fab
         size="medium"
-        // color="secondary"
+        color="primary"
         aria-label="new playlist"
         onClick={handleOpen}
         sx={{
