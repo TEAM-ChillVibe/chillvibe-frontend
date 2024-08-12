@@ -39,8 +39,9 @@ const NewPostButton = () => {
         onClick={handleClick}
         sx={{
           position: 'fixed',
-          bottom: isMusicPlayerVisible ? 100 : 24,
-          left: 80,
+          // bottom: isMusicPlayerVisible ? 100 : 24,
+          bottom: 80,
+          left: 24,
         }}
       >
         <CreateIcon />

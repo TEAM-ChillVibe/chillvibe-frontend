@@ -81,7 +81,8 @@ const NewPlaylistButton = () => {
         onClick={handleOpen}
         sx={{
           position: 'fixed',
-          bottom: isMusicPlayerVisible ? 100 : 24,
+          // bottom: isMusicPlayerVisible ? 100 : 24,
+          bottom: 24,
           left: 24,
         }}
       >

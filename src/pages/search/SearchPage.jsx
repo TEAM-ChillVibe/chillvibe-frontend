@@ -76,7 +76,7 @@ const SearchPage = () => {
 
   return (
     <BaseContainer>
-      <Typography variant="h6" sx={{ mt: 2, mb: 3 }}>
+      <Typography variant="h6" sx={{ mb: 3 }}>
         <Typography component="span" variant="searchQuery">
           {searchQuery}
         </Typography>{' '}

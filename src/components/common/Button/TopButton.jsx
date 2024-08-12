@@ -32,8 +32,8 @@ function TopButton() {
         onClick={scrollToTop}
         sx={{
           position: 'fixed',
-          bottom: isMusicPlayerVisible ? 100 : 24,
-
+          // bottom: isMusicPlayerVisible ? 100 : 24,
+          bottom: 24,
           right: 24,
         }}
       >
