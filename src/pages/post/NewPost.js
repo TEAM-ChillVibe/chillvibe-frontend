@@ -81,7 +81,7 @@ const NewPost = () => {
         severity: 'success',
       });
       setTimeout(() => {
-        navigate('/discover'); // 게시글 목록 페이지로 이동
+        navigate(`/post/${response}`); // 작성한 게시글 페이지로 이동
       }, 1000); // 1초 후에 페이지 이동
     } catch (error) {
       setSnackbar({
