@@ -64,7 +64,7 @@ const SearchTracks = ({ results, onLoadMore }) => {
   }
 
   return (
-    <Box sx={{ width: '100%' }}>
+    <Box sx={{ width: '100%', overflow: 'hidden' }}>
       {results.content.map((track, index) => (
         <TrackListItem
           key={track.id}

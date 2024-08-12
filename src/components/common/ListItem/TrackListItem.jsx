@@ -94,8 +94,12 @@ function TrackListItem({ music }) {
 
   return (
     <Box sx={{ display: 'flex', alignItems: 'center', width: '100%', py: 2 }}>
-      <Box sx={{ display: 'flex', alignItems: 'center', flexGrow: 1 }}>
-        <IconButton aria-label="play/pause" onClick={handlePlayPause}>
+      <Box sx={{ display: 'flex', alignItems: 'center', flexShrink: 0 }}>
+        <IconButton
+          aria-label="play/pause"
+          color="primary"
+          onClick={handlePlayPause}
+        >
           {isCurrentTrack && isPlaying ? (
             <Pause sx={{ fontSize: 30 }} />
           ) : (
@@ -107,8 +111,19 @@ function TrackListItem({ music }) {
           src={thumbnailUrl}
           sx={{ width: 56, height: 56, ml: 1, mr: 2, borderRadius: 1 }}
         />
-        <Box sx={{ display: 'flex', flexDirection: 'column' }}>
-          <Typography variant="subtitle1" noWrap>
+      </Box>
+      <Box sx={{ flexGrow: 1, mx: 2, overflow: 'hidden' }}>
+        <Box
+          sx={{
+            display: 'flex',
+            flexDirection: 'column',
+          }}
+        >
+          <Typography
+            variant="subtitle1"
+            noWrap
+            sx={{ overflow: 'hidden', textOverflow: 'ellipsis' }}
+          >
             {name}
           </Typography>
           <Typography variant="body2" color="text.secondary" noWrap>
@@ -116,11 +131,15 @@ function TrackListItem({ music }) {
           </Typography>
         </Box>
       </Box>
-      <Box sx={{ display: 'flex', alignItems: 'center' }}>
+      <Box sx={{ display: 'flex', alignItems: 'center', flexShrink: 0 }}>
         <Typography variant="body2" sx={{ mr: 2 }}>
           {duration}
         </Typography>
-        <IconButton aria-label="add to playlist" onClick={openModal}>
+        <IconButton
+          aria-label="add to playlist"
+          color="primary"
+          onClick={openModal}
+        >
           <PlaylistAdd />
         </IconButton>
         <DropdownModal
