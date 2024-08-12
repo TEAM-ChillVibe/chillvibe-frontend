@@ -1,16 +1,28 @@
-import { Box, Typography } from '@mui/material';
+import { Box, Typography, Chip } from '@mui/material';
 import albumSample from '../albumSample.jpeg';
 import HashtagChips from '../HashtagChips';
-import { fetchHashtagsOfPost } from '../../../api/hashtag/hashtagApi';
 import { useNavigate } from 'react-router-dom';
+import { fetchHashtagsOfPost } from '../../../api/hashtag/hashtagApi';
 
-function PostListItemMini({ post }) {
+function PostListItemMini({ post, hashtags }) {
   const { id, title, user, thumbnailUrl } = post;
   const navigate = useNavigate();
 
-  const handleChipClick = () => {
-    navigate(`/all-tags/`);
+  const handlePlaylistClick = () => {
+    navigate(`/post/${id}`);
   };
+
+  const handlePostHashtagClick = hashtagId => {
+    // 선택된 해시태그를 localStorage에 저장
+    localStorage.setItem('selectedHashtag', hashtagId);
+
+    // AllTags 페이지로 이동
+    navigate('/all-tags');
+  };
+
+  // const handlePostHashtagClick = hashtag => {
+  //   navigate(`/all-tags`);
+  // };
 
   return (
     <Box
@@ -23,6 +35,7 @@ function PostListItemMini({ post }) {
     >
       <Box
         sx={{
+          cursor: 'pointer',
           width: 80,
           height: 80,
           mr: 2,
@@ -30,6 +43,7 @@ function PostListItemMini({ post }) {
           overflow: 'hidden',
           order: 1,
         }}
+        onClick={handlePlaylistClick}
       >
         <img
           src={thumbnailUrl || albumSample} // 썸네일 URL이 없으면 기본 이미지 사용
@@ -48,13 +62,19 @@ function PostListItemMini({ post }) {
           justifyContent: 'center',
         }}
       >
-        <Typography variant="subtitle1" component="div" noWrap>
+        <Typography
+          variant="subtitle1"
+          component="div"
+          noWrap
+          sx={{ cursor: 'pointer' }} // 커서를 포인터로 변경하여 클릭 가능함을 나타냄
+          onClick={handlePlaylistClick} // 제목 클릭 시 게시글로 이동
+        >
           {title}
         </Typography>
         <Typography variant="body2">{user.nickname}</Typography>
         <HashtagChips
           fetchHashtags={() => fetchHashtagsOfPost(id)}
-          onChipClick={handleChipClick}
+          onChipClick={handlePostHashtagClick}
         />
       </Box>
     </Box>
