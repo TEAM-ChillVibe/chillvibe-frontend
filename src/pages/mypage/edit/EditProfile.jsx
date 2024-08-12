@@ -14,6 +14,7 @@ import { useNavigate } from 'react-router-dom';
 import { fetchAllHashtags } from '../../../api/hashtag/hashtagApi';
 import HashtagChips from '../../../components/common/HashtagChips';
 import { editProfile, myInfo } from '../../../api/user/userApi';
+import SnackbarAlert from '../../../components/common/Alert/SnackbarAlert';
 
 const EditProfile = () => {
   const [email, setEmail] = useState('');
@@ -23,6 +24,9 @@ const EditProfile = () => {
   const [isPublic, setIsPublic] = useState(false);
   const [imagePreview, setImagePreview] = useState('');
   const [hashtagIds, setSelectedHashtags] = useState([]);
+  const [openSnackbar, setOpenSnackbar] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState('');
+  const [snackbarSeverity, setSnackbarSeverity] = useState('success');
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -42,7 +46,11 @@ const EditProfile = () => {
         setIsPublic(userData.public);
         const userHashtags = userData.hashtags.map(hashtag => hashtag.id);
         setSelectedHashtags(userHashtags);
-      } catch (error) {}
+      } catch (error) {
+        setSnackbarMessage('사용자 정보를 가져오는 데 실패했습니다.');
+        setSnackbarSeverity('error');
+        setOpenSnackbar(true);
+      }
     };
 
     fetchUserData();
@@ -89,11 +97,17 @@ const EditProfile = () => {
 
       if (window.confirm('정말로 회원정보를 수정하시겠습니까?')) {
         await editProfile(formData);
-        alert('회원정보가 수정되었습니다.');
-        navigate('/my-page');
+        setSnackbarMessage('회원정보가 수정되었습니다.');
+        setSnackbarSeverity('success');
+        setOpenSnackbar(true);
+        setTimeout(() => {
+          navigate('/my-page');
+        }, 1500);
       }
     } catch (error) {
-      alert('프로필 업데이트에 실패했습니다. 다시 시도해 주세요.');
+      setSnackbarMessage('프로필 업데이트에 실패했습니다. 다시 시도해 주세요.');
+      setSnackbarSeverity('error');
+      setOpenSnackbar(true);
     }
   };
 
@@ -101,6 +115,10 @@ const EditProfile = () => {
 
   const handleChangePassword = () => {
     navigate('/edit-password'); // 비밀번호 변경 페이지로 이동
+  };
+
+  const handleCloseSnackbar = () => {
+    setOpenSnackbar(false);
   };
 
   return (
@@ -183,6 +201,7 @@ const EditProfile = () => {
             fetchHashtags={fetchAllHashtags}
             onChipClick={handleHashtagClick}
             multiSelectMode={true}
+            selectedHashtags={hashtagIds}
           />
           <Box
             display="flex"
@@ -232,6 +251,12 @@ const EditProfile = () => {
           비밀번호 변경
         </Button>
       </Box>
+      <SnackbarAlert
+        open={openSnackbar}
+        onClose={handleCloseSnackbar}
+        message={snackbarMessage}
+        severity={snackbarSeverity}
+      />
     </BaseContainer>
   );
 };
