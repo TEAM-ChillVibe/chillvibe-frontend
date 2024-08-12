@@ -36,8 +36,6 @@ const EditProfile = () => {
         const response = await myInfo();
         const userData = response;
 
-        console.log(response);
-
         // 사용자 정보 상태 업데이트
         setEmail(userData.email);
         setNickname(userData.nickname);
