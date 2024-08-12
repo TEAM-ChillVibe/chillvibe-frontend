@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import BaseContainer from '../../components/layout/BaseContainer';
 import { Box, Button, Tab, Tabs, Typography } from '@mui/material';
 import UserProfile from '../../components/common/UserProfile';
@@ -44,16 +44,29 @@ const MyPage = () => {
         }}
       >
         <UserProfile user={user} />
-        <Button
-          variant="outlined"
-          href="/edit-profile"
-          sx={{
-            minWidth: '100px',
-            whiteSpace: 'nowrap',
-          }}
+        <Box
+          display="flex"
+          flexDirection="column"
+          alignItems="end"
+          sx={{ mx: 3 }}
         >
-          프로필 수정
-        </Button>
+          <Button
+            href="/edit-profile"
+            sx={{
+              whiteSpace: 'nowrap',
+            }}
+          >
+            프로필 수정
+          </Button>
+          <Button
+            href="/edit-password"
+            sx={{
+              whiteSpace: 'nowrap',
+            }}
+          >
+            비밀번호 변경
+          </Button>
+        </Box>
       </Box>
       <Box sx={{ width: '100%' }}>
         <Tabs

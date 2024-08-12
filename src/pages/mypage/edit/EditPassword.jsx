@@ -51,11 +51,11 @@ const EditPassword = () => {
     try {
       await editPassword(oldPassword, newPassword, confirmPassword);
 
-      setSnackbar({
+      setSnackbar(prev => ({
         open: true,
         message: '비밀번호가 성공적으로 변경되었습니다.',
         severity: 'success',
-      });
+      }));
 
       navigate('/my-page');
     } catch (error) {

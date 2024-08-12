@@ -113,10 +113,6 @@ const EditProfile = () => {
 
   const isFormValid = email && nickname;
 
-  const handleChangePassword = () => {
-    navigate('/edit-password'); // 비밀번호 변경 페이지로 이동
-  };
-
   const handleCloseSnackbar = () => {
     setOpenSnackbar(false);
   };
@@ -205,12 +201,12 @@ const EditProfile = () => {
           />
           <Box
             display="flex"
-            justifyContent="center"
+            flexDirection="column"
             alignItems="center"
             sx={{ mt: 5 }}
           >
             <FormControlLabel
-              label="게시글 공개"
+              label="내 게시글 공개"
               labelPlacement="start"
               control={
                 <Switch
@@ -241,15 +237,6 @@ const EditProfile = () => {
             </Button>
           </Box>
         </form>
-        <Button
-          variant="text"
-          fullWidth
-          onClick={handleChangePassword}
-          sx={{ flex: 1, my: 5 }}
-          size="large"
-        >
-          비밀번호 변경
-        </Button>
       </Box>
       <SnackbarAlert
         open={openSnackbar}
