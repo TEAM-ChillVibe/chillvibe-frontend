@@ -1,11 +1,10 @@
 import { Box, Button, Typography } from '@mui/material';
 import BaseContainer from '../../components/layout/BaseContainer';
 import PostList from '../../components/common/PostList';
-import useSortingStore from '../../store/useSortingStore';
-import { fetchAllPosts } from '../../api/post/postApi';
+import { useState } from 'react';
 
 const Discover = () => {
-  const { sortOrder, setSortOrder } = useSortingStore();
+  const [sortOrder, setSortOrder] = useState('latest');
 
   return (
     <BaseContainer>
