@@ -6,7 +6,15 @@ import SingleHashtagChips from './HashtagChips/SingleHashtagChips';
 function UserProfile({ user }) {
   const navigate = useNavigate();
 
-  const { userId, email, nickname, profileUrl, introduction, hashtags } = user;
+  if (!user) {
+    return null;
+  }
+
+  const { userId, nickname, profileUrl, introduction } = user;
+
+  if (!userId) {
+    return null;
+  }
 
   const handleNavigateToUserPage = () => {
     navigate(`/user/${userId}`); // 절대경로 유저프로필로 이동
