@@ -12,6 +12,7 @@ const FormModal = ({
   onPrimaryClick,
   onSecondaryClick,
   isPrimaryButtonDisabled,
+  errorMessage,
 }) => {
   return (
     <Modal
@@ -67,6 +68,11 @@ const FormModal = ({
             />
           ))}
         </Box>
+        {errorMessage && ( // 에러 메시지 표시
+          <Typography color="error" sx={{ mt: 2, textAlign: 'center' }}>
+            {errorMessage}
+          </Typography>
+        )}
         <Box sx={{ display: 'flex', justifyContent: 'center', mt: 4, gap: 1 }}>
           <Button onClick={onSecondaryClick} color="inherit">
             {secondaryButtonText}

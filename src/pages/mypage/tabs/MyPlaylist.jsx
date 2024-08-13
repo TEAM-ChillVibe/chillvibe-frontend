@@ -37,6 +37,8 @@ const MyPlaylist = () => {
   });
   // 생성 상태 관리
   const [isCreating, setIsCreating] = useState(false);
+  // 플레이리스트 글자 수 에러 표시 위해
+  const [titleError, setTitleError] = useState('');
 
   // 플레이리스트 데이터 로드
   useEffect(() => {
@@ -84,23 +86,36 @@ const MyPlaylist = () => {
         message: '새 플레이리스트가 생성되었습니다.',
         severity: 'success',
       });
-    } catch (e) {
-      setSnackbar({
-        open: true,
-        message: '플레이리스트 생성에 실패했습니다. 다시 시도해 주세요.',
-        severity: 'error',
-      });
+    } catch (error) {
+      console.error('Error creating playlist:', error);
+      const errorMessage =
+        error.response?.data?.errors?.[0]?.reason ||
+        '플레이리스트 생성에 실패했습니다. 다시 시도해 주세요.';
+
+      if (error.response?.status === 400) {
+        setTitleError(errorMessage);
+      } else {
+        handleClose(); // 400 에러가 아닌 경우 모달을 닫습니다.
+        setSnackbar({
+          open: true,
+          message: errorMessage,
+          severity: 'error',
+        });
+      }
     } finally {
       setIsCreating(false);
     }
   };
+
   const handleSecondaryClick = () => {
     handleClose();
   };
 
   // 플레이리스트 제목 폼 핸들러
   const handleTitleChange = e => {
-    setPlaylistTitle(e.target.value);
+    const newTitle = e.target.value;
+    setPlaylistTitle(newTitle);
+    setTitleError('');
   };
 
   // 페이지 핸들러
@@ -141,6 +156,7 @@ const MyPlaylist = () => {
             onPrimaryClick={handlePrimaryClick}
             onSecondaryClick={handleSecondaryClick}
             isPrimaryButtonDisabled={!playlistTitle.trim() || isCreating}
+            errorMessage={titleError} // 에러 메시지 전달
           />
         </Box>
       </Box>
