@@ -48,6 +48,16 @@ const PostDetail = () => {
     }
   };
 
+  // ✔️ 줄바꿈
+  const convertLineBreaks = text => {
+    return text.split('\n').map((line, index) => (
+      <span key={index}>
+        {line}
+        <br />
+      </span>
+    ));
+  };
+
   useEffect(() => {
     const getPost = async () => {
       try {
@@ -155,10 +165,14 @@ const PostDetail = () => {
         </Box>
 
         {/* 설명 텍스트 */}
-        <Typography variant="body1" sx={{ mt: 2, mb: 1, textAlign: 'left' }}>
-          {post.description}
-        </Typography>
-
+        <Box>
+          <Typography variant="h6" sx={{ fontSize: '1.2rem', mt: 2, mb: 1 }}>
+            플레이리스트 소개글
+          </Typography>
+          <Typography variant="body1" sx={{ whiteSpace: 'pre-line' }}>
+            {convertLineBreaks(post.description)}
+          </Typography>
+        </Box>
         {/* 해시태그 */}
         <Box
           sx={{
