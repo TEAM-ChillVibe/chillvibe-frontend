@@ -5,6 +5,7 @@ import BaseContainer from '../../components/layout/BaseContainer';
 import PostListItemMini from '../../components/common/ListItem/PostListItemMini';
 import TrackListItem from '../../components/common/ListItem/TrackListItem';
 import { fetchPostsInMainPage } from '../../api/post/postApi';
+import { fetchRecommendedTracks } from '../../api/track/trackApi';
 import {
   fetchPopularHashtags,
   fetchHashtagsOfPost,
@@ -65,7 +66,7 @@ const Main = () => {
   const handleHashtagClick = async hashtag => {
     if (loading) return;
     try {
-      setSelectedHashtag(hashtag); // 선택된 해시태그 상태를 문자열로 저장
+      setSelectedHashtag(hashtag);
       const matchingPosts = playlists.filter(post =>
         post.hashtags.some(tag => tag.name === hashtag),
       );
@@ -83,65 +84,15 @@ const Main = () => {
     }
   }, [selectedHashtag, playlists]);
 
-  //추천 트랙 부분
-  const fetchTracks = async () => {
-    return [
-      {
-        id: 1,
-        title: 'Track 1',
-        artist: 'Artist 1',
-        albumCover: 'path/to/cover1.jpg',
-        duration: '3:45',
-        audioSrc:
-          'https://p.scdn.co/mp3-preview/4d63fe1638aa41592706f835bd076443b09d8afa?cid=cfe923b2d660439caf2b557b21f31221',
-      },
-      {
-        id: 2,
-        title: '제목 2',
-        artist: 'Artist 2',
-        albumCover: 'path/to/cover2.jpg',
-        duration: '4:30',
-        audioSrc: null,
-      },
-      {
-        id: 3,
-        title: '제목 3',
-        artist: 'Artist 3',
-        albumCover: 'path/to/cover3.jpg',
-        duration: '2:22',
-        audioSrc: 'path/to/audio3.mp3',
-      },
-      {
-        id: 4,
-        title: '제목 4',
-        artist: 'Artist 4',
-        albumCover: 'path/to/cover4.jpg',
-        duration: '2:44',
-        audioSrc: 'path/to/audio4.mp3',
-      },
-      {
-        id: 5,
-        title: '제목5',
-        artist: 'Artist 5',
-        albumCover: 'path/to/cover5.jpg',
-        duration: '7:55',
-        audioSrc: 'path/to/audio5.mp3',
-      },
-      {
-        id: 6,
-        title: '제목6',
-        artist: 'Artist 6',
-        albumCover: 'path/to/cover6.jpg',
-        duration: '5:32',
-        audioSrc: 'path/to/audio6.mp3',
-      },
-    ];
-  };
-
+  // 추천트랙
   useEffect(() => {
     const getTracks = async () => {
-      const data = await fetchTracks();
-      setTracks(data);
+      try {
+        const data = await fetchRecommendedTracks(); // 백엔드 API 호출
+        setTracks(data); // 가져온 데이터를 상태에 저장
+      } catch (error) {
+        console.error('Failed to fetch recommended tracks:', error);
+      }
     };
     getTracks();
   }, []);
