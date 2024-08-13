@@ -35,6 +35,8 @@ const MyPlaylist = () => {
     message: '',
     severity: 'success',
   });
+  // 생성 상태 관리
+  const [isCreating, setIsCreating] = useState(false);
 
   // 플레이리스트 데이터 로드
   useEffect(() => {
@@ -65,10 +67,11 @@ const MyPlaylist = () => {
 
   // 모달 버튼 이벤트
   const handlePrimaryClick = async () => {
-    if (!playlistTitle.trim()) {
+    if (!playlistTitle.trim() || isCreating) {
       return;
     } // 제목이 비어있으면 처리하지 않음
 
+    setIsCreating(true);
     try {
       await createEmptyPlaylist(playlistTitle);
       handleClose();
@@ -87,6 +90,8 @@ const MyPlaylist = () => {
         message: '플레이리스트 생성에 실패했습니다. 다시 시도해 주세요.',
         severity: 'error',
       });
+    } finally {
+      setIsCreating(false);
     }
   };
   const handleSecondaryClick = () => {
@@ -135,7 +140,7 @@ const MyPlaylist = () => {
             secondaryButtonText="취소"
             onPrimaryClick={handlePrimaryClick}
             onSecondaryClick={handleSecondaryClick}
-            isPrimaryButtonDisabled={!playlistTitle.trim()}
+            isPrimaryButtonDisabled={!playlistTitle.trim() || isCreating}
           />
         </Box>
       </Box>
