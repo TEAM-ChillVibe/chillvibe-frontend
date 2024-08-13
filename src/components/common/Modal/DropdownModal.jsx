@@ -21,6 +21,7 @@ const DropdownModal = ({
   onPrimaryClick,
   secondaryButtonText,
   onSecondaryClick,
+  primaryButtonDisabled,
 }) => {
   return (
     <Modal
@@ -83,7 +84,12 @@ const DropdownModal = ({
           <Button onClick={onSecondaryClick} color="inherit">
             {secondaryButtonText}
           </Button>
-          <Button onClick={onPrimaryClick} variant="contained" color="primary">
+          <Button
+            onClick={onPrimaryClick}
+            variant="contained"
+            color="primary"
+            disabled={primaryButtonDisabled}
+          >
             {primaryButtonText}
           </Button>
         </Box>
