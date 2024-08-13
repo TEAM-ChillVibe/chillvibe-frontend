@@ -14,6 +14,12 @@ const FormModal = ({
   isPrimaryButtonDisabled,
   errorMessage,
 }) => {
+  // 플레이리스트의 제목을 입력하고 Enter 누르면 생성
+  const handleSubmit = event => {
+    event.preventDefault();
+    onPrimaryClick(event);
+  };
+
   return (
     <Modal
       open={open}
@@ -54,7 +60,13 @@ const FormModal = ({
         >
           {description}
         </Typography>
-        <Box component="form" noValidate autoComplete="off" sx={{ mt: 4 }}>
+        <Box
+          component="form"
+          noValidate
+          autoComplete="off"
+          sx={{ mt: 4 }}
+          onSubmit={handleSubmit}
+        >
           {formFields.map((field, index) => (
             <TextField
               key={index}
