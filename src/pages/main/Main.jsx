@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { Typography, Grid, Box, Chip } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
 import BaseContainer from '../../components/layout/BaseContainer';
 import PostListItemMini from '../../components/common/ListItem/PostListItemMini';
-// import TrackListItem from '../../components/common/ListItem/TrackListItem';
+import TrackListItem from '../../components/common/ListItem/TrackListItem';
 import { fetchPostsInMainPage } from '../../api/post/postApi';
 import {
   fetchPopularHashtags,
@@ -14,10 +15,14 @@ const Main = () => {
   const [popularHashtags, setPopularHashtags] = useState([]);
   const [selectedHashtag, setSelectedHashtag] = useState(null);
   const [filteredPosts, setFilteredPosts] = useState([]);
+  const [tracks, setTracks] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const loadPosts = async () => {
       try {
+        setLoading(true);
         const posts = await fetchPostsInMainPage();
         const postsWithHashtags = await Promise.all(
           posts.map(async post => {
@@ -26,8 +31,10 @@ const Main = () => {
           }),
         );
         setPlaylists(postsWithHashtags);
+        setLoading(false);
       } catch (error) {
         console.error('Failed to load posts:', error);
+        setLoading(false);
       }
     };
     loadPosts();
@@ -56,6 +63,7 @@ const Main = () => {
   }, [playlists]);
 
   const handleHashtagClick = async hashtag => {
+    if (loading) return;
     try {
       setSelectedHashtag(hashtag); // 선택된 해시태그 상태를 문자열로 저장
       const matchingPosts = playlists.filter(post =>
@@ -66,76 +74,81 @@ const Main = () => {
       console.error('Failed to filter posts for hashtag:', error);
     }
   };
+  useEffect(() => {
+    if (selectedHashtag && playlists.length > 0) {
+      const matchingPosts = playlists.filter(post =>
+        post.hashtags.some(tag => tag.name === selectedHashtag),
+      );
+      setFilteredPosts(matchingPosts.slice(0, 6));
+    }
+  }, [selectedHashtag, playlists]);
 
   //추천 트랙 부분
-  // const fetchTracks = async () => {
-  //   return [
-  //     {
-  //       id: 1,
-  //       title: 'Track 1',
-  //       artist: 'Artist 1',
-  //       albumCover: 'path/to/cover1.jpg',
-  //       duration: '3:45',
-  //       audioSrc:
-  //         'https://p.scdn.co/mp3-preview/4d63fe1638aa41592706f835bd076443b09d8afa?cid=cfe923b2d660439caf2b557b21f31221',
-  //     },
-  //     {
-  //       id: 2,
-  //       title: '제목 2',
-  //       artist: 'Artist 2',
-  //       albumCover: 'path/to/cover2.jpg',
-  //       duration: '4:30',
-  //       audioSrc: null,
-  //     },
-  //     {
-  //       id: 3,
-  //       title: '제목 3',
-  //       artist: 'Artist 3',
-  //       albumCover: 'path/to/cover3.jpg',
-  //       duration: '2:22',
-  //       audioSrc: 'path/to/audio3.mp3',
-  //     },
-  //     {
-  //       id: 4,
-  //       title: '제목 4',
-  //       artist: 'Artist 4',
-  //       albumCover: 'path/to/cover4.jpg',
-  //       duration: '2:44',
-  //       audioSrc: 'path/to/audio4.mp3',
-  //     },
-  //     {
-  //       id: 5,
-  //       title: '제목5',
-  //       artist: 'Artist 5',
-  //       albumCover: 'path/to/cover5.jpg',
-  //       duration: '7:55',
-  //       audioSrc: 'path/to/audio5.mp3',
-  //     },
-  //     {
-  //       id: 6,
-  //       title: '제목6',
-  //       artist: 'Artist 6',
-  //       albumCover: 'path/to/cover6.jpg',
-  //       duration: '5:32',
-  //       audioSrc: 'path/to/audio6.mp3',
-  //     },
-  //   ];
-  // };
+  const fetchTracks = async () => {
+    return [
+      {
+        id: 1,
+        title: 'Track 1',
+        artist: 'Artist 1',
+        albumCover: 'path/to/cover1.jpg',
+        duration: '3:45',
+        audioSrc:
+          'https://p.scdn.co/mp3-preview/4d63fe1638aa41592706f835bd076443b09d8afa?cid=cfe923b2d660439caf2b557b21f31221',
+      },
+      {
+        id: 2,
+        title: '제목 2',
+        artist: 'Artist 2',
+        albumCover: 'path/to/cover2.jpg',
+        duration: '4:30',
+        audioSrc: null,
+      },
+      {
+        id: 3,
+        title: '제목 3',
+        artist: 'Artist 3',
+        albumCover: 'path/to/cover3.jpg',
+        duration: '2:22',
+        audioSrc: 'path/to/audio3.mp3',
+      },
+      {
+        id: 4,
+        title: '제목 4',
+        artist: 'Artist 4',
+        albumCover: 'path/to/cover4.jpg',
+        duration: '2:44',
+        audioSrc: 'path/to/audio4.mp3',
+      },
+      {
+        id: 5,
+        title: '제목5',
+        artist: 'Artist 5',
+        albumCover: 'path/to/cover5.jpg',
+        duration: '7:55',
+        audioSrc: 'path/to/audio5.mp3',
+      },
+      {
+        id: 6,
+        title: '제목6',
+        artist: 'Artist 6',
+        albumCover: 'path/to/cover6.jpg',
+        duration: '5:32',
+        audioSrc: 'path/to/audio6.mp3',
+      },
+    ];
+  };
 
-  // useEffect(() => {
-  //   const getTracks = async () => {
-  //     const data = await fetchTracks();
-  //     setTracks(data);
-  //   };
-  //   getTracks();
-  // }, []);
+  useEffect(() => {
+    const getTracks = async () => {
+      const data = await fetchTracks();
+      setTracks(data);
+    };
+    getTracks();
+  }, []);
 
-  // const handleTrackClick = id => {
-  //   navigate(`/track/${id}`);
-  // };
-  // const handlePlaylistClick = e => {
-  //   navigate(`/post/${id}`);
-  // };
+  const handleTrackClick = id => {
+    navigate(`/track/${id}`);
+  };
 
   return (
     <BaseContainer>
@@ -149,11 +162,12 @@ const Main = () => {
       <Grid container spacing={2}>
         {playlists.length > 0 ? (
           playlists.map(playlist => (
-            <Grid item xs={12} sm={6} md={4} key={playlist.id}>
-              <Box>
+            <Grid item xs={6} key={playlist.id}>
+              <Box sx={{ padding: '1px' }}>
                 <PostListItemMini
                   post={playlist}
                   hashtags={playlist.hashtags}
+                  onClickHashtag={handleHashtagClick}
                 />
               </Box>
             </Grid>
@@ -164,6 +178,7 @@ const Main = () => {
           </Grid>
         )}
       </Grid>
+
       <Typography
         variant="h4"
         gutterBottom
@@ -192,11 +207,10 @@ const Main = () => {
       </Box>
       {filteredPosts.length > 0 && (
         <>
-          <Typography
-            variant="h5"
+          {/* <Typography
             gutterBottom
             sx={{ textAlign: 'center', marginTop: 4 }}
-          ></Typography>
+          ></Typography> */}
           <Grid container spacing={2}>
             {filteredPosts.map(post => (
               <Grid item xs={6} key={post.id}>
@@ -208,19 +222,15 @@ const Main = () => {
           </Grid>
         </>
       )}
-    </BaseContainer>
-  );
-};
 
-/* {/*</Grid> 
-      {/* <Typography
+      <Typography
         variant="h4"
         gutterBottom
         sx={{ textAlign: 'center', marginBottom: 4 }}
       >
         추천 트랙
       </Typography>
-      <Grid container spacing={2}>
+      <Grid container spacing={1}>
         {tracks.length > 0 ? (
           tracks.map(track => (
             <Grid item xs={12} sm={6} md={4} key={track.id}>
@@ -236,10 +246,10 @@ const Main = () => {
           <Grid item xs={12}>
             <Typography align="center">추천 트랙이 없습니다.</Typography>
           </Grid>
-        )} 
+        )}
       </Grid>
     </BaseContainer>
   );
-}; */
+};
 
 export default Main;
