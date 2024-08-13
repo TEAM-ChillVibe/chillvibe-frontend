@@ -19,7 +19,7 @@ import PlaylistListItem from '../../components/common/ListItem/PlaylistListItem'
 import SnackbarAlert from '../../components/common/Alert/SnackbarAlert';
 import MultiHashtagChips from '../../components/common/HashtagChips/MultiHashtagChips';
 
-const itemsPerPage = 6; // 페이지당 표시할 플레이리스트 수
+const itemsPerPage = 10; // 페이지당 표시할 플레이리스트 수
 
 const NewPost = () => {
   const [title, setTitle] = useState('');
@@ -43,11 +43,11 @@ const NewPost = () => {
       try {
         const response = await getUserPlaylists(page - 1, itemsPerPage);
         setPlaylists(response.content || []);
-        setTotalPages(response.totalPages || 0);
+        setTotalPages(response.page.totalPages || 0);
       } catch (error) {
         setSnackbar({
           open: true,
-          message: '플레이리스트 불러오기를 실패했습니다. 다시 시도해 주세요.',
+          message: '플레이리스트 로딩에 실패했습니다. 다시 시도해 주세요.',
           severity: 'error',
         });
       }
@@ -74,6 +74,7 @@ const NewPost = () => {
       playlistId: selectedPlaylistId,
       hashtagIds: selectedHashtags,
     };
+
     try {
       const response = await createPost(newPost);
       addPost(response);
@@ -146,7 +147,7 @@ const NewPost = () => {
             multiline
             minRows={4}
           />
-          <Typography variant="h6" sx={{ fontSize: '1.2rem', mt: 1 }}>
+          <Typography variant="h6" sx={{ fontSize: '1.2rem', mt: 2 }}>
             해시태그 선택
           </Typography>
           <MultiHashtagChips
@@ -154,27 +155,23 @@ const NewPost = () => {
             selectedHashtags={selectedHashtags}
             onSelectionChange={handleSelectionChange}
           />
-          <Typography variant="h6" sx={{ fontSize: '1.2rem', mt: 2, mb: 1 }}>
+          <Typography variant="h6" sx={{ fontSize: '1.2rem', mt: 3 }}>
             플레이리스트 선택
           </Typography>
-          <Grid container spacing={2}>
+          <Grid container>
             {playlists.map(playlist => (
               <Grid item xs={12} sm={6} key={playlist.id}>
                 <Box
                   onClick={() => setSelectedPlaylistId(playlist.id)}
                   sx={{
                     cursor: 'pointer',
-                    border:
-                      selectedPlaylistId === playlist.id
-                        ? '2px solid #3f51b5'
-                        : '1px solid #ccc',
-                    padding: 1,
-                    borderRadius: 1,
                     display: 'flex',
                     alignItems: 'center',
-                    '&:hover': {
-                      border: '2px solid #3f51b5',
-                    },
+                    opacity:
+                      selectedPlaylistId && selectedPlaylistId !== playlist.id
+                        ? 0.65
+                        : 1,
+                    transition: 'opacity 0.3s ease',
                   }}
                 >
                   <PlaylistListItem playlist={playlist} />
@@ -184,9 +181,10 @@ const NewPost = () => {
           </Grid>
           <Box sx={{ display: 'flex', justifyContent: 'center', mt: 4 }}>
             <Pagination
-              count={Math.ceil(playlists.length / itemsPerPage)}
+              count={totalPages}
               page={page}
               onChange={handlePageChange}
+              color="primary"
             />
           </Box>
           <Box

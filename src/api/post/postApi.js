@@ -166,6 +166,7 @@ export const fetchMyLikedPosts = async (page = 0, size = 10) => {
   }
 };
 
+// 메인화면 인기플레이리스트
 export const fetchPostsInMainPage = async () => {
   try {
     const response = await axiosWithToken.get('/api/posts/main');

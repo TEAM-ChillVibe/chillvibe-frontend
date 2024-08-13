@@ -5,11 +5,13 @@ import { fetchAllHashtags } from '../../api/hashtag/hashtagApi';
 import { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import SingleHashtagChips from '../../components/common/HashtagChips/SingleHashtagChips';
+import { myInfo } from '../../api/user/userApi';
 
 const AllTags = () => {
   const [sortOrder, setSortOrder] = useState('latest');
   const [selectedHashtag, setSelectedHashtag] = useState(null);
   const location = useLocation();
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   useEffect(() => {
     const queryParams = new URLSearchParams(location.search);
@@ -24,6 +26,22 @@ const AllTags = () => {
   const handleHashtagClick = hashtag => {
     setSelectedHashtag(hashtag.id);
   };
+
+  useEffect(() => {
+    const checkUserLoggedIn = async () => {
+      try {
+        const user = await myInfo();
+        if (user) {
+          setIsLoggedIn(true);
+        }
+      } catch (error) {
+        console.error('Error fetching user info:', error);
+        setIsLoggedIn(false);
+      }
+    };
+
+    checkUserLoggedIn();
+  }, []);
 
   return (
     <BaseContainer>
@@ -72,9 +90,11 @@ const AllTags = () => {
             인기순
           </Typography>
         </Box>
-        <Button variant="contained" href="/new-post">
-          새 글 작성
-        </Button>
+        {isLoggedIn && (
+          <Button variant="contained" href="/new-post">
+            새 게시글
+          </Button>
+        )}
       </Box>
       <PostList selectedHashtag={selectedHashtag} sortOrder={sortOrder} />
     </BaseContainer>

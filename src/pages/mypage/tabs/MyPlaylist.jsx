@@ -14,6 +14,7 @@ import {
   getUserPlaylists,
 } from '../../../api/playlist/playlistApi';
 import SnackbarAlert from '../../../components/common/Alert/SnackbarAlert';
+import QueueMusicIcon from '@mui/icons-material/QueueMusic';
 
 // 페이지네이션 단위 고정값
 const itemsPerPage = 10;
@@ -35,13 +36,16 @@ const MyPlaylist = () => {
     message: '',
     severity: 'success',
   });
+  // 생성 상태 관리
+  const [isCreating, setIsCreating] = useState(false);
+  // 플레이리스트 글자 수 에러 표시 위해
+  const [titleError, setTitleError] = useState('');
 
   // 플레이리스트 데이터 로드
   useEffect(() => {
     const fetchPlaylists = async () => {
       try {
         const data = await getUserPlaylists(page - 1, itemsPerPage);
-        console.log(data);
         setPlaylists(data.content);
         setTotalPages(data.page.totalPages);
       } catch (error) {
@@ -65,10 +69,17 @@ const MyPlaylist = () => {
 
   // 모달 버튼 이벤트
   const handlePrimaryClick = async () => {
+    // 유효성 검사
     if (!playlistTitle.trim()) {
       return;
     } // 제목이 비어있으면 처리하지 않음
 
+    if (playlistTitle.length < 1 || playlistTitle.length > 50) {
+      setTitleError('플레이리스트의 제목은 1자 이상, 50자 이하여야 합니다. ');
+      return;
+    } // 플레이리스트 글자 수 제한
+
+    setIsCreating(true);
     try {
       await createEmptyPlaylist(playlistTitle);
       handleClose();
@@ -81,21 +92,26 @@ const MyPlaylist = () => {
         message: '새 플레이리스트가 생성되었습니다.',
         severity: 'success',
       });
-    } catch (e) {
+    } catch (error) {
       setSnackbar({
         open: true,
         message: '플레이리스트 생성에 실패했습니다. 다시 시도해 주세요.',
         severity: 'error',
       });
+    } finally {
+      setIsCreating(false);
     }
   };
+
   const handleSecondaryClick = () => {
     handleClose();
   };
 
   // 플레이리스트 제목 폼 핸들러
   const handleTitleChange = e => {
-    setPlaylistTitle(e.target.value);
+    const newTitle = e.target.value;
+    setPlaylistTitle(newTitle);
+    setTitleError('');
   };
 
   // 페이지 핸들러
@@ -115,7 +131,12 @@ const MyPlaylist = () => {
       >
         <Typography variant="subtitleMypage">My Playlists</Typography>
         <Box>
-          <Button variant="contained" onClick={handleOpen}>
+          <Button
+            variant="contained"
+            size="small"
+            startIcon={<QueueMusicIcon />}
+            onClick={handleOpen}
+          >
             새 플레이리스트
           </Button>
           <FormModal
@@ -135,7 +156,8 @@ const MyPlaylist = () => {
             secondaryButtonText="취소"
             onPrimaryClick={handlePrimaryClick}
             onSecondaryClick={handleSecondaryClick}
-            isPrimaryButtonDisabled={!playlistTitle.trim()}
+            isPrimaryButtonDisabled={!playlistTitle.trim() || isCreating}
+            errorMessage={titleError} // 에러 메시지 전달
           />
         </Box>
       </Box>

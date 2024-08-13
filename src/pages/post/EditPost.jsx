@@ -126,10 +126,15 @@ const EditPost = () => {
             selectedHashtags={selectedHashtags}
             onSelectionChange={handleSelectionChange}
           />
-          <Typography variant="h6" sx={{ fontSize: '1.2rem', mt: 2, mb: 1 }}>
-            플레이리스트
-          </Typography>
-          <Box sx={{ mt: 2 }}>
+          <Box>
+            <Typography variant="h6" sx={{ fontSize: '1.2rem', mt: 2 }}>
+              플레이리스트
+            </Typography>
+            <Typography variant="body2" color="text.secondary">
+              (수정할 수 없습니다.)
+            </Typography>
+          </Box>
+          <Box sx={{ width: '100%' }}>
             {selectedPlaylist ? (
               <PlaylistListItem playlist={selectedPlaylist} />
             ) : (

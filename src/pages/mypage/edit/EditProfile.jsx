@@ -25,9 +25,11 @@ const EditProfile = () => {
   const [isPublic, setIsPublic] = useState(false);
   const [imagePreview, setImagePreview] = useState('');
   const [selectedHashtags, setSelectedHashtags] = useState([]);
-  const [openSnackbar, setOpenSnackbar] = useState(false);
-  const [snackbarMessage, setSnackbarMessage] = useState('');
-  const [snackbarSeverity, setSnackbarSeverity] = useState('success');
+  const [snackbar, setSnackbar] = useState({
+    open: false,
+    message: '',
+    severity: 'success',
+  });
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -46,9 +48,11 @@ const EditProfile = () => {
         const userHashtags = userData.hashtags.map(hashtag => hashtag.id);
         setSelectedHashtags(userHashtags);
       } catch (error) {
-        setSnackbarMessage('사용자 정보를 가져오는 데 실패했습니다.');
-        setSnackbarSeverity('error');
-        setOpenSnackbar(true);
+        setSnackbar({
+          open: true,
+          message: '사용자 정보를 가져오는 데 실패했습니다.',
+          severity: 'error',
+        });
       }
     };
 
@@ -92,25 +96,25 @@ const EditProfile = () => {
 
       if (window.confirm('회원정보를 수정하시겠습니까?')) {
         await editProfile(formData);
-        setSnackbarMessage('회원정보가 수정되었습니다.');
-        setSnackbarSeverity('success');
-        setOpenSnackbar(true);
+        setSnackbar({
+          open: true,
+          message: '회원정보가 수정되었습니다.',
+          severity: 'success',
+        });
         setTimeout(() => {
           navigate('/my-page');
         }, 1500);
       }
     } catch (error) {
-      setSnackbarMessage('프로필 업데이트에 실패했습니다. 다시 시도해 주세요.');
-      setSnackbarSeverity('error');
-      setOpenSnackbar(true);
+      setSnackbar({
+        open: true,
+        message: '프로필 업데이트에 실패했습니다. 다시 시도해 주세요.',
+        severity: 'error',
+      });
     }
   };
 
   const isFormValid = email && nickname;
-
-  const handleCloseSnackbar = () => {
-    setOpenSnackbar(false);
-  };
 
   const handleSelectionChange = newSelection => {
     setSelectedHashtags(newSelection);
@@ -219,7 +223,7 @@ const EditProfile = () => {
             />
           </Box>
           {/* 버튼 */}
-          <Box sx={{ width: '100%', display: 'flex', mt: 5, gap: 2 }}>
+          <Box sx={{ width: '100%', display: 'flex', mt: 8, gap: 2 }}>
             <Button
               variant="outlined"
               onClick={handleCancel}
@@ -240,11 +244,12 @@ const EditProfile = () => {
           </Box>
         </form>
       </Box>
+
       <SnackbarAlert
-        open={openSnackbar}
-        onClose={handleCloseSnackbar}
-        message={snackbarMessage}
-        severity={snackbarSeverity}
+        open={snackbar.open}
+        onClose={() => setSnackbar(prev => ({ ...prev, open: false }))}
+        message={snackbar.message}
+        severity={snackbar.severity}
       />
     </BaseContainer>
   );

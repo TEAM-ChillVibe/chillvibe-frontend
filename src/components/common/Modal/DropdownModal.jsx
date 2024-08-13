@@ -21,6 +21,7 @@ const DropdownModal = ({
   onPrimaryClick,
   secondaryButtonText,
   onSecondaryClick,
+  primaryButtonDisabled,
 }) => {
   return (
     <Modal
@@ -37,7 +38,7 @@ const DropdownModal = ({
           transform: 'translate(-50%, -50%)',
           width: 'auto',
           minWidth: '450px',
-          bgcolor: 'background.paper',
+          bgcolor: '#1f1f1f',
           borderRadius: 1,
           boxShadow: 24,
           py: 4,
@@ -56,14 +57,14 @@ const DropdownModal = ({
           sx={{
             display: 'flex',
             justifyContent: 'center',
-            mt: 2,
+            mt: 3,
             whiteSpace: 'pre-line', // 줄바꿈을 문자열에 포함
             textAlign: 'center',
           }}
         >
           {description}
         </Typography>
-        <Box sx={{ mt: 4 }}>
+        <Box sx={{ mt: 5 }}>
           <FormControl fullWidth>
             <InputLabel>Playlists</InputLabel>
             <Select value={selectedValue} onChange={onChange} label="Playlists">
@@ -79,11 +80,16 @@ const DropdownModal = ({
             </Select>
           </FormControl>
         </Box>
-        <Box sx={{ display: 'flex', justifyContent: 'center', mt: 4, gap: 1 }}>
+        <Box sx={{ display: 'flex', justifyContent: 'center', mt: 5, gap: 1 }}>
           <Button onClick={onSecondaryClick} color="inherit">
             {secondaryButtonText}
           </Button>
-          <Button onClick={onPrimaryClick} variant="contained" color="primary">
+          <Button
+            onClick={onPrimaryClick}
+            variant="contained"
+            color="primary"
+            disabled={primaryButtonDisabled}
+          >
             {primaryButtonText}
           </Button>
         </Box>

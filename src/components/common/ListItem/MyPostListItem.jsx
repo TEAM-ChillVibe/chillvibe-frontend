@@ -58,23 +58,21 @@ function MyPostListItem({ user, post }) {
           flexGrow: 1,
           display: 'flex',
           flexDirection: 'column',
-          py: 0.5,
+          py: 2,
           order: 2,
           alignItems: 'flex-start',
-          justifyContent: 'center',
+          justifyContent: 'space-between',
         }}
       >
         <Typography
-          variant="subtitle1"
+          variant="trackTitle"
           onClick={handleNavigateToPost}
           sx={{ cursor: 'pointer' }}
           noWrap
         >
           {title}
         </Typography>
-        <Typography variant="body2" sx={{ mb: 1 }}>
-          트랙 {trackCount}개
-        </Typography>
+        <Typography variant="trackArtist">트랙 {trackCount}개</Typography>
         <SingleHashtagChips
           fetchHashtags={() => fetchHashtagsOfPost(post.id)}
           onChipClick={handleHashtagClick}

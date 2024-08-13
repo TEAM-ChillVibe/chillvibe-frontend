@@ -6,7 +6,15 @@ import SingleHashtagChips from './HashtagChips/SingleHashtagChips';
 function UserProfile({ user }) {
   const navigate = useNavigate();
 
-  const { userId, email, nickname, profileUrl, introduction, hashtags } = user;
+  if (!user) {
+    return null;
+  }
+
+  const { userId, nickname, profileUrl, introduction } = user;
+
+  if (!userId) {
+    return null;
+  }
 
   const handleNavigateToUserPage = () => {
     navigate(`/user/${userId}`); // 절대경로 유저프로필로 이동
@@ -24,6 +32,7 @@ function UserProfile({ user }) {
         m: 2,
         p: 1,
         width: '100%',
+        boxSizing: 'border-box',
       }}
     >
       <Avatar
@@ -40,7 +49,8 @@ function UserProfile({ user }) {
         sx={{
           display: 'flex',
           flexDirection: 'column',
-          gap: 1,
+          gap: 1.5,
+          flex: 1,
         }}
       >
         <Typography
@@ -52,7 +62,16 @@ function UserProfile({ user }) {
         >
           {nickname}
         </Typography>
-        <Typography variant="body2" color="text.secondary">
+        <Typography
+          variant="body2"
+          color="text.secondary"
+          sx={{
+            whiteSpace: 'normal',
+            overflowWrap: 'break-word',
+            wordBreak: 'break-word',
+            mb: 1,
+          }}
+        >
           {introduction}
         </Typography>
         <SingleHashtagChips

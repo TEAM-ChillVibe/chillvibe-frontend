@@ -22,6 +22,9 @@ const NewPlaylistButton = () => {
     severity: 'success',
   });
 
+  // 플레이리스트 제목 유효성 검사
+  const [titleError, setTitleError] = useState('');
+
   // 모달 핸들러
   const handleOpen = () => {
     if (!isAuthenticated) {
@@ -38,13 +41,19 @@ const NewPlaylistButton = () => {
   const handleClose = () => {
     setOpen(false);
     setPlaylistTitle(''); // 모달 닫을 때 폼 필드 초기화
+    setTitleError(''); // 에러 메세지 초기화
   };
 
-  // 모달 버튼 이벤트
   const handlePrimaryClick = async () => {
+    // 유효성 검사
     if (!playlistTitle.trim()) {
       return;
     } // 제목이 비어있으면 처리하지 않음
+
+    if (playlistTitle.length < 1 || playlistTitle.length > 50) {
+      setTitleError('플레이리스트의 제목은 1자 이상, 50자 이하여야 합니다. ');
+      return;
+    } // 플레이리스트 글자 수 제한
 
     try {
       await createEmptyPlaylist(playlistTitle);
@@ -54,7 +63,8 @@ const NewPlaylistButton = () => {
         message: '새 플레이리스트가 생성되었습니다.',
         severity: 'success',
       });
-    } catch (e) {
+    } catch (error) {
+      handleClose();
       setSnackbar({
         open: true,
         message: '플레이리스트 생성에 실패했습니다. 다시 시도해 주세요.',
@@ -70,6 +80,7 @@ const NewPlaylistButton = () => {
   // 플레이리스트 제목 폼 핸들러
   const handleTitleChange = e => {
     setPlaylistTitle(e.target.value);
+    setTitleError(''); // 사용자가 입력을 수정하면 에러메세지 초기화
   };
 
   return (
@@ -106,6 +117,7 @@ const NewPlaylistButton = () => {
         onPrimaryClick={handlePrimaryClick}
         onSecondaryClick={handleSecondaryClick}
         isPrimaryButtonDisabled={!playlistTitle.trim()}
+        errorMessage={titleError}
       />
       <SnackbarAlert
         open={snackbar.open}

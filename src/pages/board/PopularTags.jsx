@@ -2,18 +2,44 @@ import BaseContainer from '../../components/layout/BaseContainer';
 import { Box, Button, Typography } from '@mui/material';
 import { fetchPopularHashtags } from '../../api/hashtag/hashtagApi';
 import PostList from '../../components/common/PostList';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import SingleHashtagChips from '../../components/common/HashtagChips/SingleHashtagChips';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { myInfo } from '../../api/user/userApi';
 
 const PopularTags = () => {
   const [sortOrder, setSortOrder] = useState('latest');
   const [selectedHashtag, setSelectedHashtag] = useState(null);
   const navigate = useNavigate();
+  const location = useLocation();
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  useEffect(() => {
+    const queryParams = new URLSearchParams(location.search);
+    const hashtagId = queryParams.get('hashtag');
+    setSelectedHashtag(hashtagId);
+  }, [location.search]);
 
   const handleHashtagClick = hashtag => {
+    setSelectedHashtag(hashtag);
     navigate(`/popular-tags?hashtag=${hashtag.id}`);
   };
+
+  useEffect(() => {
+    const checkUserLoggedIn = async () => {
+      try {
+        const user = await myInfo();
+        if (user) {
+          setIsLoggedIn(true);
+        }
+      } catch (error) {
+        console.error('Error fetching user info:', error);
+        setIsLoggedIn(false);
+      }
+    };
+
+    checkUserLoggedIn();
+  }, []);
 
   return (
     <BaseContainer>
@@ -62,9 +88,11 @@ const PopularTags = () => {
             인기순
           </Typography>
         </Box>
-        <Button variant="contained" href="/new-post">
-          새 글 작성
-        </Button>
+        {isLoggedIn && (
+          <Button variant="contained" href="/new-post">
+            새 게시글
+          </Button>
+        )}
       </Box>
       <PostList selectedHashtag={selectedHashtag} sortOrder={sortOrder} />
     </BaseContainer>

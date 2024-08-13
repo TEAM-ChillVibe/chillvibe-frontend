@@ -7,6 +7,8 @@ import MyPost from './tabs/MyPost';
 import MyLikedPost from './tabs/MyLikedPost';
 import MyComment from './tabs/MyComment';
 import useUserStore from '../../store/useUserStore';
+import EditIcon from '@mui/icons-material/Edit';
+import LockIcon from '@mui/icons-material/Lock';
 
 const MyPage = () => {
   // 탭 상태 관리
@@ -54,6 +56,7 @@ const MyPage = () => {
             variant="outlined"
             size="small"
             href="/edit-profile"
+            startIcon={<EditIcon />}
             sx={{
               whiteSpace: 'nowrap',
             }}
@@ -64,6 +67,7 @@ const MyPage = () => {
             variant="outlined"
             size="small"
             href="/edit-password"
+            startIcon={<LockIcon />}
             sx={{
               whiteSpace: 'nowrap',
               mt: 1,

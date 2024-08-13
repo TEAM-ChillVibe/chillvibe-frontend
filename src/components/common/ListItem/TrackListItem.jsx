@@ -33,6 +33,9 @@ function TrackListItem({ music }) {
   const [playlists, setPlaylists] = useState([]);
   const [selectedValue, setSelectedValue] = useState('');
 
+  // 트랙 추가중인지 상태관리
+  const [isAddingTrack, setIsAddingTrack] = useState(false);
+
   useEffect(() => {
     const fetchPlaylists = async () => {
       try {
@@ -47,8 +50,11 @@ function TrackListItem({ music }) {
   }, []);
 
   const openModal = () => setIsModalOpen(true);
-  const closeModal = () => setIsModalOpen(false);
-
+  const closeModal = () => {
+    setIsModalOpen(false);
+    setSelectedValue('');
+    setIsAddingTrack(false);
+  };
   const handleChange = event => {
     setSelectedValue(event.target.value);
   };
@@ -64,7 +70,8 @@ function TrackListItem({ music }) {
     console.log('Selected Value:', selectedValue);
     console.log('Music Object:', music);
 
-    if (selectedValue) {
+    if (selectedValue && !isAddingTrack) {
+      setIsAddingTrack(true);
       try {
         await addTrackToPlaylist(selectedValue, music);
         setSnackbar({
@@ -120,13 +127,13 @@ function TrackListItem({ music }) {
           }}
         >
           <Typography
-            variant="subtitle1"
+            variant="trackTitle"
             noWrap
             sx={{ overflow: 'hidden', textOverflow: 'ellipsis' }}
           >
             {name}
           </Typography>
-          <Typography variant="body2" color="text.secondary" noWrap>
+          <Typography variant="trackArtist" noWrap>
             {artist}
           </Typography>
         </Box>
@@ -171,6 +178,7 @@ function TrackListItem({ music }) {
           onPrimaryClick={handlePrimaryClick}
           secondaryButtonText="취소"
           onSecondaryClick={handleSecondaryClick}
+          primaryButtonDisabled={isAddingTrack || !selectedValue}
         />
       </Box>
 

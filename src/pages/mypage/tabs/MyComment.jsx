@@ -105,33 +105,38 @@ const MyComment = () => {
                 onClick={() => handleCommentClick(comment.postId)}
               >
                 <Box sx={{ flexGrow: 1 }}>
-                  <Typography variant="h6" sx={{ marginBottom: 1 }}>
+                  <Typography variant="trackTitle">
                     {comment.postTitle}
                   </Typography>
                   <Box
                     sx={{
                       display: 'flex',
                       alignItems: 'center',
-                      marginBottom: 1,
+                      mb: 2,
+                      mt: 1,
                     }}
                   >
                     <Avatar
                       src={comment.postAuthorProfileUrl}
-                      sx={{ width: 20, height: 20 }}
+                      sx={{ width: 20, height: 20, mr: 1 }}
                     />
-                    <Typography variant="body2" sx={{ marginLeft: 1 }}>
+                    <Typography variant="body2" color="text.secondary">
                       {comment.postAuthor}
                     </Typography>
                   </Box>
-                  <Typography variant="body1">{comment.content}</Typography>
-                  <Typography variant="caption" sx={{ color: '#888' }}>
+                  <Typography variant="body1">"{comment.content}"</Typography>
+                  <Typography variant="caption" color="text.date">
                     {formatDate(comment.modifiedAt)}
-                    {comment.createdAt !== comment.modifiedAt && (
-                      <span style={{ marginLeft: '10px', color: '#888' }}>
-                        수정됨
-                      </span>
-                    )}
                   </Typography>
+                  {comment.createdAt !== comment.modifiedAt && (
+                    <Typography
+                      variant="caption"
+                      color="text.date"
+                      sx={{ ml: 0.5 }}
+                    >
+                      (수정됨)
+                    </Typography>
+                  )}
                 </Box>
                 <Box
                   sx={{

@@ -1,12 +1,16 @@
 import { Box, Typography } from '@mui/material';
 import albumSample from '../albumSample.jpeg';
-import { fetchHashtagsOfPost } from '../../../api/hashtag/hashtagApi';
-import { useNavigate } from 'react-router-dom';
 import SingleHashtagChips from '../HashtagChips/SingleHashtagChips';
+import { useNavigate } from 'react-router-dom';
+import { fetchHashtagsOfPost } from '../../../api/hashtag/hashtagApi';
 
 function PostListItemMini({ post }) {
   const { id, title, user, thumbnailUrl } = post;
   const navigate = useNavigate();
+
+  const handlePostClick = () => {
+    navigate(`/post/${id}`);
+  };
 
   const handleHashtagClick = hashtag => {
     navigate(`/all-tags?hashtag=${hashtag.id}`);
@@ -23,6 +27,7 @@ function PostListItemMini({ post }) {
     >
       <Box
         sx={{
+          cursor: 'pointer',
           width: 80,
           height: 80,
           mr: 2,
@@ -30,6 +35,7 @@ function PostListItemMini({ post }) {
           overflow: 'hidden',
           order: 1,
         }}
+        onClick={handlePostClick}
       >
         <img
           src={thumbnailUrl || albumSample} // 썸네일 URL이 없으면 기본 이미지 사용
@@ -43,15 +49,16 @@ function PostListItemMini({ post }) {
           display: 'flex',
           flexDirection: 'column',
           order: 2,
-
           alignItems: 'flex-start',
-          justifyContent: 'center',
+          justifyContent: 'space-between',
         }}
       >
-        <Typography variant="subtitle1" component="div" noWrap>
+        <Typography variant="trackTitle" component="div" noWrap>
           {title}
         </Typography>
-        <Typography variant="body2">{user.nickname}</Typography>
+        <Typography variant="trackArtist" sx={{ mb: 0.5 }}>
+          {user.nickname}
+        </Typography>
         <SingleHashtagChips
           fetchHashtags={() => fetchHashtagsOfPost(id)}
           onChipClick={handleHashtagClick}
