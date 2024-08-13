@@ -79,3 +79,15 @@ export const reissue = async () => {
     throw error;
   }
 };
+
+// 탈퇴
+export const withdraw = async password => {
+  try {
+    const response = await axiosWithToken.post(`/api/users/delete`, {
+      password,
+    });
+    return response;
+  } catch (error) {
+    throw error;
+  }
+};
