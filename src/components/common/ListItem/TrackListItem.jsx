@@ -5,15 +5,17 @@ import Typography from '@mui/material/Typography';
 import Avatar from '@mui/material/Avatar';
 import useMusicPlayerStore from '../../../store/useMusicPlayerStore';
 import { Pause, PlayArrow, PlaylistAdd } from '@mui/icons-material';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import DropdownModal from '../Modal/DropdownModal';
 import {
   addTrackToPlaylist,
   getUserPlaylistsForSelection,
 } from '../../../api/playlist/playlistApi';
 import SnackbarAlert from '../Alert/SnackbarAlert';
+import { useNavigate } from 'react-router-dom';
 
 function TrackListItem({ music }) {
+  const navigate = useNavigate();
   // 뮤직플레이어 설정
   const { name, artist, thumbnailUrl, duration, previewUrl } = music;
   const { isPlaying, currentTrack, playTrack, togglePlay } =
@@ -36,20 +38,19 @@ function TrackListItem({ music }) {
   // 트랙 추가중인지 상태관리
   const [isAddingTrack, setIsAddingTrack] = useState(false);
 
-  useEffect(() => {
-    const fetchPlaylists = async () => {
-      try {
-        const data = await getUserPlaylistsForSelection();
-        setPlaylists(data);
-      } catch (error) {
-        console.error('플레이리스트 로딩 실패');
-      }
-    };
+  const fetchPlaylists = async () => {
+    try {
+      const data = await getUserPlaylistsForSelection();
+      setPlaylists(data);
+    } catch (error) {
+      navigate('/500');
+    }
+  };
 
+  const openModal = () => {
     fetchPlaylists();
-  }, []);
-
-  const openModal = () => setIsModalOpen(true);
+    setIsModalOpen(true);
+  };
   const closeModal = () => {
     setIsModalOpen(false);
     setSelectedValue('');
