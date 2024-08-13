@@ -29,6 +29,7 @@ const PostDetail = lazy(() => import('./pages/post/PostDetail'));
 const PlaylistDetail = lazy(
   () => import('./pages/mypage/playlist/playlistDetail'),
 );
+const Withdraw = lazy(() => import('./pages/mypage/edit/Withdraw'));
 
 const Router = () => {
   return (
@@ -71,6 +72,7 @@ const Router = () => {
           path="/my-page/playlist/:playlistId"
           element={<PlaylistDetail />}
         />
+        <Route path="/withdraw" element={<Withdraw />} />
       </Routes>
     </Suspense>
   );
