@@ -24,12 +24,16 @@ const Signup = () => {
   const [nickname, setNickname] = useState('');
   const [introduction] = useState('');
   const [passwordMatchError, setPasswordMatchError] = useState('');
+  const [emailError, setEmailError] = useState('');
   const [profileImage, setProfileImage] = useState(null);
   const [imagePreview, setImagePreview] = useState('');
   const [termsAccepted, setTermsAccepted] = useState(false);
   const [marketingAccepted, setMarketingAccepted] = useState(false);
   const [privacyPolicyAccepted, setPrivacyPolicyAccepted] = useState(false);
   const [allAccepted, setAllAccepted] = useState(false);
+  const validatePassword = password =>
+    /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[\W_])[a-zA-Z\d\W_]{8,}$/.test(password);
+
   const navigate = useNavigate();
 
   const defaultProfileImage = defaultImage;
@@ -72,6 +76,15 @@ const Signup = () => {
     }
     setPasswordMatchError('');
 
+    // 비밀번호 검증
+    if (!validatePassword(password)) {
+      setPasswordMatchError(
+        '비밀번호는 최소 8자리 이상이며, 숫자와 문자를 포함해야 합니다.',
+      );
+      return;
+    }
+    setPasswordMatchError('');
+
     // 회원가입 정보를 서버로 전송하는 로직 추가
     const formData = new FormData();
 
@@ -109,7 +122,7 @@ const Signup = () => {
         // 서버에서 응답이 온 경우
         if (error.response.status === 409) {
           // 409 Conflict 에러 발생 시
-          alert('이미 가입된 이메일입니다.');
+          setEmailError('이미 가입된 이메일입니다.');
         } else {
           // 다른 상태 코드에 대한 일반적인 에러 처리
           alert(
@@ -186,6 +199,9 @@ const Signup = () => {
             value={email}
             onChange={e => setEmail(e.target.value)}
             margin="normal"
+            error={!!emailError}
+            helperText={emailError}
+            onFocus={() => setPasswordMatchError('')}
           />
           <TextField
             label="비밀번호"
@@ -195,6 +211,9 @@ const Signup = () => {
             value={password}
             onChange={e => setPassword(e.target.value)}
             margin="normal"
+            error={!!passwordMatchError}
+            helperText={passwordMatchError}
+            onFocus={() => setPasswordMatchError('')}
           />
           <TextField
             label="비밀번호 확인"
@@ -206,6 +225,7 @@ const Signup = () => {
             margin="normal"
             error={!!passwordMatchError}
             helperText={passwordMatchError}
+            onFocus={() => setPasswordMatchError('')}
           />
           <TextField
             label="닉네임"
