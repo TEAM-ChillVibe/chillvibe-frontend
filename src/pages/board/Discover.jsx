@@ -1,10 +1,28 @@
 import { Box, Button, Typography } from '@mui/material';
 import BaseContainer from '../../components/layout/BaseContainer';
 import PostList from '../../components/common/PostList';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { myInfo } from '../../api/user/userApi';
 
 const Discover = () => {
   const [sortOrder, setSortOrder] = useState('latest');
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  useEffect(() => {
+    const checkUserLoggedIn = async () => {
+      try {
+        const user = await myInfo();
+        if (user) {
+          setIsLoggedIn(true);
+        }
+      } catch (error) {
+        console.error('Error fetching user info:', error);
+        setIsLoggedIn(false);
+      }
+    };
+
+    checkUserLoggedIn();
+  }, []);
 
   return (
     <BaseContainer>
@@ -48,9 +66,11 @@ const Discover = () => {
             인기순
           </Typography>
         </Box>
-        <Button variant="contained" href="/new-post">
-          새 게시글
-        </Button>
+        {isLoggedIn && (
+          <Button variant="contained" href="/new-post">
+            새 게시글
+          </Button>
+        )}
       </Box>
       <PostList sortOrder={sortOrder} />
     </BaseContainer>
