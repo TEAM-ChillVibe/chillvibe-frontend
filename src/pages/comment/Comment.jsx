@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import BaseContainer from '../../components/layout/BaseContainer';
 import {
   getCommentsByPost,
   createComment,
@@ -14,17 +13,26 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
-import { Delete, Edit } from '@mui/icons-material';
-import IconButton from '@mui/material/IconButton';
 import { useParams } from 'react-router-dom';
+import { formatDate } from '../../utils/reusableFn';
+import SimpleModal from '../../components/common/Modal/SimpleModal';
+import SnackbarAlert from '../../components/common/Alert/SnackbarAlert';
 
-const Comment = () => {
+const Comment = ({ user }) => {
   const { postId } = useParams(); // URL에서 postId를 가져옴
   const [comments, setComments] = useState([]);
   const [newComment, setNewComment] = useState('');
   const [editingCommentId, setEditingCommentId] = useState(null);
   const [editingContent, setEditingContent] = useState('');
   const [userId, setUserId] = useState(null);
+  const [modalOpen, setModalOpen] = useState(false);
+  const [commentToDelete, setCommentToDelete] = useState(null);
+
+  const [snackbar, setSnackbar] = useState({
+    open: false,
+    message: '',
+    severity: 'success',
+  });
 
   useEffect(() => {
     // 토큰 디코딩하여 사용자 ID 가져오기
@@ -38,7 +46,9 @@ const Comment = () => {
     // 댓글 데이터를 가져오는 함수 (API 요청)
     getCommentsByPost(postId)
       .then(response => setComments(response))
-      .catch(error => console.error('Error fetching comments:', error));
+      .catch(error => {
+        console.error('Error fetching comments:', error);
+      });
   }, [postId]);
 
   const handleNewCommentChange = e => {
@@ -56,7 +66,13 @@ const Comment = () => {
         });
         setNewComment('');
       })
-      .catch(error => console.error('Error posting comment:', error));
+      .catch(error => {
+        setSnackbar({
+          open: true,
+          message: '댓글 작성에 실패했습니다. 다시 시도해 주세요.',
+          severity: 'error',
+        });
+      });
   };
 
   const handleEdit = (id, content) => {
@@ -82,24 +98,54 @@ const Comment = () => {
                 }
               : comment,
           );
-          console.log('Updated Comments:', updatedComments);
+          setSnackbar({
+            open: true,
+            message: '댓글이 수정되었습니다.',
+            severity: 'success',
+          });
           return updatedComments;
         });
         setEditingCommentId(null);
         setEditingContent('');
       })
-      .catch(error => console.error('Error editing comment:', error));
+      .catch(error => {
+        setSnackbar({
+          open: true,
+          message: '댓글 수정에 실패했습니다. 다시 시도해 주세요',
+          severity: 'error',
+        });
+      });
   };
 
   // 삭제
   const handleDelete = id => {
-    if (window.confirm('댓글을 삭제하시겠습니까?')) {
-      deleteComment(id)
-        .then(() => {
-          setComments(comments.filter(comment => comment.id !== id));
-        })
-        .catch(error => console.error('Error deleting comment:', error));
-    }
+    setCommentToDelete(id);
+    setModalOpen(true);
+  };
+
+  const handleConfirmDelete = () => {
+    deleteComment(commentToDelete)
+      .then(() => {
+        setComments(comments.filter(comment => comment.id !== commentToDelete));
+        setModalOpen(false);
+        setSnackbar({
+          open: true,
+          message: '댓글이 삭제되었습니다.',
+          severity: 'success',
+        });
+      })
+      .catch(error => {
+        setSnackbar({
+          open: true,
+          message: '댓글 삭제에 실패했습니다. 다시 시도해 주세요.',
+          severity: 'error',
+        });
+      });
+  };
+
+  const handleCancelDelete = () => {
+    setCommentToDelete(null);
+    setModalOpen(false);
   };
 
   // 이메일 일부 표시
@@ -112,80 +158,111 @@ const Comment = () => {
   };
 
   return (
-    <BaseContainer>
-      <Box sx={{ width: '170%' }}>
-        {comments.map(comment => (
-          <Paper key={comment.id} sx={{ p: 2, mb: 2 }}>
-            <Box sx={{ display: 'flex', alignItems: 'flex-start' }}>
-              <Avatar
-                src={comment.userProfileUrl}
-                sx={{ width: 55, height: 55, mr: 2 }}
-              />
-              <Box sx={{ flexGrow: 1 }}>
-                <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
-                  <Typography variant="h6" sx={{ fontSize: '1rem' }}>
-                    {comment.userNickname} ({getMaskedEmail(comment.userEmail)})
-                  </Typography>
-                </Box>
-                {editingCommentId === comment.id ? (
-                  <>
-                    <TextField
-                      multiline
-                      fullWidth
-                      row={4}
-                      variant="outlined"
-                      value={editingContent}
-                      onChange={handleEditChange}
-                      sx={{ mb: 2 }}
-                    />
-                    <Button variant="contained" onClick={handleEditSubmit}>
-                      Update
-                    </Button>
-                  </>
-                ) : (
-                  <>
-                    <Typography
-                      variant="body1"
-                      paragraph
-                      sx={{ marginBottom: '7px' }}
-                    >
-                      {comment.content}
-                    </Typography>
-                    <Typography variant="caption" color="textSecondary">
-                      {new Date(comment.modifiedAt).toLocaleString()}
-                      {comment.createdAt !== comment.modifiedAt && (
-                        <span style={{ marginLeft: '10px' }}>수정됨</span>
-                      )}
-                    </Typography>
-                  </>
-                )}
+    <Box sx={{ width: '100%', px: 2 }}>
+      {comments.map(comment => (
+        <Box key={comment.id} sx={{ p: 2, mb: 2, width: '100%' }}>
+          <Box
+            sx={{
+              display: 'flex',
+              alignItems: 'flex-start',
+              width: '100%',
+            }}
+          >
+            <Avatar
+              src={comment.userProfileUrl}
+              sx={{ width: 55, height: 55, mr: 2 }}
+            />
+            <Box sx={{ flexGrow: 1 }}>
+              <Box
+                sx={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  mb: 1,
+                }}
+              >
+                <Typography variant="h6" sx={{ fontSize: '1rem' }}>
+                  {comment.userNickname} ({getMaskedEmail(comment.userEmail)})
+                </Typography>
               </Box>
-              {comment.userId == userId && ( // 댓글 작성자와 현재 사용자가 동일한 경우에만 버튼 표시
+              {editingCommentId === comment.id ? (
                 <Box
                   sx={{
                     display: 'flex',
-                    flexDirection: 'row',
-                    alignItems: 'center',
-                    justifyContent: 'center',
+                    alignItems: 'flex-end',
                   }}
                 >
-                  <IconButton
+                  <TextField
+                    multiline
+                    fullWidth
+                    row={4}
+                    variant="outlined"
+                    value={editingContent}
+                    onChange={handleEditChange}
+                    sx={{ mr: 1 }}
+                  />
+                  <Button
+                    variant="contained"
                     size="small"
-                    onClick={() => handleEdit(comment.id, comment.content)}
+                    onClick={handleEditSubmit}
+                    sx={{ mr: 1 }}
                   >
-                    <Edit />
-                  </IconButton>
-                  <IconButton
-                    size="small"
-                    onClick={() => handleDelete(comment.id)}
-                  >
-                    <Delete />
-                  </IconButton>
+                    수정
+                  </Button>
                 </Box>
+              ) : (
+                <>
+                  <Typography variant="body1" paragraph sx={{ mb: 1 }}>
+                    {comment.content}
+                  </Typography>
+                  <Typography variant="caption" color="text.date">
+                    {formatDate(comment.modifiedAt)}
+                  </Typography>
+                  {comment.createdAt !== comment.modifiedAt && (
+                    <Typography
+                      variant="caption"
+                      color="text.date"
+                      sx={{ ml: 0.5 }}
+                    >
+                      (수정됨)
+                    </Typography>
+                  )}
+                </>
               )}
             </Box>
-          </Paper>
-        ))}
+            {comment.userId == userId && ( // 댓글 작성자와 현재 사용자가 동일한 경우에만 버튼 표시
+              <Box display="flex" flexDirection="column" alignItems="end">
+                <Button
+                  size="small"
+                  color="error"
+                  onClick={() => handleDelete(comment.id)}
+                >
+                  삭제
+                </Button>
+                {editingCommentId !== comment.id && (
+                  <Button
+                    size="small"
+                    color="inherit"
+                    onClick={() => handleEdit(comment.id, comment.content)}
+                  >
+                    수정
+                  </Button>
+                )}
+              </Box>
+            )}
+          </Box>
+        </Box>
+      ))}
+      <Box
+        sx={{
+          width: '100%',
+          display: 'flex',
+          alignItems: 'flex-start',
+          gap: 2,
+          px: 2,
+          my: 5,
+        }}
+      >
+        <Avatar src={user.profileUrl} sx={{ width: 55, height: 55 }} />
         <TextField
           multiline
           fullWidth
@@ -194,15 +271,29 @@ const Comment = () => {
           placeholder="Write a new comment"
           value={newComment}
           onChange={handleNewCommentChange}
-          sx={{ mb: 2 }}
         />
-        <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
-          <Button variant="contained" onClick={handleCommentSubmit} sx={{}}>
-            Submit
-          </Button>
-        </Box>
+        <Button variant="contained" onClick={handleCommentSubmit}>
+          등록
+        </Button>
       </Box>
-    </BaseContainer>
+
+      <SimpleModal
+        open={modalOpen}
+        onClose={handleCancelDelete}
+        description="댓글을 삭제하시겠습니까?"
+        primaryButtonText="삭제"
+        secondaryButtonText="취소"
+        onPrimaryClick={handleConfirmDelete}
+        onSecondaryClick={handleCancelDelete}
+      />
+
+      <SnackbarAlert
+        open={snackbar.open}
+        onClose={() => setSnackbar(prev => ({ ...prev, open: false }))}
+        message={snackbar.message}
+        severity={snackbar.severity}
+      />
+    </Box>
   );
 };
 

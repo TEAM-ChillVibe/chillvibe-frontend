@@ -14,11 +14,12 @@ export const theme = createTheme({
     },
     background: {
       default: '#000000', // 기본 배경색
-      paper: '#000000', // 카드와 같은 요소의 배경색
+      paper: '#1f1f1f', // 카드와 같은 요소의 배경색
     },
     text: {
       primary: '#FFFFFF',
-      secondary: '#FFFFFF', // 보조 텍스트 색상
+      secondary: '#DDD', // 보조 텍스트 색상
+      date: '#999', // 보조 텍스트 색상
       dark: '#000',
     },
   },
@@ -42,15 +43,32 @@ export const theme = createTheme({
     title: {
       fontSize: '2rem',
     },
+    subtitle1: {
+      fontSize: '1.7rem',
+      fontWeight: 500,
+    },
     subtitleMypage: {
       fontSize: '1.6rem',
     },
     modalTitle: {
       fontSize: '1.6rem',
     },
+    modalPoint: {
+      fontSize: '1.6rem',
+      color: '#D8A1F0',
+    },
     searchQuery: {
       fontSize: '1.2rem',
       color: '#D8A1F0',
+    },
+    trackTitle: {
+      fontSize: '1.2rem',
+    },
+    trackArtist: {
+      fontSize: '0.7rem',
+    },
+    postDate: {
+      fontSize: '0.8rem',
     },
   },
   spacing: 8,

@@ -126,27 +126,10 @@ const PlaylistDetail = () => {
   return (
     <BaseContainer>
       <Typography variant="title">Edit Playlist</Typography>
-      <Box
-        sx={{
-          display: 'flex',
-          justifyContent: 'flex-end',
-          mb: 2,
-          width: '100%',
-        }}
-      >
-        <Button
-          variant="contained"
-          color="error"
-          startIcon={<DeleteIcon />}
-          onClick={handleDeleteClick}
-        >
-          플레이리스트 삭제
-        </Button>
-      </Box>
-      <Card sx={{ display: 'flex', color: 'white', width: '100%' }}>
+      <Card sx={{ display: 'flex', width: '95%', my: 3 }}>
         <CardMedia
           component="img"
-          sx={{ width: 151 }}
+          sx={{ width: '170px', m: 2, borderRadius: 1 }}
           image={playlistData.thumbnailUrl}
           alt={playlistData.title}
         />
@@ -155,22 +138,53 @@ const PlaylistDetail = () => {
             flexGrow: 1,
             display: 'flex',
             flexDirection: 'column',
-            p: 2,
+            py: 4.5,
+            pl: 1,
             justifyContent: 'space-between',
           }}
         >
-          <Typography variant="title" component="div">
-            {playlistData.title}
-          </Typography>
-          <Typography variant="subtitle1" color="text.secondary">
+          <Typography variant="subtitle1">{playlistData.title}</Typography>
+          <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
             트랙 {playlistData.trackCount}개
           </Typography>
-          <Typography variant="subtitle" color="text.secondary">
-            {formatDate(playlistData.modifiedAt)} 수정
+          <Typography variant="postDate" color="text.date">
+            게시 | {formatDate(playlistData.createdAt)}
+          </Typography>
+          <Typography variant="postDate" color="text.date">
+            수정 | {formatDate(playlistData.modifiedAt)}
           </Typography>
         </Box>
       </Card>
       <Box sx={{ width: '100%' }}>
+        <Box
+          sx={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            mb: 2,
+            width: '100%',
+            px: 2,
+          }}
+        >
+          <Button
+            variant="contained"
+            size="small"
+            color="error"
+            startIcon={<DeleteIcon />}
+            onClick={handleDeleteClick}
+          >
+            플레이리스트 삭제
+          </Button>
+          <Button
+            variant="outlined"
+            color="error"
+            size="small"
+            startIcon={<DeleteIcon />}
+            onClick={handleDeleteSelected}
+            disabled={selectedTracks.length === 0}
+          >
+            선택 트랙 삭제
+          </Button>
+        </Box>
         <List>
           {playlistData.tracks.map(track => (
             <ListItem key={track.id} disablePadding>
@@ -191,32 +205,14 @@ const PlaylistDetail = () => {
           ))}
         </List>
       </Box>
-      <Box
-        sx={{
-          display: 'flex',
-          justifyContent: 'flex-end',
-          mb: 2,
-          width: '100%',
-        }}
-      >
-        <Button
-          variant="contained"
-          color="error"
-          startIcon={<DeleteIcon />}
-          onClick={handleDeleteSelected}
-          disabled={selectedTracks.length === 0}
-        >
-          선택삭제
-        </Button>
-      </Box>
-      <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 2 }}>
+      <Box sx={{ display: 'flex', mt: 2, gap: 2 }}>
         <Button
           variant="contained"
           color="primary"
           onClick={handleSaveClick}
           disabled={tracksToDelete.length === 0}
         >
-          저장
+          변경사항 저장
         </Button>
       </Box>
 

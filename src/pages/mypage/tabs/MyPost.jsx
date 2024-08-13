@@ -9,6 +9,7 @@ import {
 import MyPostListItem from '../../../components/common/ListItem/MyPostListItem';
 import { fetchPostsByUserId } from '../../../api/post/postApi';
 import SnackbarAlert from '../../../components/common/Alert/SnackbarAlert';
+import { DriveFileRenameOutline } from '@mui/icons-material';
 
 // 페이지네이션 단위 고정값
 const itemsPerPage = 5;
@@ -71,7 +72,12 @@ const MyPost = ({ user }) => {
         }}
       >
         <Typography variant="subtitleMypage">My Posts</Typography>
-        <Button variant="contained" href="/new-post">
+        <Button
+          variant="contained"
+          startIcon={<DriveFileRenameOutline />}
+          size="small"
+          href="/new-post"
+        >
           새 게시글
         </Button>
       </Box>

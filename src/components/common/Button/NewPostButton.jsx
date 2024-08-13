@@ -1,10 +1,10 @@
 import { Fab } from '@mui/material';
-import CreateIcon from '@mui/icons-material/Create';
 import { useNavigate } from 'react-router-dom';
 import useMusicPlayerStore from '../../../store/useMusicPlayerStore';
 import useUserStore from '../../../store/useUserStore';
 import SnackbarAlert from '../Alert/SnackbarAlert';
 import React, { useState } from 'react';
+import { DriveFileRenameOutline } from '@mui/icons-material';
 
 const NewPostButton = () => {
   const navigate = useNavigate();
@@ -44,7 +44,7 @@ const NewPostButton = () => {
           left: 24,
         }}
       >
-        <CreateIcon />
+        <DriveFileRenameOutline />
       </Fab>
       <SnackbarAlert
         open={snackbar.open}

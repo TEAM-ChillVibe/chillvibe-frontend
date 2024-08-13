@@ -110,6 +110,7 @@ const MusicPlayerFloating = () => {
           flexDirection: 'column',
           alignItems: 'center',
           px: 2,
+          pt: 3,
           '&:last-child': {
             paddingBottom: '16px', // 마지막 자식 요소의 패딩 조정
           },

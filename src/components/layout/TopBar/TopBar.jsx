@@ -12,7 +12,7 @@ const Topbar = () => {
     <AppBar
       position="sticky"
       sx={{
-        px: '10%',
+        px: '13%',
         py: theme => theme.spacing(1),
         backgroundColor: '#000',
       }}

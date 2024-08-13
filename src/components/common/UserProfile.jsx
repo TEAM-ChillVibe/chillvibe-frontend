@@ -32,6 +32,7 @@ function UserProfile({ user }) {
         m: 2,
         p: 1,
         width: '100%',
+        boxSizing: 'border-box',
       }}
     >
       <Avatar
@@ -48,7 +49,8 @@ function UserProfile({ user }) {
         sx={{
           display: 'flex',
           flexDirection: 'column',
-          gap: 1,
+          gap: 1.5,
+          flex: 1,
         }}
       >
         <Typography
@@ -60,7 +62,16 @@ function UserProfile({ user }) {
         >
           {nickname}
         </Typography>
-        <Typography variant="body2" color="text.secondary">
+        <Typography
+          variant="body2"
+          color="text.secondary"
+          sx={{
+            whiteSpace: 'normal',
+            overflowWrap: 'break-word',
+            wordBreak: 'break-word',
+            mb: 1,
+          }}
+        >
           {introduction}
         </Typography>
         <SingleHashtagChips

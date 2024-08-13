@@ -1,28 +1,20 @@
-import { Box, Typography, Chip } from '@mui/material';
+import { Box, Typography } from '@mui/material';
 import albumSample from '../albumSample.jpeg';
 import SingleHashtagChips from '../HashtagChips/SingleHashtagChips';
 import { useNavigate } from 'react-router-dom';
 import { fetchHashtagsOfPost } from '../../../api/hashtag/hashtagApi';
 
-function PostListItemMini({ post, hashtags }) {
+function PostListItemMini({ post }) {
   const { id, title, user, thumbnailUrl } = post;
   const navigate = useNavigate();
 
-  const handlePlaylistClick = () => {
+  const handlePostClick = () => {
     navigate(`/post/${id}`);
   };
 
-  const handlePostHashtagClick = hashtagId => {
-    // 선택된 해시태그를 localStorage에 저장
-    localStorage.setItem('selectedHashtag', hashtagId);
-
-    // AllTags 페이지로 이동
-    navigate('/all-tags');
+  const handleHashtagClick = hashtag => {
+    navigate(`/all-tags?hashtag=${hashtag.id}`);
   };
-
-  // const handlePostHashtagClick = hashtag => {
-  //   navigate(`/all-tags`);
-  // };
 
   return (
     <Box
@@ -43,7 +35,7 @@ function PostListItemMini({ post, hashtags }) {
           overflow: 'hidden',
           order: 1,
         }}
-        onClick={handlePlaylistClick}
+        onClick={handlePostClick}
       >
         <img
           src={thumbnailUrl || albumSample} // 썸네일 URL이 없으면 기본 이미지 사용
@@ -57,24 +49,19 @@ function PostListItemMini({ post, hashtags }) {
           display: 'flex',
           flexDirection: 'column',
           order: 2,
-
           alignItems: 'flex-start',
-          justifyContent: 'center',
+          justifyContent: 'space-between',
         }}
       >
-        <Typography
-          variant="subtitle1"
-          component="div"
-          noWrap
-          sx={{ cursor: 'pointer' }} // 커서를 포인터로 변경하여 클릭 가능함을 나타냄
-          onClick={handlePlaylistClick} // 제목 클릭 시 게시글로 이동
-        >
+        <Typography variant="trackTitle" component="div" noWrap>
           {title}
         </Typography>
-        <Typography variant="body2">{user.nickname}</Typography>
+        <Typography variant="trackArtist" sx={{ mb: 0.5 }}>
+          {user.nickname}
+        </Typography>
         <SingleHashtagChips
           fetchHashtags={() => fetchHashtagsOfPost(id)}
-          onChipClick={handlePostHashtagClick}
+          onChipClick={handleHashtagClick}
         />
       </Box>
     </Box>

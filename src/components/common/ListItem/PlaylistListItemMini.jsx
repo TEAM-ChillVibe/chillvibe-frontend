@@ -15,6 +15,7 @@ function PlaylistListItemMini({ playlist }) {
         display: 'flex',
         width: '100%',
         py: 2,
+        mb: 0.5,
         flexWrap: 'wrap',
         cursor: 'pointer', // 클릭 가능 표시
       }}
@@ -48,10 +49,10 @@ function PlaylistListItemMini({ playlist }) {
           gap: 1,
         }}
       >
-        <Typography variant="subtitle1" component="div" noWrap>
+        <Typography variant="trackTitle" component="div" noWrap>
           {title}
         </Typography>
-        <Typography variant="body2">트랙 {trackCount}개</Typography>
+        <Typography variant="trackArtist">트랙 {trackCount}개</Typography>
       </Box>
     </Box>
   );

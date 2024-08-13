@@ -38,6 +38,7 @@ function PostListItem({ post, selectedHashtag }) {
         display: 'flex',
         width: '100%',
         py: 2,
+        my: 1,
         flexWrap: 'wrap',
       }}
     >
@@ -72,17 +73,17 @@ function PostListItem({ post, selectedHashtag }) {
         }}
       >
         <Typography
-          variant="subtitle1"
+          variant="trackTitle"
           onClick={handleNavigateToPost}
           sx={{ cursor: 'pointer' }}
           noWrap
         >
           {title}
         </Typography>
-        <Typography variant="body3" color="text.secondary" sx={{ mb: 1 }}>
+        <Typography variant="caption" color="text.date" sx={{ mb: 1 }}>
           {formatRelativeTime(createdAt)}
         </Typography>
-        <Typography variant="body2" sx={{ mb: 1 }}>
+        <Typography variant="trackArtist" sx={{ mb: 1 }}>
           트랙 {trackCount}개
         </Typography>
         <SingleHashtagChips

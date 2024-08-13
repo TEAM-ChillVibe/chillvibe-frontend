@@ -1,17 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { useParams, useNavigate, Link } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { fetchPostById, deletePost } from '../../api/post/postApi';
 import { myInfo } from '../../api/user/userApi';
-import {
-  Box,
-  Typography,
-  Avatar,
-  Chip,
-  List,
-  ListItem,
-  ListItemText,
-  Button,
-} from '@mui/material';
+import { Box, Typography, List, ListItem, Button, Card } from '@mui/material';
 import BaseContainer from '../../components/layout/BaseContainer';
 import Comment from '../../pages/comment/Comment';
 import TrackListItem from '../../components/common/ListItem/TrackListItem';
@@ -19,6 +10,10 @@ import LikeButton from '../../components/common/Button/LikeButton';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import SimpleModal from '../../components/common/Modal/SimpleModal';
+import { formatDate } from '../../utils/reusableFn';
+import UserProfile from '../../components/common/UserProfile';
+import SingleHashtagChips from '../../components/common/HashtagChips/SingleHashtagChips';
+import { fetchHashtagsOfPost } from '../../api/hashtag/hashtagApi';
 
 const PostDetail = () => {
   const { postId } = useParams();
@@ -107,110 +102,81 @@ const PostDetail = () => {
     return <Typography>Error loading post: {error.message}</Typography>;
   }
 
+  const handleHashtagClick = hashtag => {
+    navigate(`/all-tags?hashtag=${hashtag.id}`);
+  };
+
   return (
     <BaseContainer>
-      <Box sx={{ mb: 2, width: '100%' }}>
+      <Box sx={{ mb: 2, width: '100%', p: 2 }}>
         <Box
           display="flex"
           justifyContent="space-between"
           alignItems="center"
           sx={{ mb: 2, width: '100%' }}
         >
-          <Box>
-            <Typography variant="h4" sx={{ fontWeight: 'bold', mb: 1 }}>
+          <Box display="flex" flexDirection="column" sx={{ gap: 1 }}>
+            <Typography variant="h4" sx={{ fontWeight: 'bold' }}>
               {post.title}
             </Typography>
-            <Typography variant="body2" sx={{ color: '#aaa' }}>
-              트랙 {post.playlists.trackCount}개 | {post.createdAt}
+            <Typography variant="postDate" sx={{ color: '#aaa' }}>
+              트랙 {post.playlists.trackCount}개 | {formatDate(post.createdAt)}
             </Typography>
           </Box>
           {isLoggedIn && (
             <Box display="flex" alignItems="center">
-              <Box display="flex" alignItems="center" sx={{ mr: 2 }}>
+              <Box display="flex" alignItems="center" sx={{ mr: 3 }}>
                 <LikeButton postId={postId} initialLikeCount={post.likeCount} />
               </Box>
               {isOwner && (
-                <>
+                <Box
+                  sx={{
+                    display: 'flex',
+                    gap: 1,
+                  }}
+                >
                   <Button
-                    variant="contained"
+                    variant="outlined"
+                    size="small"
                     startIcon={<EditIcon />}
                     onClick={() => navigate(`/edit-post/${postId}`)}
-                    sx={{
-                      color: '#fff',
-                      backgroundColor: '#555',
-                      mr: 2,
-                      '&:hover': { backgroundColor: '#777' },
-                    }}
                   >
                     수정
                   </Button>
                   <Button
-                    variant="contained"
+                    variant="outlined"
+                    size="small"
+                    color="error"
                     startIcon={<DeleteIcon />}
                     onClick={openModal}
-                    sx={{
-                      backgroundColor: '#D895FF',
-                      color: '#000',
-                      '&:hover': {
-                        backgroundColor: '#C27BFF',
-                      },
-                    }}
                   >
                     삭제
                   </Button>
-                </>
+                </Box>
               )}
             </Box>
           )}
         </Box>
 
         {/* 설명 텍스트 */}
-        <Box>
-          <Typography variant="h6" sx={{ fontSize: '1.2rem', mt: 2, mb: 1 }}>
-            플레이리스트 소개글
-          </Typography>
-          <Typography variant="body1" sx={{ whiteSpace: 'pre-line' }}>
-            {convertLineBreaks(post.description)}
-          </Typography>
-        </Box>
+        <Typography variant="body2" sx={{ mt: 2, mb: 3, textAlign: 'left' }}>
+          {convertLineBreaks(post.description)}
+        </Typography>
+
         {/* 해시태그 */}
-        <Box
-          sx={{
-            mb: 2,
-            display: 'flex',
-            flexWrap: 'wrap',
-            gap: 1,
-            textAlign: 'left',
-          }}
-        >
-          {post.hashtags &&
-            post.hashtags.map(hashtag => (
-              <Chip
-                key={hashtag.id}
-                label={`# ${hashtag.name}`}
-                sx={{
-                  backgroundColor: '#444',
-                  color: '#fff',
-                  borderRadius: '4px',
-                }}
-              />
-            ))}
-        </Box>
+        <SingleHashtagChips
+          fetchHashtags={() => fetchHashtagsOfPost(postId)}
+          onChipClick={handleHashtagClick}
+        />
       </Box>
       {/* 트랙 리스트 */}
-      <Typography variant="h6" sx={{ mb: 2, fontWeight: 'bold' }}>
-        Tracks
-      </Typography>
-      <List sx={{ width: '100%', bgcolor: 'background.paper', mb: 4 }}>
+      <Typography variant="subtitle1">Tracks</Typography>
+      <List sx={{ width: '100%' }}>
         {post.playlists &&
         post.playlists.tracks &&
         post.playlists.tracks.length > 0 ? (
           post.playlists.tracks.map(track => (
-            <ListItem
-              key={track.id}
-              disablePadding
-              sx={{ mb: 1, borderBottom: '1px solid #ccc' }}
-            >
+            <ListItem key={track.id}>
               <TrackListItem
                 music={{
                   name: track.name,
@@ -227,49 +193,14 @@ const PostDetail = () => {
         )}
       </List>
       {/* 사용자 정보 */}
-      {post.user && (
-        <Box
-          sx={{
-            display: 'flex',
-            alignItems: 'center',
-            mt: 4,
-            mb: 4,
-            p: 2,
-            borderRadius: '8px',
-          }}
-        >
-          <Link
-            to={`/user/${post.user.userId}`}
-            style={{ textDecoration: 'none', color: 'inherit' }}
-          >
-            <Avatar
-              src={post.user.profileUrl}
-              alt={post.user.nickname}
-              sx={{ width: 64, height: 64 }}
-            />
-          </Link>
-          <Box sx={{ ml: 2 }}>
-            <Link
-              to={`/user/${post.user.userId}`}
-              style={{ textDecoration: 'none', color: 'inherit' }}
-            >
-              <Typography variant="h6">{post.user.nickname}</Typography>
-            </Link>
-            <Typography variant="body2" color="textSecondary">
-              Check out my latest playlist! A mix of old favorites and new
-              discoveries!
-            </Typography>
-          </Box>
-        </Box>
-      )}
+      <Card sx={{ bgcolor: '#1f1f1f', my: 5, width: '100%' }}>
+        <UserProfile user={post.user} />
+      </Card>
       {/* 댓글 섹션 */}
-      <Typography variant="h6" sx={{ mt: 3, mb: 2 }}>
+      <Typography variant="subtitle1" sx={{ my: 2 }}>
         Comments
       </Typography>
-      <Box sx={{ width: '100%', mt: -10 }}>
-        <Comment postId={postId} />
-      </Box>
-
+      <Comment postId={postId} user={post.user} />
       {/* postId를 prop으로 전달 */}
       {/* 삭제 모달 */}
       {isOwner && ( // isOwner가 true일 때만 모달 관련 코드를 렌더링

@@ -1,5 +1,11 @@
 import React, { useState } from 'react';
-import { Box, Button, InputAdornment, TextField } from '@mui/material';
+import {
+  Box,
+  Button,
+  InputAdornment,
+  TextField,
+  Typography,
+} from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { editPassword } from '../../../api/auth/authApi';
 import IconButton from '@mui/material/IconButton';
@@ -121,6 +127,9 @@ const EditPassword = () => {
         p: 2,
       }}
     >
+      <Typography variant="title" sx={{ mb: 3 }}>
+        Changing Password
+      </Typography>
       <form onSubmit={handleSubmit}>
         <TextField
           label="현재 비밀번호"

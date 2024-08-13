@@ -14,6 +14,7 @@ import {
   getUserPlaylists,
 } from '../../../api/playlist/playlistApi';
 import SnackbarAlert from '../../../components/common/Alert/SnackbarAlert';
+import QueueMusicIcon from '@mui/icons-material/QueueMusic';
 
 // 페이지네이션 단위 고정값
 const itemsPerPage = 10;
@@ -45,7 +46,6 @@ const MyPlaylist = () => {
     const fetchPlaylists = async () => {
       try {
         const data = await getUserPlaylists(page - 1, itemsPerPage);
-        console.log(data);
         setPlaylists(data.content);
         setTotalPages(data.page.totalPages);
       } catch (error) {
@@ -135,7 +135,12 @@ const MyPlaylist = () => {
       >
         <Typography variant="subtitleMypage">My Playlists</Typography>
         <Box>
-          <Button variant="contained" onClick={handleOpen}>
+          <Button
+            variant="contained"
+            size="small"
+            startIcon={<QueueMusicIcon />}
+            onClick={handleOpen}
+          >
             새 플레이리스트
           </Button>
           <FormModal
