@@ -69,9 +69,15 @@ const MyPlaylist = () => {
 
   // 모달 버튼 이벤트
   const handlePrimaryClick = async () => {
-    if (!playlistTitle.trim() || isCreating) {
+    // 유효성 검사
+    if (!playlistTitle.trim()) {
       return;
     } // 제목이 비어있으면 처리하지 않음
+
+    if (playlistTitle.length < 1 || playlistTitle.length > 50) {
+      setTitleError('플레이리스트의 제목은 1자 이상, 50자 이하여야 합니다. ');
+      return;
+    } // 플레이리스트 글자 수 제한
 
     setIsCreating(true);
     try {
@@ -87,21 +93,11 @@ const MyPlaylist = () => {
         severity: 'success',
       });
     } catch (error) {
-      console.error('Error creating playlist:', error);
-      const errorMessage =
-        error.response?.data?.errors?.[0]?.reason ||
-        '플레이리스트 생성에 실패했습니다. 다시 시도해 주세요.';
-
-      if (error.response?.status === 400) {
-        setTitleError(errorMessage);
-      } else {
-        handleClose(); // 400 에러가 아닌 경우 모달을 닫습니다.
-        setSnackbar({
-          open: true,
-          message: errorMessage,
-          severity: 'error',
-        });
-      }
+      setSnackbar({
+        open: true,
+        message: '플레이리스트 생성에 실패했습니다. 다시 시도해 주세요.',
+        severity: 'error',
+      });
     } finally {
       setIsCreating(false);
     }
