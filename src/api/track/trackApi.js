@@ -18,9 +18,9 @@ export const fetchRecommendedTracks = async () => {
   try {
     const response = await axiosWithoutToken.get(
       '/api/tracks/recommendations',
-      {
-        params: { Category },
-      },
+      // {
+      //   params: { Category },
+      // },
     );
     return response.data;
   } catch (error) {
