@@ -43,15 +43,16 @@ function PostListItemMini({ post }) {
           display: 'flex',
           flexDirection: 'column',
           order: 2,
-
           alignItems: 'flex-start',
-          justifyContent: 'center',
+          justifyContent: 'space-between',
         }}
       >
-        <Typography variant="subtitle1" component="div" noWrap>
+        <Typography variant="trackTitle" component="div" noWrap>
           {title}
         </Typography>
-        <Typography variant="body2">{user.nickname}</Typography>
+        <Typography variant="trackArtist" sx={{ mb: 0.5 }}>
+          {user.nickname}
+        </Typography>
         <SingleHashtagChips
           fetchHashtags={() => fetchHashtagsOfPost(id)}
           onChipClick={handleHashtagClick}

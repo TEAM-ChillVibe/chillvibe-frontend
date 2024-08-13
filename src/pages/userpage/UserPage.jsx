@@ -184,7 +184,13 @@
 
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Box, Typography, CircularProgress, Divider } from '@mui/material';
+import {
+  Box,
+  Typography,
+  CircularProgress,
+  Divider,
+  Card,
+} from '@mui/material';
 import LockIcon from '@mui/icons-material/Lock';
 import BaseContainer from '../../components/layout/BaseContainer';
 import UserProfile from '../../components/common/UserProfile';
@@ -363,7 +369,9 @@ const UserPage = () => {
   // 공개 계정일 경우 사용자 프로필과 게시글 목록 표시
   return (
     <BaseContainer>
-      <UserProfile user={user} />
+      <Card sx={{ width: '100%' }}>
+        <UserProfile user={user} />
+      </Card>
       <Typography variant="title">Posts</Typography>
       <Box sx={{ width: '100%' }}>
         <Box
@@ -380,7 +388,7 @@ const UserPage = () => {
             sx={{
               cursor: 'pointer',
               fontWeight: sortOrder === 'latest' ? 'bold' : 'normal',
-              mr: 1,
+              color: sortOrder === 'latest' ? 'primary.main' : 'text.primary',
             }}
             onClick={() => handleSortChange('latest')}
           >
@@ -391,6 +399,7 @@ const UserPage = () => {
             sx={{
               cursor: 'pointer',
               fontWeight: sortOrder === 'popular' ? 'bold' : 'normal',
+              color: sortOrder === 'popular' ? 'primary.main' : 'text.primary',
             }}
             onClick={() => handleSortChange('popular')}
           >

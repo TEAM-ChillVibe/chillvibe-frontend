@@ -120,13 +120,13 @@ function TrackListItem({ music }) {
           }}
         >
           <Typography
-            variant="subtitle1"
+            variant="trackTitle"
             noWrap
             sx={{ overflow: 'hidden', textOverflow: 'ellipsis' }}
           >
             {name}
           </Typography>
-          <Typography variant="body2" color="text.secondary" noWrap>
+          <Typography variant="trackArtist" noWrap>
             {artist}
           </Typography>
         </Box>
