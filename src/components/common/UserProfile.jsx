@@ -51,6 +51,7 @@ function UserProfile({ user }) {
           flexDirection: 'column',
           gap: 1.5,
           flex: 1,
+          pr: 4,
         }}
       >
         <Typography

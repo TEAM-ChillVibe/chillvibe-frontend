@@ -248,13 +248,13 @@ const EditProfile = () => {
           </Box>
         </form>
         <Button
-          variant="contained"
+          variant="outlined"
           color="error"
           onClick={handleWithdraw}
           sx={{ flex: 1, mt: 20, width: '100%' }}
           size="large"
         >
-          탈퇴하기
+          회원 탈퇴하기
         </Button>
       </Box>
 

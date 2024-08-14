@@ -22,7 +22,7 @@ function PostListItemMini({ post }) {
         display: 'flex',
         width: '100%',
         py: 2,
-        flexWrap: 'wrap',
+        justifyContents: 'space-between',
       }}
     >
       <Box
@@ -33,7 +33,7 @@ function PostListItemMini({ post }) {
           mr: 2,
           borderRadius: 1,
           overflow: 'hidden',
-          order: 1,
+          flexShrink: 0,
         }}
         onClick={handlePostClick}
       >
@@ -48,12 +48,18 @@ function PostListItemMini({ post }) {
           flexGrow: 1,
           display: 'flex',
           flexDirection: 'column',
-          order: 2,
           alignItems: 'flex-start',
           justifyContent: 'space-between',
         }}
       >
-        <Typography variant="trackTitle" component="div" noWrap>
+        <Typography
+          variant="trackTitle"
+          sx={{
+            cursor: 'pointer',
+            whiteSpace: 'normal',
+            overflowWrap: 'break-word',
+          }}
+        >
           {title}
         </Typography>
         <Typography variant="trackArtist" sx={{ mb: 0.5 }}>

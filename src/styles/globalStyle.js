@@ -37,11 +37,9 @@ export const theme = createTheme({
     body2: {
       fontSize: '0.875rem',
     },
-    body3: {
-      fontSize: '0.75rem',
-    },
     title: {
       fontSize: '2rem',
+      fontWeight: 500,
     },
     subtitle1: {
       fontSize: '1.7rem',
@@ -54,7 +52,8 @@ export const theme = createTheme({
       fontSize: '1.6rem',
     },
     modalPoint: {
-      fontSize: '1.6rem',
+      fontSize: '1rem',
+      fontWeight: 600,
       color: '#D8A1F0',
     },
     searchQuery: {
@@ -62,13 +61,14 @@ export const theme = createTheme({
       color: '#D8A1F0',
     },
     trackTitle: {
-      fontSize: '1.2rem',
+      fontSize: '1.1rem',
     },
     trackArtist: {
       fontSize: '0.7rem',
     },
-    postDate: {
+    date: {
       fontSize: '0.8rem',
+      color: '#999',
     },
   },
   spacing: 8,

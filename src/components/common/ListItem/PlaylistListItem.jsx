@@ -9,7 +9,7 @@ function PlaylistListItem({ playlist }) {
         display: 'flex',
         width: '100%',
         py: 2,
-        flexWrap: 'wrap',
+        overflowWrap: 'break-word',
         cursor: 'pointer', // 클릭 가능 표시
       }}
     >
@@ -20,6 +20,7 @@ function PlaylistListItem({ playlist }) {
           mr: 2,
           borderRadius: 1,
           overflow: 'hidden',
+          flexShrink: 0,
         }}
       >
         <img
@@ -34,13 +35,21 @@ function PlaylistListItem({ playlist }) {
           flexGrow: 1,
           display: 'flex',
           flexDirection: 'column',
-          order: 2,
           alignItems: 'flex-start',
           justifyContent: 'center',
           gap: 1,
+          pr: 1,
         }}
       >
-        <Typography variant="trackTitle" component="div" noWrap>
+        <Typography
+          variant="trackTitle"
+          sx={{
+            wordBreak: 'break-word',
+            overflow: 'hidden',
+            textOverflow: 'ellipsis',
+            whiteSpace: 'normal',
+          }}
+        >
           {title}
         </Typography>
         <Typography variant="trackArtist">트랙 {trackCount}개</Typography>

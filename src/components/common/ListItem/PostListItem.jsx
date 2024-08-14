@@ -39,7 +39,7 @@ function PostListItem({ post, selectedHashtag }) {
         width: '100%',
         py: 2,
         my: 1,
-        flexWrap: 'wrap',
+        alignItems: 'center',
       }}
     >
       <Box
@@ -50,8 +50,8 @@ function PostListItem({ post, selectedHashtag }) {
           mr: 2,
           borderRadius: 1,
           overflow: 'hidden',
-          order: 1,
           cursor: 'pointer',
+          flexShrink: 0,
         }}
       >
         {/* 이미지 소스 수정 필요 */}
@@ -67,7 +67,6 @@ function PostListItem({ post, selectedHashtag }) {
           display: 'flex',
           flexDirection: 'column',
           py: 0.5,
-          order: 2,
           alignItems: 'flex-start',
           justifyContent: 'center',
         }}
@@ -75,12 +74,15 @@ function PostListItem({ post, selectedHashtag }) {
         <Typography
           variant="trackTitle"
           onClick={handleNavigateToPost}
-          sx={{ cursor: 'pointer' }}
-          noWrap
+          sx={{
+            cursor: 'pointer',
+            whiteSpace: 'normal',
+            overflowWrap: 'break-word',
+          }}
         >
           {title}
         </Typography>
-        <Typography variant="caption" color="text.date" sx={{ mb: 1 }}>
+        <Typography variant="date" sx={{ my: 0.5 }}>
           {formatRelativeTime(createdAt)}
         </Typography>
         <Typography variant="trackArtist" sx={{ mb: 1 }}>
@@ -97,30 +99,26 @@ function PostListItem({ post, selectedHashtag }) {
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'flex-end',
-          justifyContent: 'space-between',
-          mt: 0.5,
-          order: 3,
         }}
       >
-        <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
-          <Box
-            onClick={handleNavigateToUserPage}
-            sx={{
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'flex-end',
-              cursor: 'pointer',
-            }}
-          >
-            <Avatar
-              alt={user.nickname || 'Unknown User'}
-              src={user.profileUrl || ''}
-              sx={{ width: 32, height: 32, mb: 1 }}
-            />
-            <Typography variant="body2">
-              {user.nickname || 'Unknown User'}
-            </Typography>
-          </Box>
+        <Box
+          onClick={handleNavigateToUserPage}
+          sx={{
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'flex-end',
+            cursor: 'pointer',
+            mb: 2,
+          }}
+        >
+          <Avatar
+            alt={user.nickname || 'Unknown User'}
+            src={user.profileUrl || ''}
+            sx={{ width: 32, height: 32, mb: 1 }}
+          />
+          <Typography variant="body2">
+            {user.nickname || 'Unknown User'}
+          </Typography>
         </Box>
         <LikeButton postId={id} initialLikeCount={likeCount} />
       </Box>

@@ -13,6 +13,7 @@ import {
   fetchPopularHashtags,
   fetchHashtagsOfPost,
 } from '../../api/hashtag/hashtagApi';
+import SingleHashtagChips from '../../components/common/HashtagChips/SingleHashtagChips';
 
 const Main = () => {
   const [playlists, setPlaylists] = useState([]);
@@ -85,7 +86,9 @@ const Main = () => {
   }, []);
 
   const handleHashtagClick = async hashtag => {
-    if (loading) return;
+    if (loading) {
+      return;
+    }
     try {
       setLoading(true);
       setSelectedHashtag(hashtag.id);
@@ -128,13 +131,7 @@ const Main = () => {
 
   return (
     <BaseContainer>
-      <Typography
-        variant="h4"
-        gutterBottom
-        sx={{ textAlign: 'center', marginBottom: 4 }}
-      >
-        지금 가장 인기있는 플레이리스트
-      </Typography>
+      <Typography variant="title">지금 가장 인기있는 플레이리스트</Typography>
       <Grid container spacing={2}>
         {playlists.length > 0 ? (
           playlists.map(playlist => (
@@ -154,32 +151,30 @@ const Main = () => {
         )}
       </Grid>
 
-      <Typography
-        variant="h4"
-        gutterBottom
-        sx={{ textAlign: 'center', marginBottom: 4 }}
-      >
-        요즘 인기있는 태그
-      </Typography>
-      <Box sx={{ textAlign: 'center', marginBottom: 4 }}>
-        {popularHashtags.length > 0 ? (
-          popularHashtags.map(hashtag => (
-            <Chip
-              key={hashtag.id}
-              label={`#${hashtag.name}`}
-              onClick={() => handleHashtagClick(hashtag)}
-              sx={{
-                margin: '4px',
-                backgroundColor:
-                  selectedHashtag === hashtag.id ? '#D1A3FF' : 'default', // 선택된 해시태그의 배경색 변경
-                color: selectedHashtag === hashtag.id ? 'white' : 'default', // 선택된 해시태그의 텍스트 색 변경
-              }}
-            />
-          ))
-        ) : (
-          <Typography>태그가 없습니다.</Typography>
-        )}
-      </Box>
+      <Typography variant="title">요즘 인기있는 태그</Typography>
+      {/*<Box sx={{ textAlign: 'center', marginBottom: 4 }}>*/}
+      {/*  {popularHashtags.length > 0 ? (*/}
+      {/*    popularHashtags.map(hashtag => (*/}
+      {/*      <Chip*/}
+      {/*        key={hashtag.id}*/}
+      {/*        label={`#${hashtag.name}`}*/}
+      {/*        onClick={() => handleHashtagClick(hashtag)}*/}
+      {/*        sx={{*/}
+      {/*          margin: '4px',*/}
+      {/*          backgroundColor:*/}
+      {/*            selectedHashtag === hashtag.id ? '#D1A3FF' : 'default', // 선택된 해시태그의 배경색 변경*/}
+      {/*          color: selectedHashtag === hashtag.id ? 'white' : 'default', // 선택된 해시태그의 텍스트 색 변경*/}
+      {/*        }}*/}
+      {/*      />*/}
+      {/*    ))*/}
+      {/*  ) : (*/}
+      {/*    <Typography>태그가 없습니다.</Typography>*/}
+      {/*  )}*/}
+      {/*</Box>*/}
+      <SingleHashtagChips
+        fetchHashtags={fetchPopularHashtags}
+        onChipClick={handleHashtagClick}
+      />
       {filteredPosts.length > 0 && (
         <>
           <Grid container spacing={2}>
