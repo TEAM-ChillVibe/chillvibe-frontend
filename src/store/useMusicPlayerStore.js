@@ -27,10 +27,10 @@ const useMusicPlayerStore = create((set, get) => ({
     const { audioRef, volume } = get();
 
     // previewUrl null인 경우 알림창을 띄우고 함수 종료
-    if (!track.previewUrl) {
-      alert('미리듣기를 지원하지 않는 트랙입니다.');
-      return;
-    }
+    // if (!track.previewUrl) {
+    //   alert('미리듣기를 지원하지 않는 트랙입니다.');
+    //   return;
+    // }
 
     // 클린업 함수
     const cleanup = () => {

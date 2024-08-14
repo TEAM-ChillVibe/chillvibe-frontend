@@ -25,6 +25,15 @@ function TrackListItem({ music }) {
   const { isAuthenticated } = useUserStore();
   const isCurrentTrack = currentTrack && currentTrack.previewUrl === previewUrl;
   const handlePlayPause = () => {
+    if (!previewUrl) {
+      setSnackbar({
+        open: true,
+        message: '미리 듣기를 지원하지 않는 트랙입니다.',
+        severity: 'warning',
+      });
+      return;
+    }
+
     if (isCurrentTrack) {
       togglePlay();
     } else {
