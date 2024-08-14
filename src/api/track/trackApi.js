@@ -13,8 +13,8 @@ export const searchTracks = async (query, page = 0, size = 20) => {
   }
 };
 
-// Spotify 인기 플레이리스트 가져오기
-export const getFeaturedPlaylist = async (
+//Spotify 인기 플레이리스트 가져오기
+export const getFeaturedPlaylists = async (
   locale = 'ko_KR',
   page = 0,
   size = 5,
@@ -28,7 +28,7 @@ export const getFeaturedPlaylist = async (
     );
     return response.data;
   } catch (error) {
-    console.error('Error fetching featured playlist:', error);
+    console.error('Error fetching featured playlists:', error);
     throw error;
   }
 };
