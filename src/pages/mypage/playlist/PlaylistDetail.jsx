@@ -20,6 +20,7 @@ import {
 import DeleteIcon from '@mui/icons-material/Delete';
 import TrackListEditItem from '../../../components/common/ListItem/TrackListEditItem';
 import SnackbarAlert from '../../../components/common/Alert/SnackbarAlert';
+import PlaylistRemoveIcon from '@mui/icons-material/PlaylistRemove';
 
 const PlaylistDetail = () => {
   const { playlistId } = useParams();
@@ -148,10 +149,10 @@ const PlaylistDetail = () => {
           <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
             트랙 {playlistData.trackCount}개
           </Typography>
-          <Typography variant="postDate" color="text.date">
+          <Typography variant="date">
             게시 | {formatDate(playlistData.createdAt)}
           </Typography>
-          <Typography variant="postDate" color="text.date">
+          <Typography variant="date">
             수정 | {formatDate(playlistData.modifiedAt)}
           </Typography>
         </Box>
@@ -170,7 +171,7 @@ const PlaylistDetail = () => {
             variant="contained"
             size="small"
             color="error"
-            startIcon={<DeleteIcon />}
+            startIcon={<PlaylistRemoveIcon />}
             onClick={handleDeleteClick}
           >
             플레이리스트 삭제
@@ -233,14 +234,14 @@ const PlaylistDetail = () => {
       <SimpleModal
         open={isDeleteModalOpen}
         onClose={handleCancelDelete}
-        title="플레이리스트 삭제"
         description={
-          '플레이리스트를 삭제하시겠습니까? \n\n 이 작업은 되돌릴 수 없습니다.'
+          '플레이리스트를 삭제하시겠습니까?\n이 작업은 되돌릴 수 없습니다.'
         }
         primaryButtonText="삭제"
         secondaryButtonText="취소"
         onPrimaryClick={handleConfirmDelete}
         onSecondaryClick={handleCancelDelete}
+        primaryButtonStyle="error"
       />
 
       {/* 플레이리스트 저장 확인 스낵바 */}

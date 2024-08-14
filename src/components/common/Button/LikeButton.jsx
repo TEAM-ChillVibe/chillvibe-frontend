@@ -4,6 +4,8 @@ import FavoriteIcon from '@mui/icons-material/Favorite';
 import { useEffect, useState } from 'react';
 import { Box, Typography } from '@mui/material';
 import usePostStore from '../../../store/usePostStore';
+import useUserStore from '../../../store/useUserStore'; // ✔️ 로그인 상태 확인을 위한 훅 추가
+import { useNavigate } from 'react-router-dom'; // ✔️ 페이지 이동을 위한 훅 추가
 
 const LikeButton = ({ postId, initialLikeCount }) => {
   const { toggleLike, isPostLiked, initializeLikedPosts } = usePostStore(
@@ -13,6 +15,9 @@ const LikeButton = ({ postId, initialLikeCount }) => {
       initializeLikedPosts: state.initializeLikedPosts,
     }),
   );
+
+  const { isAuthenticated } = useUserStore(); // ✔️ 로그인 여부 확인
+  const navigate = useNavigate();
 
   const [liked, setLiked] = useState(null);
   const [likeCount, setLikeCount] = useState(initialLikeCount);
@@ -32,6 +37,12 @@ const LikeButton = ({ postId, initialLikeCount }) => {
   }, [initializeLikedPosts, isPostLiked, postId]);
 
   const handleLikeClick = async () => {
+    if (!isAuthenticated) {
+      // ✔️ 비로그인 상태일 경우 로그인 페이지로 이동
+      navigate('/login');
+      return;
+    }
+
     try {
       await toggleLike(postId); // 상태 토글 및 서버 요청
       const isCurrentlyLiked = liked === false;

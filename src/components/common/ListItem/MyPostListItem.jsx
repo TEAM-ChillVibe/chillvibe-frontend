@@ -5,7 +5,7 @@ import { fetchHashtagsOfPost } from '../../../api/hashtag/hashtagApi';
 import { formatDate } from '../../../utils/reusableFn';
 import SingleHashtagChips from '../HashtagChips/SingleHashtagChips';
 
-function MyPostListItem({ user, post }) {
+function MyPostListItem({ post }) {
   const {
     id,
     title,
@@ -93,14 +93,12 @@ function MyPostListItem({ user, post }) {
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'flex-end',
-            justifyContent: 'center',
-            mb: 1,
+            justifyContent: 'space-between',
             height: '100%',
+            py: 2,
           }}
         >
-          <Typography variant="body3" color="text.secondary" sx={{ mb: 2 }}>
-            {formatDate(createdAt)}
-          </Typography>
+          <Typography variant="date">{formatDate(createdAt)}</Typography>
           <LikeButton postId={id} initialLikeCount={likeCount} />
         </Box>
       </Box>

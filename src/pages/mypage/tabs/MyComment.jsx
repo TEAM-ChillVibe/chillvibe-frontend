@@ -125,15 +125,11 @@ const MyComment = () => {
                     </Typography>
                   </Box>
                   <Typography variant="body1">"{comment.content}"</Typography>
-                  <Typography variant="caption" color="text.date">
+                  <Typography variant="date">
                     {formatDate(comment.modifiedAt)}
                   </Typography>
                   {comment.createdAt !== comment.modifiedAt && (
-                    <Typography
-                      variant="caption"
-                      color="text.date"
-                      sx={{ ml: 0.5 }}
-                    >
+                    <Typography variant="date" sx={{ ml: 0.5 }}>
                       (수정됨)
                     </Typography>
                   )}
