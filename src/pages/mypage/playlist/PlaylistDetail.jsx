@@ -20,6 +20,7 @@ import {
 import DeleteIcon from '@mui/icons-material/Delete';
 import TrackListEditItem from '../../../components/common/ListItem/TrackListEditItem';
 import SnackbarAlert from '../../../components/common/Alert/SnackbarAlert';
+import PlaylistRemoveIcon from '@mui/icons-material/PlaylistRemove';
 
 const PlaylistDetail = () => {
   const { playlistId } = useParams();
@@ -170,7 +171,7 @@ const PlaylistDetail = () => {
             variant="contained"
             size="small"
             color="error"
-            startIcon={<DeleteIcon />}
+            startIcon={<PlaylistRemoveIcon />}
             onClick={handleDeleteClick}
           >
             플레이리스트 삭제
