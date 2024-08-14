@@ -1,11 +1,12 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { Tabs, Tab, Box, Typography } from '@mui/material';
+import { Tabs, Tab, Box, Typography, CircularProgress } from '@mui/material';
 import { useLocation } from 'react-router-dom';
 import BaseContainer from '../../components/layout/BaseContainer';
 import SearchTracks from './tabs/SearchTracks';
 import SearchPosts from './tabs/SearchPosts';
-import { searchTracks } from '../../api/track/trackApi';
-import { searchPosts } from '../../api/post/postApi';
+import { searchTracks } from '../..//api/track/trackApi';
+import { searchPosts } from '../..//api/post/postApi';
+import SnackbarAlert from '../../components/common/Alert/SnackbarAlert';
 
 const SearchPage = () => {
   const location = useLocation();
@@ -15,6 +16,13 @@ const SearchPage = () => {
   const [postResults, setPostResults] = useState({ content: [] });
   const [isLoading, setIsLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState(0);
+  const [error, setError] = useState(null); // Spotify API 에러시 스낵바 알림
+
+  const [snackbar, setSnackbar] = useState({
+    open: false,
+    message: '',
+    severity: 'success',
+  });
 
   const fetchSearchResults = useCallback(async () => {
     if (!searchQuery) {
@@ -22,6 +30,7 @@ const SearchPage = () => {
     }
 
     setIsLoading(true);
+    setError(null);
     try {
       if (searchType === 'track') {
         const response = await searchTracks(searchQuery, currentPage);
@@ -43,7 +52,11 @@ const SearchPage = () => {
         }));
       }
     } catch (error) {
-      console.error('Search error:', error);
+      setSnackbar({
+        open: true,
+        message: '로딩 중 오류가 발생했습니다. 다시 시도해 주세요.',
+        severity: 'error',
+      });
     } finally {
       setIsLoading(false);
     }
@@ -107,6 +120,13 @@ const SearchPage = () => {
           />
         )}
       </Box>
+
+      <SnackbarAlert
+        open={snackbar.open}
+        onClose={() => setSnackbar(prev => ({ ...prev, open: false }))}
+        message={snackbar.message}
+        severity={snackbar.severity}
+      />
     </BaseContainer>
   );
 };
