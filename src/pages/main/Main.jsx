@@ -8,7 +8,7 @@ import {
   fetchPostsInMainPage,
   fetchPostsByHashtagId,
 } from '../../api/post/postApi';
-import { fetchRecommendedTracks } from '../../api/track/trackApi';
+// import { fetchRecommendedTracks } from '../../api/track/trackApi';
 import {
   fetchPopularHashtags,
   fetchHashtagsOfPost,
@@ -110,17 +110,17 @@ const Main = () => {
   };
 
   // 추천트랙
-  useEffect(() => {
-    const getTracks = async () => {
-      try {
-        const data = await fetchRecommendedTracks();
-        setTracks(data);
-      } catch (error) {
-        console.error('Failed to fetch recommended tracks:', error);
-      }
-    };
-    getTracks();
-  }, []);
+  // useEffect(() => {
+  //   const getTracks = async () => {
+  //     try {
+  //       const data = await fetchRecommendedTracks();
+  //       setTracks(data);
+  //     } catch (error) {
+  //       console.error('Failed to fetch recommended tracks:', error);
+  //     }
+  //   };
+  //   getTracks();
+  // }, []);
 
   const handleTrackClick = id => {
     navigate(`/track/${id}`);
@@ -193,7 +193,7 @@ const Main = () => {
           </Grid>
         </>
       )}
-
+      {/* 
       <Typography
         variant="h4"
         gutterBottom
@@ -218,7 +218,7 @@ const Main = () => {
             <Typography align="center">추천 트랙이 없습니다.</Typography>
           </Grid>
         )}
-      </Grid>
+      </Grid> */}
     </BaseContainer>
   );
 };

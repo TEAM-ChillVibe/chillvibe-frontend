@@ -14,17 +14,22 @@ export const searchTracks = async (query, page = 0, size = 20) => {
   }
 };
 
-export const fetchRecommendedTracks = async () => {
+// Spotify 인기 플레이리스트 가져오기
+export const getFeaturedPlaylist = async (
+  locale = 'ko_KR',
+  page = 0,
+  size = 5,
+) => {
   try {
     const response = await axiosWithoutToken.get(
-      '/api/tracks/recommendations',
-      // {
-      //   params: { Category },
-      // },
+      '/api/spotify/featured-playlists',
+      {
+        params: { locale, page, size },
+      },
     );
     return response.data;
   } catch (error) {
-    console.error('Failed to fetch recommended tracks:', error);
+    console.error('Error fetching featured playlist:', error);
     throw error;
   }
 };
