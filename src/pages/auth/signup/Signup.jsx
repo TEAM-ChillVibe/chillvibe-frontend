@@ -16,6 +16,7 @@ import { AddPhotoAlternate } from '@mui/icons-material';
 import IconButton from '@mui/material/IconButton';
 import { signup } from '../../../api/auth/authApi';
 import defaultImage from '../../../assets/default-profile.png';
+import SnackbarAlert from '../../../components/common/Alert/SnackbarAlert';
 
 const Signup = () => {
   const [email, setEmail] = useState('');
@@ -34,6 +35,12 @@ const Signup = () => {
   const [allAccepted, setAllAccepted] = useState(false);
   const validatePassword = password =>
     /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[\W_])[a-zA-Z\d\W_]{8,}$/.test(password);
+
+  const [snackbar, setSnackbar] = useState({
+    open: false,
+    message: '',
+    severity: 'success',
+  });
 
   const navigate = useNavigate();
 
@@ -122,8 +129,12 @@ const Signup = () => {
       // 회원가입 요청
       await signup(formData);
       // 성공 시, 로그인 화면으로 이동
-      alert('회원가입 되었습니다.');
-      navigate('/login');
+      setSnackbar({
+        open: true,
+        message: '회원가입 되었습니다.',
+        severity: 'success',
+      });
+      setTimeout(() => navigate('/login'), 2000);
     } catch (error) {
       // 에러 처리
       if (error.response) {
@@ -133,13 +144,19 @@ const Signup = () => {
           setEmailError('이미 가입된 이메일입니다.');
         } else {
           // 다른 상태 코드에 대한 일반적인 에러 처리
-          alert(
-            `회원가입 실패: ${error.response.status} ${error.response.statusText}`,
-          );
+          setSnackbar({
+            open: true,
+            message: `회원가입 실패: ${error.response.status} ${error.response.statusText}`,
+            severity: 'error',
+          });
         }
       } else {
         // 서버 응답이 없는 경우 (네트워크 오류 등)
-        alert('회원가입 요청 처리 중 오류가 발생했습니다.');
+        setSnackbar({
+          open: true,
+          message: '회원가입 요청 처리 중 오류가 발생했습니다.',
+          severity: 'error',
+        });
       }
     }
   };
@@ -209,7 +226,7 @@ const Signup = () => {
             margin="normal"
             error={!!emailError}
             helperText={emailError}
-            onFocus={() => setPasswordMatchError('')}
+            onFocus={() => setEmailError('')}
           />
           <TextField
             label="비밀번호"
@@ -317,6 +334,12 @@ const Signup = () => {
           </Box>
         </form>
       </Box>
+      <SnackbarAlert
+        open={snackbar.open}
+        onClose={() => setSnackbar(prev => ({ ...prev, open: false }))}
+        message={snackbar.message}
+        severity={snackbar.severity}
+      />
     </BaseContainer>
   );
 };
