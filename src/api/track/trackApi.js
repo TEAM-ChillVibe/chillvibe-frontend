@@ -1,4 +1,3 @@
-import { Category } from '@mui/icons-material';
 import { axiosWithoutToken } from '../../axios';
 
 // 모든 트랙 검색 결과 조회

@@ -55,7 +55,6 @@ const MusicPlayerFloating = () => {
     currentTrack,
     currentTime,
     duration,
-    volume,
     isMuted,
     togglePlay,
     handleProgressChange,
@@ -63,6 +62,7 @@ const MusicPlayerFloating = () => {
     handleVolumeToggle,
     stopPlayback,
     isVisible,
+    getDisplayVolume, // 볼륨 0.5가 최대로 보이게 띄우기 위해
   } = useMusicPlayerStore();
 
   useEffect(() => {
@@ -216,7 +216,7 @@ const MusicPlayerFloating = () => {
             </IconButton>
             <Slider
               size="small"
-              value={volume}
+              value={getDisplayVolume()}
               max={1}
               step={0.01}
               color="secondary"
