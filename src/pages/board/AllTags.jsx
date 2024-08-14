@@ -2,10 +2,11 @@ import BaseContainer from '../../components/layout/BaseContainer';
 import { Box, Button, Typography } from '@mui/material';
 import PostList from '../../components/common/PostList';
 import { fetchAllHashtags } from '../../api/hashtag/hashtagApi';
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import SingleHashtagChips from '../../components/common/HashtagChips/SingleHashtagChips';
 import { myInfo } from '../../api/user/userApi';
+import { DriveFileRenameOutline } from '@mui/icons-material';
 
 const AllTags = () => {
   const [sortOrder, setSortOrder] = useState('latest');
@@ -91,8 +92,13 @@ const AllTags = () => {
           </Typography>
         </Box>
         {isLoggedIn && (
-          <Button variant="contained" href="/new-post">
-            새 게시글
+          <Button
+            variant="contained"
+            size="small"
+            startIcon={<DriveFileRenameOutline />}
+            href="/new-post"
+          >
+            새 글 작성
           </Button>
         )}
       </Box>

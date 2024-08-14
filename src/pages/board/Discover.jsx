@@ -1,8 +1,9 @@
 import { Box, Button, Typography } from '@mui/material';
 import BaseContainer from '../../components/layout/BaseContainer';
 import PostList from '../../components/common/PostList';
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { myInfo } from '../../api/user/userApi';
+import { DriveFileRenameOutline } from '@mui/icons-material';
 
 const Discover = () => {
   const [sortOrder, setSortOrder] = useState('latest');
@@ -67,8 +68,13 @@ const Discover = () => {
           </Typography>
         </Box>
         {isLoggedIn && (
-          <Button variant="contained" href="/new-post">
-            새 게시글
+          <Button
+            variant="contained"
+            size="small"
+            startIcon={<DriveFileRenameOutline />}
+            href="/new-post"
+          >
+            새 글 작성
           </Button>
         )}
       </Box>

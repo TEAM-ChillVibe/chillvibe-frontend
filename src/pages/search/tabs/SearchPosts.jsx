@@ -71,7 +71,7 @@ const SearchPosts = ({ results, onLoadMore }) => {
 
   return (
     <Box sx={{ width: '100%' }}>
-      <List sx={{ width: '100%', bgcolor: 'background.paper' }}>
+      <List sx={{ width: '100%' }}>
         {results.content.map((post, index) => (
           <ListItem
             key={post.id}
