@@ -2,10 +2,11 @@ import BaseContainer from '../../components/layout/BaseContainer';
 import { Box, Button, Typography } from '@mui/material';
 import { fetchPopularHashtags } from '../../api/hashtag/hashtagApi';
 import PostList from '../../components/common/PostList';
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import SingleHashtagChips from '../../components/common/HashtagChips/SingleHashtagChips';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { myInfo } from '../../api/user/userApi';
+import { DriveFileRenameOutline } from '@mui/icons-material';
 
 const PopularTags = () => {
   const [sortOrder, setSortOrder] = useState('latest');
@@ -89,8 +90,13 @@ const PopularTags = () => {
           </Typography>
         </Box>
         {isLoggedIn && (
-          <Button variant="contained" href="/new-post">
-            새 게시글
+          <Button
+            variant="contained"
+            size="small"
+            startIcon={<DriveFileRenameOutline />}
+            href="/new-post"
+          >
+            새 글 작성
           </Button>
         )}
       </Box>

@@ -78,7 +78,7 @@ const MyPost = ({ user }) => {
           size="small"
           href="/new-post"
         >
-          새 게시글
+          새 글 작성
         </Button>
       </Box>
       <Box sx={{ width: '100%', my: 2 }}>

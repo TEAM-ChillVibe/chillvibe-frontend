@@ -137,11 +137,12 @@ const MusicPlayerFloating = () => {
               flexDirection: 'column',
               width: '100%',
               overflow: 'hidden',
-              mt: 0.5,
+              justifyContent: 'space-between',
+              py: 0.5,
             }}
           >
             <ScrollingTypography
-              variant="subtitle1"
+              variant="trackTitle"
               ref={textRef}
               animate={isScrolling}
               sx={{
@@ -152,7 +153,7 @@ const MusicPlayerFloating = () => {
             >
               {currentTrack.name}
             </ScrollingTypography>
-            <Typography variant="caption" noWrap>
+            <Typography variant="trackArtist" noWrap>
               {currentTrack.artist}
             </Typography>
           </Box>
@@ -220,7 +221,7 @@ const MusicPlayerFloating = () => {
               step={0.01}
               color="secondary"
               onChange={(_, newValue) => handleVolumeChange(newValue)}
-              sx={{ ml: 1, mr: 3, width: '60px' }}
+              sx={{ ml: 1, mr: 2, width: '60px' }}
             />
           </Box>
         </Box>
