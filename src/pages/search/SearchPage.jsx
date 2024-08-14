@@ -1,11 +1,11 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { Tabs, Tab, Box, Typography, CircularProgress } from '@mui/material';
+import { Tabs, Tab, Box, Typography } from '@mui/material';
 import { useLocation } from 'react-router-dom';
 import BaseContainer from '../../components/layout/BaseContainer';
 import SearchTracks from './tabs/SearchTracks';
 import SearchPosts from './tabs/SearchPosts';
-import { searchTracks } from '../..//api/track/trackApi';
-import { searchPosts } from '../..//api/post/postApi';
+import { searchTracks } from '../../api/track/trackApi';
+import { searchPosts } from '../../api/post/postApi';
 
 const SearchPage = () => {
   const location = useLocation();
@@ -23,7 +23,6 @@ const SearchPage = () => {
 
     setIsLoading(true);
     try {
-      // 트랙 검색 결과일때
       if (searchType === 'track') {
         const response = await searchTracks(searchQuery, currentPage);
         setTrackResults(prev => ({
@@ -34,7 +33,6 @@ const SearchPage = () => {
               : [...prev.content, ...response.content],
         }));
       } else {
-        // 게시글 검색 결과일때
         const response = await searchPosts(searchQuery, currentPage);
         setPostResults(prev => ({
           ...response,
@@ -95,17 +93,20 @@ const SearchPage = () => {
       </Tabs>
       <Box sx={{ width: '100%' }}>
         {searchType === 'track' && (
-          <SearchTracks results={trackResults} onLoadMore={handleLoadMore} />
+          <SearchTracks
+            results={trackResults}
+            onLoadMore={handleLoadMore}
+            isLoading={isLoading}
+          />
         )}
         {searchType === 'post' && (
-          <SearchPosts results={postResults} onLoadMore={handleLoadMore} />
+          <SearchPosts
+            results={postResults}
+            onLoadMore={handleLoadMore}
+            isLoading={isLoading}
+          />
         )}
       </Box>
-      {isLoading && (
-        <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2 }}>
-          <CircularProgress color="secondary" />
-        </Box>
-      )}
     </BaseContainer>
   );
 };

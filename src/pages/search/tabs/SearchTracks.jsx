@@ -8,8 +8,7 @@ import {
 } from '@mui/material';
 import TrackListItem from '../../../components/common/ListItem/TrackListItem';
 
-const SearchTracks = ({ results, onLoadMore }) => {
-  const [isLoading, setIsLoading] = useState(false);
+const SearchTracks = ({ results, onLoadMore, isLoading }) => {
   const [isLastPage, setIsLastPage] = useState(false);
   const lastItemRef = useRef(null);
 
@@ -23,9 +22,7 @@ const SearchTracks = ({ results, onLoadMore }) => {
       const observer = new IntersectionObserver(
         async entries => {
           if (entries[0].isIntersecting) {
-            setIsLoading(true);
             await onLoadMore();
-            setIsLoading(false);
           }
         },
         { threshold: 1 },
@@ -54,15 +51,21 @@ const SearchTracks = ({ results, onLoadMore }) => {
     }
   }, [results]);
 
-  if (!results || !results.content || results.content.length === 0) {
+  if (isLoading) {
+    return (
+      <Box sx={{ display: 'flex', justifyContent: 'center', mt: 4 }}>
+        <CircularProgress />
+      </Box>
+    );
+  }
+
+  if (
+    !isLoading &&
+    (!results || !results.content || results.content.length === 0)
+  ) {
     return (
       <Box
-        sx={{
-          display: 'flex',
-          justifyContent: 'center',
-          width: '100%',
-          mt: 4, // 상단 여백 추가
-        }}
+        sx={{ display: 'flex', justifyContent: 'center', width: '100%', mt: 4 }}
       >
         <Typography>트랙 검색 결과가 없습니다.</Typography>
       </Box>
@@ -94,11 +97,6 @@ const SearchTracks = ({ results, onLoadMore }) => {
           </ListItem>
         ))}
       </List>
-      {isLoading && !isLastPage && (
-        <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2 }}>
-          <CircularProgress />
-        </Box>
-      )}
     </Box>
   );
 };
