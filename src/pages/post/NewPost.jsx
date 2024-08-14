@@ -64,6 +64,16 @@ const NewPost = () => {
       return;
     }
 
+    // ✔️ 플레이리스트가 선택되지 않았을 경우
+    if (!selectedPlaylistId) {
+      setSnackbar({
+        open: true,
+        message: 'PlayList가 선택하셔야 합니다.',
+        severity: 'warning',
+      });
+      return;
+    }
+
     setIsSubmitting(true); // ✔️ 제출 상태 시작
 
     console.log('Selected Hashtags:', selectedHashtags);
