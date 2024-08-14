@@ -191,11 +191,13 @@ const PostDetail = () => {
             </ListItem>
           ))
         ) : (
-          <Typography>No tracks available</Typography>
+          <Typography variant="body2" sx={{ my: 5, textAlign: 'center' }}>
+            플레이리스트에 트랙이 없습니다.
+          </Typography>
         )}
       </List>
       {/* 사용자 정보 */}
-      <Card sx={{ bgcolor: '#1f1f1f', my: 5, width: '100%' }}>
+      <Card sx={{ bgcolor: '#1f1f1f', my: 7, width: '100%' }}>
         <UserProfile user={post.user} />
       </Card>
       {/* 댓글 섹션 */}
