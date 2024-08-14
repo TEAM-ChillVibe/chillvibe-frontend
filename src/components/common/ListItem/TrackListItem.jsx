@@ -13,6 +13,7 @@ import {
 } from '../../../api/playlist/playlistApi';
 import SnackbarAlert from '../Alert/SnackbarAlert';
 import { useNavigate } from 'react-router-dom';
+import ListModal from '../Modal/ListModal';
 
 function TrackListItem({ music }) {
   const navigate = useNavigate();
@@ -56,10 +57,13 @@ function TrackListItem({ music }) {
     setSelectedValue('');
     setIsAddingTrack(false);
   };
-  const handleChange = event => {
-    setSelectedValue(event.target.value);
-  };
+  // const handleChange = event => {
+  //   setSelectedValue(event.target.value);
+  // };
 
+  const handleSelect = value => {
+    setSelectedValue(value);
+  };
   const [snackbar, setSnackbar] = useState({
     open: false,
     message: '',
@@ -145,7 +149,7 @@ function TrackListItem({ music }) {
         >
           <PlaylistAdd />
         </IconButton>
-        <DropdownModal
+        <ListModal
           open={isModalOpen}
           onClose={closeModal}
           title="Select Playlist"
@@ -167,7 +171,7 @@ function TrackListItem({ music }) {
             value: playlist.id,
           }))}
           selectedValue={selectedValue}
-          onChange={handleChange}
+          onSelect={handleSelect}
           primaryButtonText="추가"
           onPrimaryClick={handlePrimaryClick}
           secondaryButtonText="취소"
