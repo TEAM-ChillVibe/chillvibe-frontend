@@ -35,7 +35,8 @@ const Comment = ({ user }) => {
   const [modalOpen, setModalOpen] = useState(false);
   const [commentToDelete, setCommentToDelete] = useState(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [error, setError] = useState(''); // 오류 메시지 상태 추가
+  const [newCommentError, setNewCommentError] = useState('');
+  const [editingCommentError, setEditingCommentError] = useState('');
   const navigate = useNavigate();
 
   const [snackbar, setSnackbar] = useState({
@@ -64,9 +65,9 @@ const Comment = ({ user }) => {
   const handleNewCommentChange = e => {
     setNewComment(e.target.value);
     if (e.target.value.length > 255) {
-      setError('댓글은 255자 이내로 작성해주세요.');
+      setNewCommentError('댓글은 255자 이내로 작성해주세요.');
     } else {
-      setError('');
+      setNewCommentError('');
     }
   };
 
@@ -85,7 +86,7 @@ const Comment = ({ user }) => {
   // 생성
   const handleCommentSubmit = () => {
     if (newComment.length > 255) {
-      setError('댓글은 255자 이내로 작성해주세요.');
+      setNewCommentError('댓글은 255자 이내로 작성해주세요.');
       return;
     }
     createComment({ content: newComment, postId })
@@ -96,6 +97,7 @@ const Comment = ({ user }) => {
           return updatedComments;
         });
         setNewComment('');
+        setNewCommentError('');
       })
       .catch(error => {
         setSnackbar({
@@ -114,16 +116,16 @@ const Comment = ({ user }) => {
   const handleEditChange = e => {
     setEditingContent(e.target.value);
     if (e.target.value.length > 255) {
-      setError('댓글은 255자 이내로 작성해주세요.');
+      setEditingCommentError('댓글은 255자 이내로 작성해주세요.');
     } else {
-      setError('');
+      setEditingCommentError('');
     }
   };
 
   // 수정
   const handleEditSubmit = () => {
     if (editingContent.length > 255) {
-      setError('댓글은 255자 이내로 작성해주세요.');
+      setEditingCommentError('댓글은 255자 이내로 작성해주세요.');
       return;
     }
     updateComment(editingCommentId, { content: editingContent })
@@ -147,6 +149,7 @@ const Comment = ({ user }) => {
         });
         setEditingCommentId(null);
         setEditingContent('');
+        setEditingCommentError('');
       })
       .catch(error => {
         setSnackbar({
@@ -241,20 +244,15 @@ const Comment = ({ user }) => {
                     value={editingContent}
                     onChange={handleEditChange}
                     sx={{ mr: 1 }}
-                    error={Boolean(error)}
+                    error={Boolean(editingCommentError)}
+                    helperText={editingCommentError}
                   />
-                  <FormHelperText
-                    error={Boolean(error)}
-                    sx={{ margin: 0, whiteSpace: 'nowrap' }}
-                  >
-                    {error}
-                  </FormHelperText>
                   <Button
                     variant="contained"
                     size="small"
                     onClick={handleEditSubmit}
                     sx={{ ml: 1 }}
-                    disabled={Boolean(error)}
+                    disabled={Boolean(editingCommentError)}
                   >
                     수정
                   </Button>
@@ -329,13 +327,13 @@ const Comment = ({ user }) => {
           onChange={handleNewCommentChange}
           onClick={handleCommentClick}
           sx={{ mb: 2 }}
-          error={Boolean(error)}
+          error={Boolean(newCommentError)}
+          helperText={newCommentError}
         />
-        <FormHelperText error={Boolean(error)}>{error}</FormHelperText>
         <Button
           variant="contained"
           onClick={handleCommentSubmit}
-          disabled={Boolean(error)}
+          disabled={Boolean(newCommentError) || newComment.length === 0} // 0자 이거나 255자 이상이면 버튼 비활성화
         >
           등록
         </Button>
