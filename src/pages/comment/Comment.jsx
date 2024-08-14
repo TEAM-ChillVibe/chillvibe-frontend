@@ -202,7 +202,7 @@ const Comment = ({ user }) => {
             mb: 2,
           }}
         >
-          <Typography variant="body1">댓글이 존재하지 않습니다.</Typography>
+          <Typography variant="body2">첫 번째 댓글을 작성해보세요!</Typography>
         </Box>
       )}
       {comments.map(comment => (
