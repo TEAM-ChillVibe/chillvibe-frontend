@@ -25,6 +25,7 @@ const Signup = () => {
   const [nickname, setNickname] = useState('');
   const [nicknameError, setNicknameError] = useState('');
   const [introduction] = useState('');
+  const [passwordError, setPasswordError] = useState('');
   const [passwordMatchError, setPasswordMatchError] = useState('');
   const [emailError, setEmailError] = useState('');
   const [profileImage, setProfileImage] = useState(null);
@@ -77,6 +78,11 @@ const Signup = () => {
   const handleSubmit = async event => {
     event.preventDefault();
 
+    setEmailError('');
+    setPasswordError('');
+    setPasswordMatchError('');
+    setNicknameError('');
+
     // 비밀번호 확인
     if (password !== confirmPassword) {
       setPasswordMatchError('비밀번호가 일치하지 않습니다.');
@@ -86,7 +92,7 @@ const Signup = () => {
 
     // 비밀번호 검증
     if (!validatePassword(password)) {
-      setPasswordMatchError(
+      setPasswordError(
         '비밀번호는 최소 8자 이상이며, 문자, 숫자, 특수문자를 포함해야 합니다.',
       );
       return;
@@ -236,8 +242,8 @@ const Signup = () => {
             value={password}
             onChange={e => setPassword(e.target.value)}
             margin="normal"
-            error={!!passwordMatchError}
-            helperText={passwordMatchError}
+            error={!!passwordError}
+            helperText={passwordError}
           />
           <TextField
             label="비밀번호 확인"
