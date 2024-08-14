@@ -17,8 +17,6 @@ import {
   DialogActions,
   DialogContent,
   DialogContentText,
-  Alert,
-  FormHelperText,
 } from '@mui/material';
 import { useParams, useNavigate } from 'react-router-dom';
 import { formatDate } from '../../utils/reusableFn';
@@ -34,8 +32,10 @@ const Comment = ({ user }) => {
   const [userId, setUserId] = useState(null);
   const [modalOpen, setModalOpen] = useState(false);
   const [commentToDelete, setCommentToDelete] = useState(null);
+  const [loginModalOpen, setLoginModalOpen] = useState(false); // 로그인 모달 상태 추가
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [error, setError] = useState(''); // 오류 메시지 상태 추가
+  const [newCommentError, setNewCommentError] = useState('');
+  const [editingCommentError, setEditingCommentError] = useState('');
   const navigate = useNavigate();
 
   const [snackbar, setSnackbar] = useState({
@@ -64,20 +64,24 @@ const Comment = ({ user }) => {
   const handleNewCommentChange = e => {
     setNewComment(e.target.value);
     if (e.target.value.length > 255) {
-      setError('댓글은 255자 이내로 작성해주세요.');
+      setNewCommentError('댓글은 255자 이내로 작성해주세요.');
     } else {
-      setError('');
+      setNewCommentError('');
     }
   };
 
   const handleCommentClick = () => {
     if (!userId) {
-      setIsDialogOpen(true); // 비로그인 상태에서 다이얼로그 열기
+      setLoginModalOpen(true); // 비로그인 상태에서 다이얼로그 열기
     }
   };
 
-  const handleDialogClose = () => {
-    setIsDialogOpen(false);
+  const handleLoginModalClose = () => {
+    setLoginModalOpen(false);
+  };
+
+  const handleLogin = () => {
+    setLoginModalOpen(false); // 모달 닫기
     navigate('/login'); // 로그인 페이지로 이동
     window.scrollTo(0, 0); // 페이지 이동 후 맨위로 스크롤
   };
@@ -85,7 +89,7 @@ const Comment = ({ user }) => {
   // 생성
   const handleCommentSubmit = () => {
     if (newComment.length > 255) {
-      setError('댓글은 255자 이내로 작성해주세요.');
+      setNewCommentError('댓글은 255자 이내로 작성해주세요.');
       return;
     }
     createComment({ content: newComment, postId })
@@ -96,6 +100,7 @@ const Comment = ({ user }) => {
           return updatedComments;
         });
         setNewComment('');
+        setNewCommentError('');
       })
       .catch(error => {
         setSnackbar({
@@ -114,16 +119,16 @@ const Comment = ({ user }) => {
   const handleEditChange = e => {
     setEditingContent(e.target.value);
     if (e.target.value.length > 255) {
-      setError('댓글은 255자 이내로 작성해주세요.');
+      setEditingCommentError('댓글은 255자 이내로 작성해주세요.');
     } else {
-      setError('');
+      setEditingCommentError('');
     }
   };
 
   // 수정
   const handleEditSubmit = () => {
     if (editingContent.length > 255) {
-      setError('댓글은 255자 이내로 작성해주세요.');
+      setEditingCommentError('댓글은 255자 이내로 작성해주세요.');
       return;
     }
     updateComment(editingCommentId, { content: editingContent })
@@ -147,6 +152,7 @@ const Comment = ({ user }) => {
         });
         setEditingCommentId(null);
         setEditingContent('');
+        setEditingCommentError('');
       })
       .catch(error => {
         setSnackbar({
@@ -199,6 +205,19 @@ const Comment = ({ user }) => {
 
   return (
     <Box sx={{ width: '100%', px: 2 }}>
+      {comments.length === 0 && (
+        <Box
+          sx={{
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            height: '100px',
+            mb: 2,
+          }}
+        >
+          <Typography variant="body1">댓글이 존재하지 않습니다.</Typography>
+        </Box>
+      )}
       {comments.map(comment => (
         <Box key={comment.id} sx={{ p: 2, mb: 2, width: '100%' }}>
           <Box
@@ -241,20 +260,15 @@ const Comment = ({ user }) => {
                     value={editingContent}
                     onChange={handleEditChange}
                     sx={{ mr: 1 }}
-                    error={Boolean(error)}
+                    error={Boolean(editingCommentError)}
+                    helperText={editingCommentError}
                   />
-                  <FormHelperText
-                    error={Boolean(error)}
-                    sx={{ margin: 0, whiteSpace: 'nowrap' }}
-                  >
-                    {error}
-                  </FormHelperText>
                   <Button
                     variant="contained"
                     size="small"
                     onClick={handleEditSubmit}
                     sx={{ ml: 1 }}
-                    disabled={Boolean(error)}
+                    disabled={Boolean(editingCommentError)}
                   >
                     수정
                   </Button>
@@ -329,51 +343,27 @@ const Comment = ({ user }) => {
           onChange={handleNewCommentChange}
           onClick={handleCommentClick}
           sx={{ mb: 2 }}
-          error={Boolean(error)}
+          error={Boolean(newCommentError)}
+          helperText={newCommentError}
         />
-        <FormHelperText error={Boolean(error)}>{error}</FormHelperText>
         <Button
           variant="contained"
           onClick={handleCommentSubmit}
-          disabled={Boolean(error)}
+          disabled={Boolean(newCommentError) || newComment.length === 0} // 0자 이거나 255자 이상이면 버튼 비활성화
         >
           등록
         </Button>
       </Box>
 
-      <Dialog
-        open={isDialogOpen}
-        onClose={() => setIsDialogOpen(false)}
-        aria-labelledby="alert-dialog-title"
-        aria-describedby="alert-dialog-description"
-        sx={{
-          '& .MuiPaper-root': {
-            borderRadius: '15px', // 팝업 창의 모서리를 둥글게 설정
-          },
-        }}
-      >
-        <DialogContent>
-          <DialogContentText id="alert-dialog-description">
-            댓글을 작성하려면 로그인해야 합니다. 로그인 페이지로
-            이동하시겠습니까?
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button
-            onClick={() => setIsDialogOpen(false)}
-            sx={{ borderRadius: '20px' }}
-          >
-            취소
-          </Button>
-          <Button
-            onClick={handleDialogClose}
-            autoFocus
-            sx={{ borderRadius: '20px' }}
-          >
-            확인
-          </Button>
-        </DialogActions>
-      </Dialog>
+      <SimpleModal
+        open={loginModalOpen}
+        onClose={handleLoginModalClose}
+        description={`댓글을 작성하려면 로그인해야 합니다.\n로그인 페이지로 이동하시겠습니까?`}
+        primaryButtonText="확인"
+        secondaryButtonText="취소"
+        onPrimaryClick={handleLogin}
+        onSecondaryClick={handleLoginModalClose}
+      />
 
       <SimpleModal
         open={modalOpen}
