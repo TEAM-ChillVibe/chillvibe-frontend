@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import BaseContainer from '../../components/layout/BaseContainer';
 import {
   getCommentsByPost,
   createComment,
