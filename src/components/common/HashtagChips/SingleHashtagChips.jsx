@@ -32,6 +32,10 @@ const SingleHashtagChips = ({
           size="small"
           onClick={() => onChipClick(hashtag)}
           color={selectedHashtag === hashtag.id ? 'primary' : 'default'}
+          sx={{
+            opacity: selectedHashtag === hashtag.id ? 1 : 0.9,
+            transition: 'opacity 0.3s ease',
+          }}
         />
       ))}
     </Box>
