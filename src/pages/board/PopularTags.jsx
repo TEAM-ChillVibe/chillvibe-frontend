@@ -18,7 +18,10 @@ const PopularTags = () => {
   useEffect(() => {
     const queryParams = new URLSearchParams(location.search);
     const hashtagId = queryParams.get('hashtag');
-    setSelectedHashtag(hashtagId);
+    if (!hashtagId) {
+      return;
+    }
+    setSelectedHashtag(Number(hashtagId));
   }, [location.search]);
 
   const handleHashtagClick = hashtag => {
