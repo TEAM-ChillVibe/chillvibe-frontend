@@ -17,8 +17,6 @@ import {
   DialogActions,
   DialogContent,
   DialogContentText,
-  Alert,
-  FormHelperText,
 } from '@mui/material';
 import { useParams, useNavigate } from 'react-router-dom';
 import { formatDate } from '../../utils/reusableFn';
@@ -34,6 +32,7 @@ const Comment = ({ user }) => {
   const [userId, setUserId] = useState(null);
   const [modalOpen, setModalOpen] = useState(false);
   const [commentToDelete, setCommentToDelete] = useState(null);
+  const [loginModalOpen, setLoginModalOpen] = useState(false); // 로그인 모달 상태 추가
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [newCommentError, setNewCommentError] = useState('');
   const [editingCommentError, setEditingCommentError] = useState('');
@@ -73,12 +72,16 @@ const Comment = ({ user }) => {
 
   const handleCommentClick = () => {
     if (!userId) {
-      setIsDialogOpen(true); // 비로그인 상태에서 다이얼로그 열기
+      setLoginModalOpen(true); // 비로그인 상태에서 다이얼로그 열기
     }
   };
 
-  const handleDialogClose = () => {
-    setIsDialogOpen(false);
+  const handleLoginModalClose = () => {
+    setLoginModalOpen(false);
+  };
+
+  const handleLogin = () => {
+    setLoginModalOpen(false); // 모달 닫기
     navigate('/login'); // 로그인 페이지로 이동
     window.scrollTo(0, 0); // 페이지 이동 후 맨위로 스크롤
   };
@@ -202,6 +205,19 @@ const Comment = ({ user }) => {
 
   return (
     <Box sx={{ width: '100%', px: 2 }}>
+      {comments.length === 0 && (
+        <Box
+          sx={{
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            height: '100px',
+            mb: 2,
+          }}
+        >
+          <Typography variant="body1">댓글이 존재하지 않습니다.</Typography>
+        </Box>
+      )}
       {comments.map(comment => (
         <Box key={comment.id} sx={{ p: 2, mb: 2, width: '100%' }}>
           <Box
@@ -339,39 +355,15 @@ const Comment = ({ user }) => {
         </Button>
       </Box>
 
-      <Dialog
-        open={isDialogOpen}
-        onClose={() => setIsDialogOpen(false)}
-        aria-labelledby="alert-dialog-title"
-        aria-describedby="alert-dialog-description"
-        sx={{
-          '& .MuiPaper-root': {
-            borderRadius: '15px', // 팝업 창의 모서리를 둥글게 설정
-          },
-        }}
-      >
-        <DialogContent>
-          <DialogContentText id="alert-dialog-description">
-            댓글을 작성하려면 로그인해야 합니다. 로그인 페이지로
-            이동하시겠습니까?
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button
-            onClick={() => setIsDialogOpen(false)}
-            sx={{ borderRadius: '20px' }}
-          >
-            취소
-          </Button>
-          <Button
-            onClick={handleDialogClose}
-            autoFocus
-            sx={{ borderRadius: '20px' }}
-          >
-            확인
-          </Button>
-        </DialogActions>
-      </Dialog>
+      <SimpleModal
+        open={loginModalOpen}
+        onClose={handleLoginModalClose}
+        description={`댓글을 작성하려면 로그인해야 합니다.\n로그인 페이지로 이동하시겠습니까?`}
+        primaryButtonText="확인"
+        secondaryButtonText="취소"
+        onPrimaryClick={handleLogin}
+        onSecondaryClick={handleLoginModalClose}
+      />
 
       <SimpleModal
         open={modalOpen}
