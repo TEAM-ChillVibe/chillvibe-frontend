@@ -79,7 +79,7 @@ const Signup = () => {
     // 비밀번호 검증
     if (!validatePassword(password)) {
       setPasswordMatchError(
-        '비밀번호는 최소 8자리 이상이며, 숫자와 문자를 포함해야 합니다.',
+        '비밀번호는 최소 8자 이상이며, 문자, 숫자, 특수문자를 포함해야 합니다.',
       );
       return;
     }
