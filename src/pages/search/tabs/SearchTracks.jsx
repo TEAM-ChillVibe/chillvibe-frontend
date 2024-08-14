@@ -71,7 +71,7 @@ const SearchTracks = ({ results, onLoadMore }) => {
 
   return (
     <Box sx={{ width: '100%', overflow: 'hidden' }}>
-      <List sx={{ width: '100%', bgcolor: 'background.paper' }}>
+      <List sx={{ width: '100%' }}>
         {results.content.map((track, index) => (
           <ListItem
             key={track.id}

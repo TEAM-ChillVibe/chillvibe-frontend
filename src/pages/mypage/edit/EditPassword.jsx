@@ -19,12 +19,17 @@ const EditPassword = () => {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState('');
   const [confirmError, setConfirmError] = useState('');
+  const [newPasswordError, setNewPasswordError] = useState('');
   const [oldPasswordError, setOldPasswordError] = useState('');
   const [showOldPassword, setShowOldPassword] = useState(false);
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
   const navigate = useNavigate();
+
+  const validatePassword = password =>
+    /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[\W_])[a-zA-Z\d\W_]{8,}$/.test(password);
+
   // 스낵바
   const [snackbar, setSnackbar] = useState({
     open: false,
@@ -44,6 +49,14 @@ const EditPassword = () => {
     // 기존 비밀번호와 새로운 비밀번호가 같을 경우
     if (oldPassword === newPassword) {
       setConfirmError('기존 비밀번호와 새 비밀번호가 동일합니다.');
+      return;
+    }
+
+    // 새 비밀번호의 유효성 검사
+    if (!validatePassword(newPassword)) {
+      setNewPasswordError(
+        '새 비밀번호는 최소 8자 이상이며, 문자, 숫자, 특수문자를 포함해야 합니다.',
+      );
       return;
     }
 
@@ -140,6 +153,7 @@ const EditPassword = () => {
           margin="normal"
           error={!!oldPasswordError}
           helperText={oldPasswordError}
+          onFocus={() => setOldPasswordError('')}
           InputProps={{
             endAdornment: (
               <InputAdornment position="end">
@@ -157,12 +171,12 @@ const EditPassword = () => {
         <TextField
           label="새 비밀번호"
           fullWidth
-          type="password"
           type={showNewPassword ? 'text' : 'password'}
           onChange={handleNewPasswordChange}
           margin="normal"
-          error={!!confirmError}
-          helperText={confirmError}
+          error={!!newPasswordError}
+          helperText={newPasswordError}
+          onFocus={() => setNewPasswordError('')}
           InputProps={{
             endAdornment: (
               <InputAdornment position="end">
@@ -186,6 +200,7 @@ const EditPassword = () => {
           margin="normal"
           error={!!error}
           helperText={error}
+          onFocus={() => setNewPasswordError('')}
           InputProps={{
             endAdornment: (
               <InputAdornment position="end">

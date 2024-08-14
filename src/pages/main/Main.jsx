@@ -4,11 +4,16 @@ import { useNavigate } from 'react-router-dom';
 import BaseContainer from '../../components/layout/BaseContainer';
 import PostListItemMini from '../../components/common/ListItem/PostListItemMini';
 import TrackListItem from '../../components/common/ListItem/TrackListItem';
-import { fetchPostsInMainPage } from '../../api/post/postApi';
+import {
+  fetchPostsInMainPage,
+  fetchPostsByHashtagId,
+} from '../../api/post/postApi';
+// import { fetchRecommendedTracks } from '../../api/track/trackApi';
 import {
   fetchPopularHashtags,
   fetchHashtagsOfPost,
 } from '../../api/hashtag/hashtagApi';
+import SingleHashtagChips from '../../components/common/HashtagChips/SingleHashtagChips';
 
 const Main = () => {
   const [playlists, setPlaylists] = useState([]);
@@ -37,114 +42,88 @@ const Main = () => {
         setLoading(false);
       }
     };
+
     loadPosts();
   }, []);
 
   useEffect(() => {
-    const getPopularHashtags = async () => {
+    const initializePage = async () => {
       try {
-        const data = await fetchPopularHashtags(0, 10); // 요즘 인기태그 10개
-        setPopularHashtags(data);
+        setLoading(true);
 
-        // 첫 번째 해시태그 자동 선택 및 필터링
-        if (data.length > 0) {
-          const firstHashtag = data[0].name;
-          setSelectedHashtag(firstHashtag);
-          const matchingPosts = playlists.filter(post =>
-            post.hashtags.some(tag => tag.name === firstHashtag),
+        // 인기 태그 불러오기
+        const hashtags = await fetchPopularHashtags(0, 10);
+        setPopularHashtags(hashtags);
+
+        if (hashtags.length > 0) {
+          const firstHashtag = hashtags[0];
+
+          setSelectedHashtag(firstHashtag.id);
+
+          const response = await fetchPostsByHashtagId(
+            firstHashtag.id,
+            'likes',
+            0,
+            6,
           );
-          setFilteredPosts(matchingPosts.slice(0, 6));
+          const posts = response.content;
+
+          if (Array.isArray(posts)) {
+            setFilteredPosts(posts);
+          } else {
+            console.error('Expected array but got:', posts);
+            setFilteredPosts([]);
+          }
         }
       } catch (error) {
-        console.error('Error fetching popular hashtags:', error);
+        console.error('Error initializing page:', error);
+      } finally {
+        setLoading(false);
       }
     };
-    getPopularHashtags();
-  }, [playlists]);
+
+    initializePage();
+  }, []);
 
   const handleHashtagClick = async hashtag => {
-    if (loading) return;
+    if (loading) {
+      return;
+    }
     try {
-      setSelectedHashtag(hashtag); // 선택된 해시태그 상태를 문자열로 저장
-      const matchingPosts = playlists.filter(post =>
-        post.hashtags.some(tag => tag.name === hashtag),
-      );
-      setFilteredPosts(matchingPosts.slice(0, 6)); // 첫 6개의 게시글만 표시
+      setLoading(true);
+      setSelectedHashtag(hashtag.id);
+
+      // 선택된 해시태그와 관련된 게시글 불러오기
+      const response = await fetchPostsByHashtagId(hashtag.id, 'likes', 0, 6);
+      const posts = response.content;
+
+      if (Array.isArray(posts)) {
+        setFilteredPosts(posts);
+      } else {
+        console.error('Expected array but got:', posts);
+        setFilteredPosts([]);
+      }
+
+      setLoading(false);
     } catch (error) {
       console.error('Failed to filter posts for hashtag:', error);
+    } finally {
+      setLoading(false);
     }
   };
-  useEffect(() => {
-    if (selectedHashtag && playlists.length > 0) {
-      const matchingPosts = playlists.filter(post =>
-        post.hashtags.some(tag => tag.name === selectedHashtag),
-      );
-      setFilteredPosts(matchingPosts.slice(0, 6));
-    }
-  }, [selectedHashtag, playlists]);
 
-  //추천 트랙 부분
-  const fetchTracks = async () => {
-    return [
-      {
-        id: 1,
-        title: 'Track 1',
-        artist: 'Artist 1',
-        albumCover: 'path/to/cover1.jpg',
-        duration: '3:45',
-        audioSrc:
-          'https://p.scdn.co/mp3-preview/4d63fe1638aa41592706f835bd076443b09d8afa?cid=cfe923b2d660439caf2b557b21f31221',
-      },
-      {
-        id: 2,
-        title: '제목 2',
-        artist: 'Artist 2',
-        albumCover: 'path/to/cover2.jpg',
-        duration: '4:30',
-        audioSrc: null,
-      },
-      {
-        id: 3,
-        title: '제목 3',
-        artist: 'Artist 3',
-        albumCover: 'path/to/cover3.jpg',
-        duration: '2:22',
-        audioSrc: 'path/to/audio3.mp3',
-      },
-      {
-        id: 4,
-        title: '제목 4',
-        artist: 'Artist 4',
-        albumCover: 'path/to/cover4.jpg',
-        duration: '2:44',
-        audioSrc: 'path/to/audio4.mp3',
-      },
-      {
-        id: 5,
-        title: '제목5',
-        artist: 'Artist 5',
-        albumCover: 'path/to/cover5.jpg',
-        duration: '7:55',
-        audioSrc: 'path/to/audio5.mp3',
-      },
-      {
-        id: 6,
-        title: '제목6',
-        artist: 'Artist 6',
-        albumCover: 'path/to/cover6.jpg',
-        duration: '5:32',
-        audioSrc: 'path/to/audio6.mp3',
-      },
-    ];
-  };
-
-  useEffect(() => {
-    const getTracks = async () => {
-      const data = await fetchTracks();
-      setTracks(data);
-    };
-    getTracks();
-  }, []);
+  // 추천트랙
+  // useEffect(() => {
+  //   const getTracks = async () => {
+  //     try {
+  //       const data = await fetchRecommendedTracks();
+  //       setTracks(data);
+  //     } catch (error) {
+  //       console.error('Failed to fetch recommended tracks:', error);
+  //     }
+  //   };
+  //   getTracks();
+  // }, []);
 
   const handleTrackClick = id => {
     navigate(`/track/${id}`);
@@ -152,13 +131,7 @@ const Main = () => {
 
   return (
     <BaseContainer>
-      <Typography
-        variant="h4"
-        gutterBottom
-        sx={{ textAlign: 'center', marginBottom: 4 }}
-      >
-        지금 가장 인기있는 플레이리스트
-      </Typography>
+      <Typography variant="title">지금 가장 인기있는 플레이리스트</Typography>
       <Grid container spacing={2}>
         {playlists.length > 0 ? (
           playlists.map(playlist => (
@@ -167,7 +140,6 @@ const Main = () => {
                 <PostListItemMini
                   post={playlist}
                   hashtags={playlist.hashtags}
-                  onClickHashtag={handleHashtagClick}
                 />
               </Box>
             </Grid>
@@ -179,38 +151,32 @@ const Main = () => {
         )}
       </Grid>
 
-      <Typography
-        variant="h4"
-        gutterBottom
-        sx={{ textAlign: 'center', marginBottom: 4 }}
-      >
-        요즘 인기있는 태그
-      </Typography>
-      <Box sx={{ textAlign: 'center', marginBottom: 4 }}>
-        {popularHashtags.length > 0 ? (
-          popularHashtags.map(hashtag => (
-            <Chip
-              key={hashtag.id}
-              label={`#${hashtag.name}`}
-              onClick={() => handleHashtagClick(hashtag.name)}
-              sx={{
-                margin: '4px',
-                backgroundColor:
-                  selectedHashtag === hashtag.name ? '#D1A3FF' : 'default', // 선택된 해시태그의 배경색 변경
-                color: selectedHashtag === hashtag.name ? 'white' : 'default', // 선택된 해시태그의 텍스트 색 변경
-              }}
-            />
-          ))
-        ) : (
-          <Typography>태그가 없습니다.</Typography>
-        )}
-      </Box>
+      <Typography variant="title">요즘 인기있는 태그</Typography>
+      {/*<Box sx={{ textAlign: 'center', marginBottom: 4 }}>*/}
+      {/*  {popularHashtags.length > 0 ? (*/}
+      {/*    popularHashtags.map(hashtag => (*/}
+      {/*      <Chip*/}
+      {/*        key={hashtag.id}*/}
+      {/*        label={`#${hashtag.name}`}*/}
+      {/*        onClick={() => handleHashtagClick(hashtag)}*/}
+      {/*        sx={{*/}
+      {/*          margin: '4px',*/}
+      {/*          backgroundColor:*/}
+      {/*            selectedHashtag === hashtag.id ? '#D1A3FF' : 'default', // 선택된 해시태그의 배경색 변경*/}
+      {/*          color: selectedHashtag === hashtag.id ? 'white' : 'default', // 선택된 해시태그의 텍스트 색 변경*/}
+      {/*        }}*/}
+      {/*      />*/}
+      {/*    ))*/}
+      {/*  ) : (*/}
+      {/*    <Typography>태그가 없습니다.</Typography>*/}
+      {/*  )}*/}
+      {/*</Box>*/}
+      <SingleHashtagChips
+        fetchHashtags={fetchPopularHashtags}
+        onChipClick={handleHashtagClick}
+      />
       {filteredPosts.length > 0 && (
         <>
-          {/* <Typography
-            gutterBottom
-            sx={{ textAlign: 'center', marginTop: 4 }}
-          ></Typography> */}
           <Grid container spacing={2}>
             {filteredPosts.map(post => (
               <Grid item xs={6} key={post.id}>
@@ -222,7 +188,7 @@ const Main = () => {
           </Grid>
         </>
       )}
-
+      {/* 
       <Typography
         variant="h4"
         gutterBottom
@@ -247,7 +213,7 @@ const Main = () => {
             <Typography align="center">추천 트랙이 없습니다.</Typography>
           </Grid>
         )}
-      </Grid>
+      </Grid> */}
     </BaseContainer>
   );
 };

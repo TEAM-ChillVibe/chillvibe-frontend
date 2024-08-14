@@ -17,6 +17,8 @@ import {
   DialogActions,
   DialogContent,
   DialogContentText,
+  Alert,
+  FormHelperText,
 } from '@mui/material';
 import { useParams, useNavigate } from 'react-router-dom';
 import { formatDate } from '../../utils/reusableFn';
@@ -33,6 +35,7 @@ const Comment = ({ user }) => {
   const [modalOpen, setModalOpen] = useState(false);
   const [commentToDelete, setCommentToDelete] = useState(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [error, setError] = useState(''); // 오류 메시지 상태 추가
   const navigate = useNavigate();
 
   const [snackbar, setSnackbar] = useState({
@@ -60,6 +63,11 @@ const Comment = ({ user }) => {
 
   const handleNewCommentChange = e => {
     setNewComment(e.target.value);
+    if (e.target.value.length > 255) {
+      setError('댓글은 255자 이내로 작성해주세요.');
+    } else {
+      setError('');
+    }
   };
 
   const handleCommentClick = () => {
@@ -76,6 +84,10 @@ const Comment = ({ user }) => {
 
   // 생성
   const handleCommentSubmit = () => {
+    if (newComment.length > 255) {
+      setError('댓글은 255자 이내로 작성해주세요.');
+      return;
+    }
     createComment({ content: newComment, postId })
       .then(response => {
         setComments(prevComments => {
@@ -101,10 +113,19 @@ const Comment = ({ user }) => {
 
   const handleEditChange = e => {
     setEditingContent(e.target.value);
+    if (e.target.value.length > 255) {
+      setError('댓글은 255자 이내로 작성해주세요.');
+    } else {
+      setError('');
+    }
   };
 
   // 수정
   const handleEditSubmit = () => {
+    if (editingContent.length > 255) {
+      setError('댓글은 255자 이내로 작성해주세요.');
+      return;
+    }
     updateComment(editingCommentId, { content: editingContent })
       .then(response => {
         setComments(prevComments => {
@@ -207,7 +228,9 @@ const Comment = ({ user }) => {
                 <Box
                   sx={{
                     display: 'flex',
+                    justifyContent: 'space-betweem',
                     alignItems: 'flex-end',
+                    mt: 1,
                   }}
                 >
                   <TextField
@@ -218,12 +241,20 @@ const Comment = ({ user }) => {
                     value={editingContent}
                     onChange={handleEditChange}
                     sx={{ mr: 1 }}
+                    error={Boolean(error)}
                   />
+                  <FormHelperText
+                    error={Boolean(error)}
+                    sx={{ margin: 0, whiteSpace: 'nowrap' }}
+                  >
+                    {error}
+                  </FormHelperText>
                   <Button
                     variant="contained"
                     size="small"
                     onClick={handleEditSubmit}
-                    sx={{ mr: 1 }}
+                    sx={{ ml: 1 }}
+                    disabled={Boolean(error)}
                   >
                     수정
                   </Button>
@@ -239,7 +270,7 @@ const Comment = ({ user }) => {
                       __html: comment.content.replace(/\n/g, '<br />'),
                     }}
                   />
-                  <Typography variant="caption" color="text.date">
+                  <Typography variant="date">
                     {formatDate(comment.modifiedAt)}
                   </Typography>
                   {comment.createdAt !== comment.modifiedAt && (
@@ -298,8 +329,14 @@ const Comment = ({ user }) => {
           onChange={handleNewCommentChange}
           onClick={handleCommentClick}
           sx={{ mb: 2 }}
+          error={Boolean(error)}
         />
-        <Button variant="contained" onClick={handleCommentSubmit}>
+        <FormHelperText error={Boolean(error)}>{error}</FormHelperText>
+        <Button
+          variant="contained"
+          onClick={handleCommentSubmit}
+          disabled={Boolean(error)}
+        >
           등록
         </Button>
       </Box>

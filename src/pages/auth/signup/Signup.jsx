@@ -22,6 +22,7 @@ const Signup = () => {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [nickname, setNickname] = useState('');
+  const [nicknameError, setNicknameError] = useState('');
   const [introduction] = useState('');
   const [passwordMatchError, setPasswordMatchError] = useState('');
   const [emailError, setEmailError] = useState('');
@@ -79,11 +80,18 @@ const Signup = () => {
     // 비밀번호 검증
     if (!validatePassword(password)) {
       setPasswordMatchError(
-        '비밀번호는 최소 8자리 이상이며, 숫자와 문자를 포함해야 합니다.',
+        '비밀번호는 최소 8자 이상이며, 문자, 숫자, 특수문자를 포함해야 합니다.',
       );
       return;
     }
     setPasswordMatchError('');
+
+    // 닉네임 검증 (최대 12자)
+    if (nickname.length > 12) {
+      setNicknameError('닉네임은 최대 12자까지 입력할 수 있습니다.');
+      return;
+    }
+    setNicknameError('');
 
     // 회원가입 정보를 서버로 전송하는 로직 추가
     const formData = new FormData();
@@ -234,6 +242,9 @@ const Signup = () => {
             value={nickname}
             onChange={e => setNickname(e.target.value)}
             margin="normal"
+            inputProps={{ maxLength: 12 }}
+            error={!!nicknameError}
+            helperText={nicknameError || `최대 12자 입력 가능`}
           />
           {/* 약관 동의 */}
           <Box sx={{ width: '100%', my: 3 }}>

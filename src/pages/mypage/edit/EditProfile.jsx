@@ -16,6 +16,7 @@ import { fetchAllHashtags } from '../../../api/hashtag/hashtagApi';
 import { editProfile, myInfo } from '../../../api/user/userApi';
 import SnackbarAlert from '../../../components/common/Alert/SnackbarAlert';
 import MultiHashtagChips from '../../../components/common/HashtagChips/MultiHashtagChips';
+import SimpleModal from '../../../components/common/Modal/SimpleModal';
 
 const EditProfile = () => {
   const [email, setEmail] = useState('');
@@ -25,6 +26,8 @@ const EditProfile = () => {
   const [isPublic, setIsPublic] = useState(false);
   const [imagePreview, setImagePreview] = useState('');
   const [selectedHashtags, setSelectedHashtags] = useState([]);
+  const [openModal, setOpenModal] = useState(false);
+  const [modalAction, setModalAction] = useState(() => () => {});
   const [snackbar, setSnackbar] = useState({
     open: false,
     message: '',
@@ -77,7 +80,12 @@ const EditProfile = () => {
 
   const handleSubmit = async event => {
     event.preventDefault();
+    // 모달 열기
+    setModalAction(() => handleConfirmSubmit);
+    setOpenModal(true);
+  };
 
+  const handleConfirmSubmit = async () => {
     // 사용자 정보 업데이트 API 호출
     try {
       const formData = new FormData();
@@ -94,24 +102,28 @@ const EditProfile = () => {
         formData.append('profileImg', profileImage);
       }
 
-      if (window.confirm('회원정보를 수정하시겠습니까?')) {
-        await editProfile(formData);
-        setSnackbar({
-          open: true,
-          message: '회원정보가 수정되었습니다.',
-          severity: 'success',
-        });
-        setTimeout(() => {
-          navigate('/my-page');
-        }, 1500);
-      }
+      await editProfile(formData);
+      setSnackbar({
+        open: true,
+        message: '회원정보가 수정되었습니다.',
+        severity: 'success',
+      });
+      setTimeout(() => {
+        navigate('/my-page');
+      }, 1500);
     } catch (error) {
       setSnackbar({
         open: true,
         message: '프로필 업데이트에 실패했습니다. 다시 시도해 주세요.',
         severity: 'error',
       });
+    } finally {
+      setOpenModal(false); // 모달 닫기
     }
+  };
+
+  const handleModalClose = () => {
+    setOpenModal(false);
   };
 
   const isFormValid = email && nickname;
@@ -248,13 +260,13 @@ const EditProfile = () => {
           </Box>
         </form>
         <Button
-          variant="contained"
+          variant="outlined"
           color="error"
           onClick={handleWithdraw}
           sx={{ flex: 1, mt: 20, width: '100%' }}
           size="large"
         >
-          탈퇴하기
+          회원 탈퇴하기
         </Button>
       </Box>
 
@@ -263,6 +275,17 @@ const EditProfile = () => {
         onClose={() => setSnackbar(prev => ({ ...prev, open: false }))}
         message={snackbar.message}
         severity={snackbar.severity}
+      />
+
+      <SimpleModal
+        open={openModal}
+        onClose={handleModalClose}
+        title="회원정보 수정 확인"
+        description="회원정보를 수정하시겠습니까?"
+        primaryButtonText="확인"
+        secondaryButtonText="취소"
+        onPrimaryClick={modalAction} // 이곳에 회원정보 수정 함수
+        onSecondaryClick={handleModalClose}
       />
     </BaseContainer>
   );

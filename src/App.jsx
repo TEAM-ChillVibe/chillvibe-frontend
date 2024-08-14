@@ -5,7 +5,6 @@ import TopBar from './components/layout/TopBar/TopBar';
 import TopButton from './components/common/Button/TopButton';
 import NewPostButton from './components/common/Button/NewPostButton';
 import NewPlaylistButton from './components/common/Button/NewPlaylistButton';
-import MusicPlayer from './components/common/MusicPlayer/MusicPlayer';
 import useUserStore from './store/useUserStore';
 import MusicPlayerFloating from './components/common/MusicPlayer/MusicPlayerFloating';
 
