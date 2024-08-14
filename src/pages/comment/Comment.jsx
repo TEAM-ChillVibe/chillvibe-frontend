@@ -270,7 +270,7 @@ const Comment = ({ user }) => {
                       __html: comment.content.replace(/\n/g, '<br />'),
                     }}
                   />
-                  <Typography variant="caption" color="text.date">
+                  <Typography variant="date">
                     {formatDate(comment.modifiedAt)}
                   </Typography>
                   {comment.createdAt !== comment.modifiedAt && (

@@ -117,16 +117,11 @@ function TrackListItem({ music }) {
         <Avatar
           alt={name}
           src={thumbnailUrl}
-          sx={{ width: 56, height: 56, ml: 1, mr: 2, borderRadius: 1 }}
+          sx={{ width: 56, height: 56, ml: 1, borderRadius: 1 }}
         />
       </Box>
       <Box sx={{ flexGrow: 1, mx: 2, overflow: 'hidden' }}>
-        <Box
-          sx={{
-            display: 'flex',
-            flexDirection: 'column',
-          }}
-        >
+        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.5 }}>
           <Typography
             variant="trackTitle"
             noWrap
@@ -163,9 +158,7 @@ function TrackListItem({ music }) {
                 gap: 0.5,
               }}
             >
-              <Typography variant="body1" sx={{ fontWeight: 'bold' }}>
-                {modalTrack}
-              </Typography>
+              <Typography variant="modalPoint">{modalTrack}</Typography>
               <Typography variant="body2">{modalDescription}</Typography>
             </Box>
           }

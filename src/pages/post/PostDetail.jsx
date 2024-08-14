@@ -112,19 +112,19 @@ const PostDetail = () => {
         <Box
           display="flex"
           justifyContent="space-between"
-          alignItems="center"
+          alignItems="flex-start"
           sx={{ mb: 2, width: '100%' }}
         >
           <Box display="flex" flexDirection="column" sx={{ gap: 1 }}>
             <Typography variant="h4" sx={{ fontWeight: 'bold' }}>
               {post.title}
             </Typography>
-            <Typography variant="postDate" sx={{ color: '#aaa' }}>
+            <Typography variant="date">
               트랙 {post.playlists.trackCount}개 | {formatDate(post.createdAt)}
             </Typography>
           </Box>
           {isLoggedIn && (
-            <Box display="flex" alignItems="center">
+            <Box display="flex" alignItems="center" sx={{ pt: 1 }}>
               <Box display="flex" alignItems="center" sx={{ mr: 3 }}>
                 <LikeButton postId={postId} initialLikeCount={post.likeCount} />
               </Box>
@@ -140,6 +140,7 @@ const PostDetail = () => {
                     size="small"
                     startIcon={<EditIcon />}
                     onClick={() => navigate(`/edit-post/${postId}`)}
+                    sx={{ whiteSpace: 'nowrap' }}
                   >
                     수정
                   </Button>
@@ -149,6 +150,7 @@ const PostDetail = () => {
                     color="error"
                     startIcon={<DeleteIcon />}
                     onClick={openModal}
+                    sx={{ whiteSpace: 'nowrap' }}
                   >
                     삭제
                   </Button>

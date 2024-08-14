@@ -28,57 +28,61 @@ const Discover = () => {
   return (
     <BaseContainer>
       <Typography variant="title">Discover</Typography>
-      <Box
-        sx={{
-          width: '100%',
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-        }}
-      >
+      <Box sx={{ width: '100%' }}>
         <Box
           sx={{
+            width: '100%',
             display: 'flex',
             justifyContent: 'space-between',
             alignItems: 'center',
           }}
         >
-          <Typography
-            variant="body2"
+          <Box
             sx={{
-              cursor: 'pointer',
-              fontWeight: sortOrder === 'latest' ? 'bold' : 'normal',
-              color: sortOrder === 'latest' ? 'primary.main' : 'text.primary',
-              mr: 1,
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              ml: 0.5,
             }}
-            onClick={() => setSortOrder('latest')}
           >
-            최신순
-          </Typography>
-          <Typography
-            variant="body2"
-            sx={{
-              cursor: 'pointer',
-              fontWeight: sortOrder === 'popular' ? 'bold' : 'normal',
-              color: sortOrder === 'popular' ? 'primary.main' : 'text.primary',
-            }}
-            onClick={() => setSortOrder('popular')}
-          >
-            인기순
-          </Typography>
+            <Typography
+              variant="body2"
+              sx={{
+                cursor: 'pointer',
+                fontWeight: sortOrder === 'latest' ? 'bold' : 'normal',
+                color: sortOrder === 'latest' ? 'primary.main' : 'text.primary',
+                mr: 1,
+              }}
+              onClick={() => setSortOrder('latest')}
+            >
+              최신순
+            </Typography>
+            <Typography
+              variant="body2"
+              sx={{
+                cursor: 'pointer',
+                fontWeight: sortOrder === 'popular' ? 'bold' : 'normal',
+                color:
+                  sortOrder === 'popular' ? 'primary.main' : 'text.primary',
+              }}
+              onClick={() => setSortOrder('popular')}
+            >
+              인기순
+            </Typography>
+          </Box>
+          {isLoggedIn && (
+            <Button
+              variant="contained"
+              size="small"
+              startIcon={<DriveFileRenameOutline />}
+              href="/new-post"
+            >
+              새 글 작성
+            </Button>
+          )}
         </Box>
-        {isLoggedIn && (
-          <Button
-            variant="contained"
-            size="small"
-            startIcon={<DriveFileRenameOutline />}
-            href="/new-post"
-          >
-            새 글 작성
-          </Button>
-        )}
+        <PostList sortOrder={sortOrder} />
       </Box>
-      <PostList sortOrder={sortOrder} />
     </BaseContainer>
   );
 };
