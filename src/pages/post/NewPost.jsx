@@ -68,7 +68,7 @@ const NewPost = () => {
     if (!selectedPlaylistId) {
       setSnackbar({
         open: true,
-        message: 'PlayList가 선택하셔야 합니다.',
+        message: '플레이리스트를 선택하셔야 합니다.',
         severity: 'warning',
       });
       return;
