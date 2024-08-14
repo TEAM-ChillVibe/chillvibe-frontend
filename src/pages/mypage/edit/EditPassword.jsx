@@ -40,6 +40,10 @@ const EditPassword = () => {
   const handleSubmit = async event => {
     event.preventDefault();
 
+    setOldPasswordError('');
+    setNewPasswordError('');
+    setConfirmError('');
+
     // 비밀번호 확인
     if (newPassword !== confirmPassword) {
       setError('새 비밀번호와 확인 비밀번호가 일치하지 않습니다.');
@@ -176,7 +180,6 @@ const EditPassword = () => {
           margin="normal"
           error={!!newPasswordError}
           helperText={newPasswordError}
-          onFocus={() => setNewPasswordError('')}
           InputProps={{
             endAdornment: (
               <InputAdornment position="end">
@@ -200,7 +203,6 @@ const EditPassword = () => {
           margin="normal"
           error={!!error}
           helperText={error}
-          onFocus={() => setNewPasswordError('')}
           InputProps={{
             endAdornment: (
               <InputAdornment position="end">
