@@ -47,6 +47,9 @@ const MultiHashtagChips = ({
           size="small"
           color={selectedHashtags.includes(hashtag.id) ? 'primary' : 'default'}
           onClick={() => onChipClick(hashtag)}
+          sx={{
+            opacity: selectedHashtags.includes(hashtag.id) ? 1 : 0.5,
+          }}
         />
       ))}
     </Box>
