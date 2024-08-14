@@ -3,7 +3,6 @@ import { Box, CircularProgress } from '@mui/material';
 import { Route, Routes } from 'react-router-dom';
 
 const Main = lazy(() => import('./pages/main/Main'));
-const TestPage = lazy(() => import('./pages/temp/TestPage'));
 const MyPage = lazy(() => import('./pages/mypage/MyPage'));
 const Comment = lazy(() => import('./pages/comment/Comment'));
 const Login = lazy(() => import('./pages/auth/login/Login'));
@@ -49,7 +48,6 @@ const Router = () => {
     >
       <Routes>
         <Route path="/" element={<Main />} />
-        <Route path="/test" element={<TestPage />} />
         <Route path="/my-page" element={<MyPage />} />
         <Route path="/comment" element={<Comment />} />
         <Route path="/login" element={<Login />} />
