@@ -6,18 +6,7 @@ import {
   updateComment,
   deleteComment,
 } from '../../api/comment/commentApi';
-import {
-  Avatar,
-  Box,
-  Button,
-  Paper,
-  TextField,
-  Typography,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-} from '@mui/material';
+import { Avatar, Box, Button, TextField, Typography } from '@mui/material';
 import { useParams, useNavigate } from 'react-router-dom';
 import { formatDate } from '../../utils/reusableFn';
 import SimpleModal from '../../components/common/Modal/SimpleModal';
@@ -33,7 +22,6 @@ const Comment = ({ user }) => {
   const [modalOpen, setModalOpen] = useState(false);
   const [commentToDelete, setCommentToDelete] = useState(null);
   const [loginModalOpen, setLoginModalOpen] = useState(false); // 로그인 모달 상태 추가
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [newCommentError, setNewCommentError] = useState('');
   const [editingCommentError, setEditingCommentError] = useState('');
   const navigate = useNavigate();
