@@ -238,7 +238,6 @@ const Signup = () => {
             margin="normal"
             error={!!passwordMatchError}
             helperText={passwordMatchError}
-            onFocus={() => setPasswordMatchError('')}
           />
           <TextField
             label="비밀번호 확인"
@@ -250,7 +249,6 @@ const Signup = () => {
             margin="normal"
             error={!!passwordMatchError}
             helperText={passwordMatchError}
-            onFocus={() => setPasswordMatchError('')}
           />
           <TextField
             label="닉네임"
