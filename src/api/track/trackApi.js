@@ -21,15 +21,7 @@ export const getFeaturedPlaylists = async (
 ) => {
   try {
     const response = await axiosWithoutToken.get(
-      `/api/tracks/featured-playlists`,
-      {
-        params: {
-          locale,
-          page,
-          size,
-        },
-      },
-      '/api/spotify/featured-playlists',
+      '/api/tracks/featured-playlists',
       {
         params: { locale, page, size },
       },

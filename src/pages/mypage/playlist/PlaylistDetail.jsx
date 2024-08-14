@@ -86,9 +86,8 @@ const PlaylistDetail = () => {
         });
       }
       setTimeout(() => {
-        // navigate('/my-page'); 썸네일 반영 X
-        window.location.href = '/my-page'; // 썸네일 반영 O
-      }, 2000); // 저장하고 마이페이지로
+        navigate('/my-page');
+      }, 1000); // 저장하고 마이페이지로
     } catch (error) {
       setSnackbar({
         open: true,

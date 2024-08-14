@@ -12,7 +12,6 @@ import {
   fetchPopularHashtags,
   fetchHashtagsOfPost,
 } from '../../api/hashtag/hashtagApi';
-import SingleHashtagChips from '../../components/common/HashtagChips/SingleHashtagChips';
 
 const Main = () => {
   const [playlists, setPlaylists] = useState([]);
@@ -88,9 +87,7 @@ const Main = () => {
   }, []);
 
   const handleHashtagClick = async hashtag => {
-    if (loading) {
-      return;
-    }
+    if (loading) return;
     try {
       setLoading(true);
       setSelectedHashtag(hashtag.id);
@@ -134,7 +131,13 @@ const Main = () => {
 
   return (
     <BaseContainer>
-      <Typography variant="title">지금 가장 인기있는 플레이리스트</Typography>
+      <Typography
+        variant="h4"
+        gutterBottom
+        sx={{ textAlign: 'center', marginBottom: 4 }}
+      >
+        지금 가장 인기있는 플레이리스트
+      </Typography>
       <Grid container spacing={2}>
         {playlists.length > 0 ? (
           playlists.map(playlist => (
@@ -193,7 +196,7 @@ const Main = () => {
           </Grid>
         </>
       )}
-      {/* 
+
       <Typography
         variant="h4"
         gutterBottom
@@ -216,7 +219,7 @@ const Main = () => {
             <Typography align="center">추천 트랙이 없습니다.</Typography>
           </Grid>
         )}
-      </Grid> */}
+      </Grid>
     </BaseContainer>
   );
 };
