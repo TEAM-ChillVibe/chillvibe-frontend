@@ -217,6 +217,7 @@ const PostDetail = () => {
           secondaryButtonText="취소"
           onPrimaryClick={handleDelete}
           onSecondaryClick={closeModal}
+          primaryButtonStyle="error"
         />
       )}
     </BaseContainer>
