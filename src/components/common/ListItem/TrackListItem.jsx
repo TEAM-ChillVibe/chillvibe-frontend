@@ -13,6 +13,8 @@ import {
 } from '../../../api/playlist/playlistApi';
 import SnackbarAlert from '../Alert/SnackbarAlert';
 import { useNavigate } from 'react-router-dom';
+import useUserStore from '../../../store/useUserStore';
+import ListModal from '../Modal/ListModal';
 
 function TrackListItem({ music }) {
   const navigate = useNavigate();
@@ -20,8 +22,18 @@ function TrackListItem({ music }) {
   const { name, artist, thumbnailUrl, duration, previewUrl } = music;
   const { isPlaying, currentTrack, playTrack, togglePlay } =
     useMusicPlayerStore();
+  const { isAuthenticated } = useUserStore();
   const isCurrentTrack = currentTrack && currentTrack.previewUrl === previewUrl;
   const handlePlayPause = () => {
+    if (!previewUrl) {
+      setSnackbar({
+        open: true,
+        message: '미리 듣기를 지원하지 않는 트랙입니다.',
+        severity: 'warning',
+      });
+      return;
+    }
+
     if (isCurrentTrack) {
       togglePlay();
     } else {
@@ -46,20 +58,32 @@ function TrackListItem({ music }) {
       navigate('/500');
     }
   };
-
+  // 모달 핸들러
   const openModal = () => {
-    fetchPlaylists();
-    setIsModalOpen(true);
+    if (!isAuthenticated) {
+      setSnackbar({
+        open: true,
+        message: '로그인이 필요한 서비스입니다.',
+        severity: 'warning',
+      });
+    } else {
+      fetchPlaylists();
+      setIsModalOpen(true);
+    }
   };
+
   const closeModal = () => {
     setIsModalOpen(false);
     setSelectedValue('');
     setIsAddingTrack(false);
   };
-  const handleChange = event => {
-    setSelectedValue(event.target.value);
-  };
+  // const handleChange = event => {
+  //   setSelectedValue(event.target.value);
+  // };
 
+  const handleSelect = value => {
+    setSelectedValue(value);
+  };
   const [snackbar, setSnackbar] = useState({
     open: false,
     message: '',
@@ -145,7 +169,7 @@ function TrackListItem({ music }) {
         >
           <PlaylistAdd />
         </IconButton>
-        <DropdownModal
+        <ListModal
           open={isModalOpen}
           onClose={closeModal}
           title="Select Playlist"
@@ -167,7 +191,7 @@ function TrackListItem({ music }) {
             value: playlist.id,
           }))}
           selectedValue={selectedValue}
-          onChange={handleChange}
+          onSelect={handleSelect}
           primaryButtonText="추가"
           onPrimaryClick={handlePrimaryClick}
           secondaryButtonText="취소"

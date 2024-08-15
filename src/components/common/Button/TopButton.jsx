@@ -5,7 +5,6 @@ import useMusicPlayerStore from '../../../store/useMusicPlayerStore';
 
 function TopButton() {
   const [showButton, setShowButton] = useState(false);
-  const { isVisible: isMusicPlayerVisible } = useMusicPlayerStore();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -32,9 +31,8 @@ function TopButton() {
         onClick={scrollToTop}
         sx={{
           position: 'fixed',
-          // bottom: isMusicPlayerVisible ? 100 : 24,
           bottom: 24,
-          right: 24,
+          left: 24,
         }}
       >
         <KeyboardArrowUpIcon />

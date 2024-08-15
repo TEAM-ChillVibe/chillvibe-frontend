@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { Typography, Grid, Box, Chip } from '@mui/material';
-import { useNavigate } from 'react-router-dom';
 import BaseContainer from '../../components/layout/BaseContainer';
 import PostListItemMini from '../../components/common/ListItem/PostListItemMini';
 import TrackListItem from '../../components/common/ListItem/TrackListItem';
@@ -8,21 +7,26 @@ import {
   fetchPostsInMainPage,
   fetchPostsByHashtagId,
 } from '../../api/post/postApi';
-// import { fetchRecommendedTracks } from '../../api/track/trackApi';
+import { getFeaturedPlaylists } from '../../api/track/trackApi';
 import {
   fetchPopularHashtags,
   fetchHashtagsOfPost,
 } from '../../api/hashtag/hashtagApi';
 import SingleHashtagChips from '../../components/common/HashtagChips/SingleHashtagChips';
+import { Refresh } from '@mui/icons-material';
+import IconButton from '@mui/material/IconButton';
 
 const Main = () => {
   const [playlists, setPlaylists] = useState([]);
   const [popularHashtags, setPopularHashtags] = useState([]);
   const [selectedHashtag, setSelectedHashtag] = useState(null);
   const [filteredPosts, setFilteredPosts] = useState([]);
-  const [tracks, setTracks] = useState([]);
+  const [featuredTracks, setFeaturedTracks] = useState([]);
   const [loading, setLoading] = useState(true);
-  const navigate = useNavigate();
+  const getRandomTracks = (tracks, count) => {
+    const shuffled = tracks.sort(() => 0.5 - Math.random());
+    return shuffled.slice(0, count);
+  };
 
   useEffect(() => {
     const loadPosts = async () => {
@@ -112,31 +116,38 @@ const Main = () => {
     }
   };
 
-  // 추천트랙
-  // useEffect(() => {
-  //   const getTracks = async () => {
-  //     try {
-  //       const data = await fetchRecommendedTracks();
-  //       setTracks(data);
-  //     } catch (error) {
-  //       console.error('Failed to fetch recommended tracks:', error);
-  //     }
-  //   };
-  //   getTracks();
-  // }, []);
+  const fetchFeaturedTracks = async () => {
+    try {
+      setLoading(true);
+      const featuredData = await getFeaturedPlaylists('ko_KR', 0, 20); // 6개의 트랙만 가져오기
+      const randomTracks = getRandomTracks(featuredData.tracks || [], 6);
+      setFeaturedTracks(randomTracks);
+      setLoading(false);
+    } catch (error) {
+      console.error('Failed to fetch featured playlists:', error);
+      setLoading(false);
+    }
+  };
 
-  const handleTrackClick = id => {
-    navigate(`/track/${id}`);
+  // 인기 트랙
+  useEffect(() => {
+    fetchFeaturedTracks();
+  }, []);
+
+  const refreshTracks = () => {
+    fetchFeaturedTracks();
   };
 
   return (
     <BaseContainer>
-      <Typography variant="title">지금 가장 인기있는 플레이리스트</Typography>
+      <Typography variant="title" sx={{ textAlign: 'center' }}>
+        지금 가장 인기있는 플레이리스트
+      </Typography>
       <Grid container spacing={2}>
         {playlists.length > 0 ? (
           playlists.map(playlist => (
             <Grid item xs={6} key={playlist.id}>
-              <Box sx={{ padding: '1px' }}>
+              <Box sx={{ py: 1, px: 3 }}>
                 <PostListItemMini
                   post={playlist}
                   hashtags={playlist.hashtags}
@@ -151,59 +162,19 @@ const Main = () => {
         )}
       </Grid>
 
-      <Typography variant="title">요즘 인기있는 태그</Typography>
-      {/*<Box sx={{ textAlign: 'center', marginBottom: 4 }}>*/}
-      {/*  {popularHashtags.length > 0 ? (*/}
-      {/*    popularHashtags.map(hashtag => (*/}
-      {/*      <Chip*/}
-      {/*        key={hashtag.id}*/}
-      {/*        label={`#${hashtag.name}`}*/}
-      {/*        onClick={() => handleHashtagClick(hashtag)}*/}
-      {/*        sx={{*/}
-      {/*          margin: '4px',*/}
-      {/*          backgroundColor:*/}
-      {/*            selectedHashtag === hashtag.id ? '#D1A3FF' : 'default', // 선택된 해시태그의 배경색 변경*/}
-      {/*          color: selectedHashtag === hashtag.id ? 'white' : 'default', // 선택된 해시태그의 텍스트 색 변경*/}
-      {/*        }}*/}
-      {/*      />*/}
-      {/*    ))*/}
-      {/*  ) : (*/}
-      {/*    <Typography>태그가 없습니다.</Typography>*/}
-      {/*  )}*/}
-      {/*</Box>*/}
-      <SingleHashtagChips
-        fetchHashtags={fetchPopularHashtags}
-        onChipClick={handleHashtagClick}
-      />
-      {filteredPosts.length > 0 && (
-        <>
-          <Grid container spacing={2}>
-            {filteredPosts.map(post => (
-              <Grid item xs={6} key={post.id}>
-                <Box sx={{ cursor: 'pointer' }}>
-                  <PostListItemMini post={post} hashtags={post.hashtags} />
-                </Box>
-              </Grid>
-            ))}
-          </Grid>
-        </>
-      )}
-      {/* 
-      <Typography
-        variant="h4"
-        gutterBottom
-        sx={{ textAlign: 'center', marginBottom: 4 }}
-      >
-        추천 트랙
-      </Typography>
-      <Grid container spacing={1}>
-        {tracks.length > 0 ? (
-          tracks.map(track => (
-            <Grid item xs={12} sm={6} md={4} key={track.id}>
-              <Box
-                sx={{ cursor: 'pointer', padding: 2 }}
-                onClick={() => handleTrackClick(track.id)}
-              >
+      <Box sx={{ display: 'inline-flex', alignItems: 'center', mt: 3 }}>
+        <Typography variant="title" sx={{ flexShrink: 0 }}>
+          추천 트랙
+        </Typography>
+        <IconButton onClick={refreshTracks} color="primary" sx={{ ml: 1 }}>
+          <Refresh />
+        </IconButton>
+      </Box>
+      <Grid container>
+        {featuredTracks.length > 0 ? (
+          featuredTracks.map(track => (
+            <Grid item xs={6} key={track.id}>
+              <Box sx={{ py: 2, mr: 1 }}>
                 <TrackListItem music={track} />
               </Box>
             </Grid>
@@ -213,7 +184,40 @@ const Main = () => {
             <Typography align="center">추천 트랙이 없습니다.</Typography>
           </Grid>
         )}
-      </Grid> */}
+      </Grid>
+
+      <Typography variant="title" sx={{ textAlign: 'center', mt: 3 }}>
+        요즘 인기있는 태그
+      </Typography>
+      <Box
+        sx={{
+          width: '100%',
+          display: 'flex',
+          justifyContent: 'center',
+          flexWrap: 'wrap',
+          mb: 3,
+        }}
+      >
+        <SingleHashtagChips
+          fetchHashtags={fetchPopularHashtags}
+          onChipClick={handleHashtagClick}
+        />
+
+        <Box sx={{ mb: 10 }} />
+        {filteredPosts.length > 0 && (
+          <>
+            <Grid container spacing={2}>
+              {filteredPosts.map(post => (
+                <Grid item xs={6} key={post.id}>
+                  <Box sx={{ p: 1 }}>
+                    <PostListItemMini post={post} hashtags={post.hashtags} />
+                  </Box>
+                </Grid>
+              ))}
+            </Grid>
+          </>
+        )}
+      </Box>
     </BaseContainer>
   );
 };

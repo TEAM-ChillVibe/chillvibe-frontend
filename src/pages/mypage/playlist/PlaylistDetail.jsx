@@ -20,6 +20,7 @@ import {
 import DeleteIcon from '@mui/icons-material/Delete';
 import TrackListEditItem from '../../../components/common/ListItem/TrackListEditItem';
 import SnackbarAlert from '../../../components/common/Alert/SnackbarAlert';
+import PlaylistRemoveIcon from '@mui/icons-material/PlaylistRemove';
 
 const PlaylistDetail = () => {
   const { playlistId } = useParams();
@@ -29,6 +30,8 @@ const PlaylistDetail = () => {
   const [tracksToDelete, setTracksToDelete] = useState([]);
   const [isSaveModalOpen, setIsSaveModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [isSaving, setIsSaving] = useState(false); // 플레이리스트 저장중
+  const [isDeleting, setIsDeleting] = useState(false); // 플레이리스트 삭제중
   const [snackbar, setSnackbar] = useState({
     open: false,
     message: '',
@@ -74,6 +77,7 @@ const PlaylistDetail = () => {
   };
 
   const handleConfirmSave = async () => {
+    setIsSaving(true);
     try {
       if (tracksToDelete.length > 0) {
         await removeTracksFromPlaylist(playlistId, tracksToDelete);
@@ -85,15 +89,15 @@ const PlaylistDetail = () => {
         });
       }
       setTimeout(() => {
-        // navigate('/my-page'); 썸네일 반영 X
-        window.location.href = '/my-page'; // 썸네일 반영 O
-      }, 2000); // 저장하고 마이페이지로
+        navigate('/my-page');
+      }, 1000); // 저장하고 마이페이지로
     } catch (error) {
       setSnackbar({
         open: true,
         message: '플레이리스트 저장에 실패했습니다. 다시 시도해주세요.',
         severity: 'error',
       });
+      setIsSaving(false); // 추가
     }
     setIsSaveModalOpen(false);
   };
@@ -107,15 +111,24 @@ const PlaylistDetail = () => {
   };
 
   const handleConfirmDelete = async () => {
+    setIsDeleting(true);
     try {
       await deletePlaylist(playlistId);
-      navigate('/my-page');
+      setSnackbar({
+        open: true,
+        message: '플레이리스트가 성공적으로 삭제되었습니다.',
+        severity: 'success',
+      });
+      setTimeout(() => {
+        navigate('/my-page');
+      }, 1000);
     } catch (error) {
       setSnackbar({
         open: true,
         message: '플레이리스트 삭제에 실패했습니다. 다시 시도해주세요.',
         severity: 'error',
       });
+      setIsDeleting(false); // 삭제 실패 시 상태 초기화
     }
     setIsDeleteModalOpen(false);
   };
@@ -170,7 +183,7 @@ const PlaylistDetail = () => {
             variant="contained"
             size="small"
             color="error"
-            startIcon={<DeleteIcon />}
+            startIcon={<PlaylistRemoveIcon />}
             onClick={handleDeleteClick}
           >
             플레이리스트 삭제
@@ -213,7 +226,8 @@ const PlaylistDetail = () => {
           onClick={handleSaveClick}
           disabled={tracksToDelete.length === 0}
         >
-          변경사항 저장
+          {/* 변경사항 저장 */}
+          {isSaving ? '저장 중...' : '변경사항 저장'}
         </Button>
       </Box>
 
@@ -227,6 +241,7 @@ const PlaylistDetail = () => {
         secondaryButtonText="취소"
         onPrimaryClick={handleConfirmSave}
         onSecondaryClick={handleCancelSave}
+        disablePrimaryButton={isSaving} //추가
       />
 
       {/* 삭제 확인 모달 */}
@@ -241,6 +256,7 @@ const PlaylistDetail = () => {
         onPrimaryClick={handleConfirmDelete}
         onSecondaryClick={handleCancelDelete}
         primaryButtonStyle="error"
+        disablePrimaryButton={isDeleting}
       />
 
       {/* 플레이리스트 저장 확인 스낵바 */}

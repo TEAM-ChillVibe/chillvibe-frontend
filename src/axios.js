@@ -2,9 +2,12 @@ import axios from 'axios';
 import useUserStore from './store/useUserStore';
 import { signout, reissue } from './api/auth/authApi';
 
+const baseURL = '';
+
 // 토큰이 없는 요청을 위한 인스턴스
 const axiosWithoutToken = axios.create({
   baseURL: 'http://localhost:8080',
+  // baseURL: baseURL,
   timeout: 5000,
   withCredentials: true,
   headers: {
@@ -15,6 +18,7 @@ const axiosWithoutToken = axios.create({
 // 기본 인스턴스
 const axiosWithToken = axios.create({
   baseURL: 'http://localhost:8080',
+  // baseURL: baseURL,
   timeout: 5000,
   withCredentials: true,
   headers: {

@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import { signin } from '../../../api/auth/authApi';
 import useUserStore from '../../../store/useUserStore';
 import SnackbarAlert from '../../../components/common/Alert/SnackbarAlert';
+import logoImgB from '../../../assets/logoImg/ChillVibeB_logoB.png';
 
 const Login = () => {
   const [email, setEmail] = useState('');
@@ -62,7 +63,7 @@ const Login = () => {
 
   return (
     <BaseContainer>
-      <Typography variant="title">Login</Typography>
+      {/*<Typography variant="title">Login</Typography>*/}
       <Box
         sx={{
           width: '60%',
@@ -76,6 +77,13 @@ const Login = () => {
           p: 2,
         }}
       >
+        <Box sx={{ mb: 5 }}>
+          <img
+            src={logoImgB}
+            alt="logo"
+            style={{ width: '200px', height: 'auto' }}
+          />
+        </Box>
         <form onSubmit={handleSubmit}>
           {/* 회원정보 입력 필드 */}
           <TextField

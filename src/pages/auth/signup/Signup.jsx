@@ -16,6 +16,10 @@ import { AddPhotoAlternate } from '@mui/icons-material';
 import IconButton from '@mui/material/IconButton';
 import { signup } from '../../../api/auth/authApi';
 import defaultImage from '../../../assets/default-profile.png';
+import SnackbarAlert from '../../../components/common/Alert/SnackbarAlert';
+import ServiceTermsModal from './fragments/ServiceTermsModal';
+import PrivacyPolicyModal from './fragments/PrivacyPolicyModal';
+import MarketingConsentModal from './fragments/MarketingConsentModal';
 
 const Signup = () => {
   const [email, setEmail] = useState('');
@@ -24,6 +28,7 @@ const Signup = () => {
   const [nickname, setNickname] = useState('');
   const [nicknameError, setNicknameError] = useState('');
   const [introduction] = useState('');
+  const [passwordError, setPasswordError] = useState('');
   const [passwordMatchError, setPasswordMatchError] = useState('');
   const [emailError, setEmailError] = useState('');
   const [profileImage, setProfileImage] = useState(null);
@@ -32,8 +37,18 @@ const Signup = () => {
   const [marketingAccepted, setMarketingAccepted] = useState(false);
   const [privacyPolicyAccepted, setPrivacyPolicyAccepted] = useState(false);
   const [allAccepted, setAllAccepted] = useState(false);
+  const [serviceTermsModalOpen, setServiceTermsModalOpen] = useState(false);
+  const [privacyPolicyModalOpen, setPrivacyPolicyModalOpen] = useState(false);
+  const [marketingConsentModalOpen, setMarketingConsentModalOpen] =
+    useState(false);
   const validatePassword = password =>
     /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[\W_])[a-zA-Z\d\W_]{8,}$/.test(password);
+
+  const [snackbar, setSnackbar] = useState({
+    open: false,
+    message: '',
+    severity: 'success',
+  });
 
   const navigate = useNavigate();
 
@@ -70,6 +85,11 @@ const Signup = () => {
   const handleSubmit = async event => {
     event.preventDefault();
 
+    setEmailError('');
+    setPasswordError('');
+    setPasswordMatchError('');
+    setNicknameError('');
+
     // 비밀번호 확인
     if (password !== confirmPassword) {
       setPasswordMatchError('비밀번호가 일치하지 않습니다.');
@@ -79,7 +99,7 @@ const Signup = () => {
 
     // 비밀번호 검증
     if (!validatePassword(password)) {
-      setPasswordMatchError(
+      setPasswordError(
         '비밀번호는 최소 8자 이상이며, 문자, 숫자, 특수문자를 포함해야 합니다.',
       );
       return;
@@ -122,8 +142,12 @@ const Signup = () => {
       // 회원가입 요청
       await signup(formData);
       // 성공 시, 로그인 화면으로 이동
-      alert('회원가입 되었습니다.');
-      navigate('/login');
+      setSnackbar({
+        open: true,
+        message: '회원가입 되었습니다.',
+        severity: 'success',
+      });
+      setTimeout(() => navigate('/login'), 2000);
     } catch (error) {
       // 에러 처리
       if (error.response) {
@@ -133,13 +157,19 @@ const Signup = () => {
           setEmailError('이미 가입된 이메일입니다.');
         } else {
           // 다른 상태 코드에 대한 일반적인 에러 처리
-          alert(
-            `회원가입 실패: ${error.response.status} ${error.response.statusText}`,
-          );
+          setSnackbar({
+            open: true,
+            message: `회원가입 실패: ${error.response.status} ${error.response.statusText}`,
+            severity: 'error',
+          });
         }
       } else {
         // 서버 응답이 없는 경우 (네트워크 오류 등)
-        alert('회원가입 요청 처리 중 오류가 발생했습니다.');
+        setSnackbar({
+          open: true,
+          message: '회원가입 요청 처리 중 오류가 발생했습니다.',
+          severity: 'error',
+        });
       }
     }
   };
@@ -209,7 +239,7 @@ const Signup = () => {
             margin="normal"
             error={!!emailError}
             helperText={emailError}
-            onFocus={() => setPasswordMatchError('')}
+            onFocus={() => setEmailError('')}
           />
           <TextField
             label="비밀번호"
@@ -219,9 +249,8 @@ const Signup = () => {
             value={password}
             onChange={e => setPassword(e.target.value)}
             margin="normal"
-            error={!!passwordMatchError}
-            helperText={passwordMatchError}
-            onFocus={() => setPasswordMatchError('')}
+            error={!!passwordError}
+            helperText={passwordError}
           />
           <TextField
             label="비밀번호 확인"
@@ -233,7 +262,6 @@ const Signup = () => {
             margin="normal"
             error={!!passwordMatchError}
             helperText={passwordMatchError}
-            onFocus={() => setPasswordMatchError('')}
           />
           <TextField
             label="닉네임"
@@ -261,38 +289,62 @@ const Signup = () => {
                 }
               />
               <Divider sx={{ my: 1 }} />
-              <FormControlLabel
-                required
-                control={
-                  <Checkbox
-                    size="small"
-                    checked={termsAccepted}
-                    onChange={e => setTermsAccepted(e.target.checked)}
-                  />
-                }
-                label="서비스 이용약관에 동의합니다."
-              />
-              <FormControlLabel
-                required
-                control={
-                  <Checkbox
-                    size="small"
-                    checked={privacyPolicyAccepted}
-                    onChange={e => setPrivacyPolicyAccepted(e.target.checked)}
-                  />
-                }
-                label="개인정보 수집 및 이용에 동의합니다."
-              />
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    size="small"
-                    checked={marketingAccepted}
-                    onChange={e => setMarketingAccepted(e.target.checked)}
-                  />
-                }
-                label="마케팅 정보 수신에 동의합니다."
-              />
+              <Box>
+                <FormControlLabel
+                  required
+                  control={
+                    <Checkbox
+                      size="small"
+                      checked={termsAccepted}
+                      onChange={e => setTermsAccepted(e.target.checked)}
+                    />
+                  }
+                  label="서비스 이용약관에 동의합니다."
+                />
+                <Button
+                  size="small"
+                  onClick={() => setServiceTermsModalOpen(true)}
+                >
+                  약관 보기
+                </Button>
+              </Box>
+              <Box>
+                <FormControlLabel
+                  required
+                  control={
+                    <Checkbox
+                      size="small"
+                      checked={privacyPolicyAccepted}
+                      onChange={e => setPrivacyPolicyAccepted(e.target.checked)}
+                    />
+                  }
+                  label="개인정보 수집 및 이용에 동의합니다."
+                />
+                <Button
+                  size="small"
+                  onClick={() => setPrivacyPolicyModalOpen(true)}
+                >
+                  약관 보기
+                </Button>
+              </Box>
+              <Box>
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      size="small"
+                      checked={marketingAccepted}
+                      onChange={e => setMarketingAccepted(e.target.checked)}
+                    />
+                  }
+                  label="마케팅 정보 수신에 동의합니다."
+                />
+                <Button
+                  size="small"
+                  onClick={() => setMarketingConsentModalOpen(true)}
+                >
+                  약관 보기
+                </Button>
+              </Box>
             </FormGroup>
           </Box>
           {/* 버튼 */}
@@ -317,6 +369,24 @@ const Signup = () => {
           </Box>
         </form>
       </Box>
+      <SnackbarAlert
+        open={snackbar.open}
+        onClose={() => setSnackbar(prev => ({ ...prev, open: false }))}
+        message={snackbar.message}
+        severity={snackbar.severity}
+      />
+      <ServiceTermsModal
+        open={serviceTermsModalOpen}
+        handleClose={() => setServiceTermsModalOpen(false)}
+      />
+      <PrivacyPolicyModal
+        open={privacyPolicyModalOpen}
+        handleClose={() => setPrivacyPolicyModalOpen(false)}
+      />
+      <MarketingConsentModal
+        open={marketingConsentModalOpen}
+        handleClose={() => setMarketingConsentModalOpen(false)}
+      />
     </BaseContainer>
   );
 };

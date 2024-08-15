@@ -25,8 +25,10 @@ const NewPostButton = () => {
         severity: 'warning',
       });
       navigate('/login');
+      window.scrollTo(0, 0);
     } else {
       navigate('/new-post');
+      window.scrollTo(0, 0);
     }
   };
 

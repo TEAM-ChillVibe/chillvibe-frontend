@@ -37,13 +37,11 @@ const scrollLeft = keyframes`
 `;
 
 // 스크롤 애니메이션을 적용한 Typography 스타일 정의
-const ScrollingTypography = styled(Typography)(({ animate, width }) => ({
+const ScrollingTypography = styled(Typography)(({ animate }) => ({
   display: 'block',
   whiteSpace: 'nowrap',
-  overflow: 'hidden',
   animation: animate ? `${scrollLeft} 20s linear infinite` : 'none',
   transform: 'translateX(0)', // 초기 상태에서 텍스트가 보이도록 설정
-  minWidth: '100%',
 }));
 
 const MusicPlayerFloating = () => {
@@ -92,16 +90,16 @@ const MusicPlayerFloating = () => {
     <Card
       sx={{
         position: 'fixed',
-        bottom: 16, // 화면 하단에서 여유 공간
+        bottom: 16,
         left: '50%',
-        transform: 'translateX(-50%)', // 수평 중앙 정렬
+        transform: 'translateX(-50%)',
         boxShadow: 3,
         backgroundColor: '#1F1F1F',
         display: 'flex',
         flexDirection: 'column',
-        width: '90%', // 카드 너비 조정
-        maxWidth: 600, // 카드 최대 너비
-        borderRadius: 2, // 카드 테두리 둥글게
+        width: '90%',
+        maxWidth: 600,
+        borderRadius: 2,
       }}
     >
       <CardContent
@@ -146,7 +144,6 @@ const MusicPlayerFloating = () => {
               ref={textRef}
               animate={isScrolling}
               sx={{
-                overflow: 'hidden',
                 mb: 0.5,
                 flexGrow: 1,
               }}

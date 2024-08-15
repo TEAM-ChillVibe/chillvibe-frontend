@@ -178,8 +178,8 @@ const NewPost = () => {
                     display: 'flex',
                     alignItems: 'center',
                     opacity:
-                      selectedPlaylistId && selectedPlaylistId !== playlist.id
-                        ? 0.65
+                      !selectedPlaylistId || selectedPlaylistId !== playlist.id
+                        ? 0.5
                         : 1,
                     transition: 'opacity 0.3s ease',
                   }}

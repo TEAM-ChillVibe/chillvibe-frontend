@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Box,
   Button,
@@ -37,8 +37,20 @@ const EditPassword = () => {
     severity: 'success',
   });
 
+  useEffect(() => {
+    if (newPassword && oldPassword && newPassword === oldPassword) {
+      setNewPasswordError('기존 비밀번호와 새 비밀번호가 동일합니다.');
+    } else {
+      setNewPasswordError('');
+    }
+  }, [newPassword, oldPassword]);
+
   const handleSubmit = async event => {
     event.preventDefault();
+
+    setOldPasswordError('');
+    setNewPasswordError('');
+    setConfirmError('');
 
     // 비밀번호 확인
     if (newPassword !== confirmPassword) {
@@ -125,6 +137,8 @@ const EditPassword = () => {
     }
   };
 
+  const isFormValid = oldPassword && newPassword && confirmPassword;
+
   return (
     <Box
       sx={{
@@ -172,11 +186,11 @@ const EditPassword = () => {
           label="새 비밀번호"
           fullWidth
           type={showNewPassword ? 'text' : 'password'}
+          value={newPassword}
           onChange={handleNewPasswordChange}
           margin="normal"
           error={!!newPasswordError}
           helperText={newPasswordError}
-          onFocus={() => setNewPasswordError('')}
           InputProps={{
             endAdornment: (
               <InputAdornment position="end">
@@ -200,7 +214,6 @@ const EditPassword = () => {
           margin="normal"
           error={!!error}
           helperText={error}
-          onFocus={() => setNewPasswordError('')}
           InputProps={{
             endAdornment: (
               <InputAdornment position="end">
@@ -228,6 +241,7 @@ const EditPassword = () => {
             type="submit"
             variant="contained"
             sx={{ flex: 1 }}
+            disabled={!isFormValid}
             size="large"
           >
             비밀번호 변경
