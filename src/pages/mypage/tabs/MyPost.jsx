@@ -7,7 +7,7 @@ import {
   Typography,
 } from '@mui/material';
 import MyPostListItem from '../../../components/common/ListItem/MyPostListItem';
-import { fetchPostsByUserId } from '../../../api/post/postApi';
+import { fetchMyPosts } from '../../../api/post/postApi';
 import SnackbarAlert from '../../../components/common/Alert/SnackbarAlert';
 import { DriveFileRenameOutline } from '@mui/icons-material';
 
@@ -34,12 +34,7 @@ const MyPost = ({ user }) => {
     const fetchposts = async () => {
       setIsLoading(true);
       try {
-        const data = await fetchPostsByUserId(
-          user.userId,
-          'latest',
-          page - 1,
-          itemsPerPage,
-        );
+        const data = await fetchMyPosts('latest', page - 1, itemsPerPage);
         setPosts(data.content);
         setTotalPages(data.page.totalPages);
       } catch (error) {

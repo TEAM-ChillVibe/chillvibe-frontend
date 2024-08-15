@@ -24,6 +24,18 @@ export const fetchPostById = async postId => {
   }
 };
 
+// 마이페이지 게시글 조회 (페이지네이션 지원)
+export const fetchMyPosts = async (sortBy = 'latest', page = 0, size = 10) => {
+  try {
+    const response = await axiosWithToken.get(`/api/posts/user`, {
+      params: { sortBy, page, size },
+    });
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
 // 특정 유저 게시글 조회 (페이지네이션 지원)
 export const fetchPostsByUserId = async (
   userId,
