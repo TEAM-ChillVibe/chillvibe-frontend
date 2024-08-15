@@ -33,7 +33,7 @@ const Topbar = () => {
             src={logoS}
             alt="Logo"
             style={{
-              width: '130px',
+              width: '135px',
               height: 'auto',
               paddingTop: 3,
             }}
