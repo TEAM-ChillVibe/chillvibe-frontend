@@ -11,6 +11,7 @@ const SimpleModal = ({
   onPrimaryClick,
   onSecondaryClick,
   primaryButtonStyle = 'primary',
+  disablePrimaryButton = false, // 버튼 비활성화 (저장 시)
 }) => {
   return (
     <Modal
@@ -59,6 +60,7 @@ const SimpleModal = ({
             onClick={onPrimaryClick}
             variant="contained"
             color={primaryButtonStyle}
+            disabled={disablePrimaryButton} // 비활성화 상태 적용
           >
             {primaryButtonText}
           </Button>
