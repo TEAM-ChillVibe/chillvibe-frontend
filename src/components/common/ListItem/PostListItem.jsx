@@ -12,8 +12,10 @@ function PostListItem({ post, selectedHashtag }) {
     post;
   const navigate = useNavigate();
 
-  const { initializeLikedPosts } = usePostStore(state => ({
+  // ✔️ 여기서 likedPosts 상태를 가져옵니다.
+  const { initializeLikedPosts, likedPosts } = usePostStore(state => ({
     initializeLikedPosts: state.initializeLikedPosts,
+    likedPosts: state.likedPosts,
   }));
 
   useEffect(() => {
@@ -120,7 +122,11 @@ function PostListItem({ post, selectedHashtag }) {
             {user.nickname || 'Unknown User'}
           </Typography>
         </Box>
-        <LikeButton postId={id} initialLikeCount={likeCount} />
+        <LikeButton
+          postId={id}
+          initialLikeCount={likeCount}
+          userLike={likedPosts.includes(id)} // ✔️ likedPosts를 사용하여 userLike 전달
+        />
       </Box>
     </Box>
   );

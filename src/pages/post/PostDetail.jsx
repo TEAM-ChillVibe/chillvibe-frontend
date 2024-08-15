@@ -14,6 +14,7 @@ import { formatDate } from '../../utils/reusableFn';
 import UserProfile from '../../components/common/UserProfile';
 import SingleHashtagChips from '../../components/common/HashtagChips/SingleHashtagChips';
 import { fetchHashtagsOfPost } from '../../api/hashtag/hashtagApi';
+import usePostStore from '../../store/usePostStore';
 
 const PostDetail = () => {
   const { postId } = useParams();
@@ -23,6 +24,12 @@ const PostDetail = () => {
   const [error, setError] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
+  const [userLike, setUserLike] = useState(false);
+  const { likedPosts, loadPostById } = usePostStore(state => ({
+    likedPosts: state.likedPosts,
+    loadPostById: state.loadPostById,
+  }));
+
   // 현재 사용자가 포스트의 작성자인지 여부를 확인하는 상태
   const [isOwner, setIsOwner] = useState(false);
 
@@ -31,36 +38,18 @@ const PostDetail = () => {
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => setIsModalOpen(false);
 
-  const handleDelete = async () => {
-    try {
-      await deletePost(postId);
-      setPost(null);
-      navigate('/discover');
-    } catch (error) {
-      console.error('Error deleting post:', error);
-    } finally {
-      closeModal();
-    }
-  };
-
-  // ✔️ 줄바꿈
-  const convertLineBreaks = text => {
-    return text.split('\n').map((line, index) => (
-      <span key={index}>
-        {line}
-        <br />
-      </span>
-    ));
-  };
-
   useEffect(() => {
     const getPost = async () => {
       try {
         const postResponse = await fetchPostById(postId); // 게시글 정보 가져오기
+        setUserLike(postResponse.userLike); // ✔️ userLike 상태 설정
+        console.log('Fetched userLike:', postResponse.userLike); // 여기서 userLike 값이 올바른지 확인
+        console.log('Fetched postResponse:', postResponse);
         setPost(postResponse);
 
         try {
           const userResponse = await myInfo(); // 사용자 정보 가져오기
+          console.log('Fetched userResponse:', userResponse); // ✔️ 로그 추가
 
           // userResponse에 대한 구조 확인
           const postOwnerId = postResponse?.user?.userId;
@@ -92,7 +81,7 @@ const PostDetail = () => {
   }, [postId]);
 
   // 렌더링 전 상태를 확인합니다.
-  console.log('isOwner:', isOwner);
+  console.log('userLike after fetching post:', userLike); // 현재 상태 확인
 
   if (loading) {
     return <Typography>Loading...</Typography>;
@@ -104,6 +93,28 @@ const PostDetail = () => {
 
   const handleHashtagClick = hashtag => {
     navigate(`/all-tags?hashtag=${hashtag.id}`);
+  };
+
+  const handleDelete = async () => {
+    try {
+      await deletePost(postId);
+      setPost(null);
+      navigate('/discover');
+    } catch (error) {
+      console.error('Error deleting post:', error);
+    } finally {
+      closeModal();
+    }
+  };
+
+  // ✔️ 줄바꿈
+  const convertLineBreaks = text => {
+    return text.split('\n').map((line, index) => (
+      <span key={index}>
+        {line}
+        <br />
+      </span>
+    ));
   };
 
   return (
@@ -126,7 +137,11 @@ const PostDetail = () => {
           {isLoggedIn && (
             <Box display="flex" alignItems="center" sx={{ pt: 1 }}>
               <Box display="flex" alignItems="center" sx={{ mr: 3 }}>
-                <LikeButton postId={postId} initialLikeCount={post.likeCount} />
+                <LikeButton
+                  postId={post.id}
+                  initialLikeCount={post.likeCount}
+                  userLike={likedPosts.includes(post.id)}
+                />
               </Box>
               {isOwner && (
                 <Box
