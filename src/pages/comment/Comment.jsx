@@ -18,7 +18,6 @@ const Comment = ({ user }) => {
   const [editingCommentId, setEditingCommentId] = useState(null);
   const [editingContent, setEditingContent] = useState('');
   const [userId, setUserId] = useState(null);
-  const [userProfileUrl, setUserProfileUrl] = useState(null);
   const [modalOpen, setModalOpen] = useState(false);
   const [commentToDelete, setCommentToDelete] = useState(null);
   const [loginModalOpen, setLoginModalOpen] = useState(false); // 로그인 모달 상태 추가
@@ -38,7 +37,6 @@ const Comment = ({ user }) => {
     if (token) {
       const decodedToken = JSON.parse(atob(token.split('.')[1]));
       setUserId(decodedToken.sub); // sub => 사용자 ID 나타냄
-      setUserProfileUrl(decodedToken.profileUrl);
       console.log('Decoded User ID:', decodedToken.sub);
     }
 
@@ -321,7 +319,7 @@ const Comment = ({ user }) => {
           my: 5,
         }}
       >
-        <Avatar src={userProfileUrl} sx={{ width: 55, height: 55 }} />
+        <Avatar src={user.profileUrl} sx={{ width: 55, height: 55 }} />
         <TextField
           multiline
           fullWidth
