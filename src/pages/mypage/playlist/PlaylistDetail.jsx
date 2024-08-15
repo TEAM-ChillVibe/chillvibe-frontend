@@ -4,6 +4,7 @@ import {
   getPlaylistForEditing,
   deletePlaylist,
   removeTracksFromPlaylist,
+  updatePlaylistTitle,
 } from '../../../api/playlist/playlistApi';
 import BaseContainer from '../../../components/layout/BaseContainer';
 import SimpleModal from '../../../components/common/Modal/SimpleModal';
@@ -16,11 +17,13 @@ import {
   List,
   ListItem,
   Button,
+  TextField,
 } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import TrackListEditItem from '../../../components/common/ListItem/TrackListEditItem';
 import SnackbarAlert from '../../../components/common/Alert/SnackbarAlert';
 import PlaylistRemoveIcon from '@mui/icons-material/PlaylistRemove';
+import ModeEditIcon from '@mui/icons-material/ModeEdit';
 
 const PlaylistDetail = () => {
   const { playlistId } = useParams();
@@ -32,6 +35,9 @@ const PlaylistDetail = () => {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [isSaving, setIsSaving] = useState(false); // 플레이리스트 저장중
   const [isDeleting, setIsDeleting] = useState(false); // 플레이리스트 삭제중
+  const [isEditingTitle, setIsEditingTitle] = useState(false); // 제목 수정 모드
+  const [newTitle, setNewTitle] = useState('');
+  const [newTitleError, setNewTitleError] = useState('');
   const [snackbar, setSnackbar] = useState({
     open: false,
     message: '',
@@ -43,6 +49,7 @@ const PlaylistDetail = () => {
       try {
         const data = await getPlaylistForEditing(playlistId);
         setPlaylistData(data);
+        setNewTitle(data.title);
       } catch (error) {
         console.error('Failed to fetch playlist data:', error);
       }
@@ -133,6 +140,42 @@ const PlaylistDetail = () => {
     setIsDeleteModalOpen(false);
   };
 
+  const handleTitleChange = e => {
+    setNewTitle(e.target.value);
+    if (e.target.value.length > 50) {
+      setNewTitleError('제목은 50자 이내로 작성해주세요.');
+    } else {
+      setNewTitleError('');
+    }
+  };
+
+  const handleTitleSave = async () => {
+    if (newTitleError) return;
+
+    try {
+      await updatePlaylistTitle(newTitle, playlistId);
+      setPlaylistData(prev => ({ ...prev, title: newTitle }));
+      setIsEditingTitle(false);
+      setSnackbar({
+        open: true,
+        message: '제목이 성공적으로 변경되었습니다.',
+        severity: 'success',
+      });
+    } catch (error) {
+      setSnackbar({
+        open: true,
+        message: '제목 변경에 실패했습니다. 다시 시도해주세요.',
+        severity: 'error',
+      });
+    }
+  };
+
+  const handleCancelTitleEdit = () => {
+    setNewTitle(playlistData.title); // 원래 제목으로 복원
+    setIsEditingTitle(false);
+    setNewTitleError(''); // 오류 메시지 초기화
+  };
+
   if (!playlistData) {
     return <div>Loading...</div>;
   }
@@ -157,7 +200,47 @@ const PlaylistDetail = () => {
             justifyContent: 'space-between',
           }}
         >
-          <Typography variant="subtitle1">{playlistData.title}</Typography>
+          {isEditingTitle ? (
+            <Box sx={{ display: 'flex', alignItems: 'center' }}>
+              <TextField
+                variant="outlined"
+                value={newTitle}
+                onChange={handleTitleChange}
+                error={!!newTitleError}
+                helperText={newTitleError}
+                inputProps={{ maxLength: 50 }}
+                sx={{ mr: 2 }}
+              />
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={handleTitleSave}
+                disabled={!!newTitleError}
+              >
+                저장
+              </Button>
+              <Button
+                variant="outlined"
+                onClick={handleCancelTitleEdit}
+                sx={{ ml: 1 }}
+              >
+                취소
+              </Button>
+            </Box>
+          ) : (
+            <Box sx={{ display: 'flex', alignItems: 'center' }}>
+              <Typography variant="subtitle1">{playlistData.title}</Typography>
+              <Button
+                variant="outlined"
+                size="small"
+                startIcon={<ModeEditIcon />}
+                onClick={() => setIsEditingTitle(true)}
+                sx={{ ml: 2, mr: 2, width: '80px', minWidth: '80px' }}
+              >
+                수정
+              </Button>
+            </Box>
+          )}
           <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
             트랙 {playlistData.trackCount}개
           </Typography>
