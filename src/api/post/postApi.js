@@ -176,3 +176,16 @@ export const fetchPostsInMainPage = async () => {
     throw error;
   }
 };
+
+// 메인 페이지 게시글 조회 (좋아요 순으로 정렬, 페이지네이션 지원)
+export const fetchMainPagePosts = async (page = 0, size = 6) => {
+  try {
+    const response = await axiosWithoutToken.get('/api/posts/main', {
+      params: { page, size },
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Failed to fetch main page posts:', error);
+    throw error;
+  }
+};

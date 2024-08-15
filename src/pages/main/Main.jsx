@@ -6,12 +6,14 @@ import TrackListItem from '../../components/common/ListItem/TrackListItem';
 import {
   fetchPostsInMainPage,
   fetchPostsByHashtagId,
+  fetchMainPagePosts,
 } from '../../api/post/postApi';
 import { getFeaturedPlaylists } from '../../api/track/trackApi';
 import {
   fetchPopularHashtags,
   fetchHashtagsOfPost,
 } from '../../api/hashtag/hashtagApi';
+import MainPlaylists from './components/MainPlaylists';
 import SingleHashtagChips from '../../components/common/HashtagChips/SingleHashtagChips';
 import { Refresh } from '@mui/icons-material';
 import IconButton from '@mui/material/IconButton';
@@ -23,32 +25,72 @@ const Main = () => {
   const [filteredPosts, setFilteredPosts] = useState([]);
   const [featuredTracks, setFeaturedTracks] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [page, setPage] = useState(0);
+  const [totalPages, setTotalPages] = useState(0);
+  const [activePages, setActivePages] = useState([]);
+
   const getRandomTracks = (tracks, count) => {
     const shuffled = tracks.sort(() => 0.5 - Math.random());
     return shuffled.slice(0, count);
   };
 
   useEffect(() => {
-    const loadPosts = async () => {
+    loadPosts(page);
+  }, [page]);
+
+  const loadPosts = async pageNum => {
+    try {
+      setLoading(true);
+      const postsData = await fetchMainPagePosts(pageNum, 6);
+
+      const postsWithHashtags = await Promise.all(
+        postsData.content.map(async post => {
+          const hashtags = await fetchHashtagsOfPost(post.id);
+          return { ...post, hashtags };
+        }),
+      );
+
+      setPlaylists(postsWithHashtags);
+      setTotalPages(postsData.page.totalPages);
+      updateActivePages(postsData.page.totalPages);
+      setLoading(false);
+    } catch (error) {
+      console.error('Failed to load posts:', error);
+      setLoading(false);
+    }
+  };
+
+  const updateActivePages = total => {
+    const pages = [...Array(Math.min(total, 3))].map((_, i) => i);
+    setActivePages(pages);
+  };
+
+  const handlePageChange = async newPageFunc => {
+    const newPage =
+      typeof newPageFunc === 'function' ? newPageFunc(page) : newPageFunc;
+    if (newPage >= 0 && newPage < totalPages) {
       try {
         setLoading(true);
-        const posts = await fetchPostsInMainPage();
-        const postsWithHashtags = await Promise.all(
-          posts.map(async post => {
-            const hashtags = await fetchHashtagsOfPost(post.id);
-            return { ...post, hashtags };
-          }),
-        );
-        setPlaylists(postsWithHashtags);
-        setLoading(false);
+        const newPostsData = await fetchMainPagePosts(newPage, 6);
+        if (newPostsData.content.length > 0) {
+          const newPostsWithHashtags = await Promise.all(
+            newPostsData.content.map(async post => {
+              const hashtags = await fetchHashtagsOfPost(post.id);
+              return { ...post, hashtags };
+            }),
+          );
+          setPage(newPage);
+          setPlaylists(newPostsWithHashtags);
+          setTotalPages(newPostsData.page.totalPages);
+          updateActivePages(newPostsData.page.totalPages);
+        }
       } catch (error) {
-        console.error('Failed to load posts:', error);
+        console.error('Failed to load new page:', error);
+      } finally {
         setLoading(false);
       }
-    };
-
-    loadPosts();
-  }, []);
+    }
+  };
 
   useEffect(() => {
     const initializePage = async () => {
@@ -143,24 +185,13 @@ const Main = () => {
       <Typography variant="title" sx={{ textAlign: 'center' }}>
         지금 가장 인기있는 플레이리스트
       </Typography>
-      <Grid container spacing={2}>
-        {playlists.length > 0 ? (
-          playlists.map(playlist => (
-            <Grid item xs={6} key={playlist.id}>
-              <Box sx={{ py: 1, px: 3 }}>
-                <PostListItemMini
-                  post={playlist}
-                  selectedHashtag={selectedHashtag}
-                />
-              </Box>
-            </Grid>
-          ))
-        ) : (
-          <Grid item xs={12}>
-            <Typography>게시글이 없습니다.</Typography>
-          </Grid>
-        )}
-      </Grid>
+      <MainPlaylists
+        playlists={playlists}
+        loading={loading}
+        page={page}
+        totalPages={totalPages}
+        onPageChange={handlePageChange}
+      />
 
       <Box sx={{ display: 'inline-flex', alignItems: 'center', mt: 3 }}>
         <Typography variant="title" sx={{ flexShrink: 0 }}>
@@ -201,6 +232,7 @@ const Main = () => {
         <SingleHashtagChips
           fetchHashtags={fetchPopularHashtags}
           onChipClick={handleHashtagClick}
+          selectedHashtagId={selectedHashtag}
         />
 
         <Box sx={{ mb: 10 }} />
