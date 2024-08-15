@@ -45,7 +45,10 @@ const MyPage = () => {
           mb: 2,
         }}
       >
-        <UserProfile user={user} />
+        <UserProfile
+          user={user}
+          noIntroductionMessage="나를 소개하는 한 마디를 추가해보세요!"
+        />
         <Box
           display="flex"
           flexDirection="column"

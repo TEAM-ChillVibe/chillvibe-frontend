@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { fetchHashtagsOfUser } from '../../api/hashtag/hashtagApi';
 import SingleHashtagChips from './HashtagChips/SingleHashtagChips';
 
-function UserProfile({ user }) {
+function UserProfile({ user, noIntroductionMessage = '소개글이 없습니다.' }) {
   const navigate = useNavigate();
 
   if (!user) {
@@ -73,11 +73,12 @@ function UserProfile({ user }) {
             mb: 1,
           }}
         >
-          {introduction}
+          {introduction ? introduction : noIntroductionMessage}
         </Typography>
         <SingleHashtagChips
           fetchHashtags={() => fetchHashtagsOfUser(userId)}
           onChipClick={handleHashtagClick}
+          noHashtagsMessage="선호하는 장르의 해시태그를 설정해보세요!"
         />
       </Box>
     </Box>
