@@ -21,7 +21,7 @@ const MenuButtons = () => {
         to="/featured-tracks"
         sx={{ textTransform: 'none' }}
       >
-        Featured Tracks
+        Top 50 Tracks
       </Button>
       <Button
         color={currentPath === '/all-tags' ? 'primary' : 'inherit'}
