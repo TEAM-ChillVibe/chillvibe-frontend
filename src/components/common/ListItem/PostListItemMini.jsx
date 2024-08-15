@@ -59,6 +59,7 @@ function PostListItemMini({ post, selectedHashtag }) {
             whiteSpace: 'normal',
             overflowWrap: 'break-word',
           }}
+          onClick={handlePostClick}
         >
           {title}
         </Typography>
