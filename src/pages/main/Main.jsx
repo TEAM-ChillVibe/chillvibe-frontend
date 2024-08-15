@@ -71,7 +71,9 @@ const Main = () => {
   };
 
   const handleHashtagClick = async hashtag => {
-    if (loading) return;
+    if (loading) {
+      return;
+    }
     setLoading(true);
     setSelectedHashtag(hashtag);
     await loadPostsByHashtag(hashtag);
@@ -102,16 +104,27 @@ const Main = () => {
 
   return (
     <BaseContainer>
-      <Typography variant="title" sx={{ textAlign: 'center' }}>
-        Popular Playlists
-      </Typography>
-      <MainPlaylists
-        playlists={playlists}
-        loading={loading}
-        page={page}
-        totalPages={totalPages}
-        onPageChange={setPage}
-      />
+      <Box
+        sx={{
+          width: '100%',
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'center',
+          alignItems: 'center',
+          gap: 2,
+        }}
+      >
+        <Typography variant="title" sx={{ textAlign: 'center' }}>
+          Popular Playlists
+        </Typography>
+        <MainPlaylists
+          playlists={playlists}
+          loading={loading}
+          page={page}
+          totalPages={totalPages}
+          onPageChange={setPage}
+        />
+      </Box>
 
       <Box sx={{ display: 'inline-flex', alignItems: 'center', mt: 3 }}>
         <Typography variant="title" sx={{ flexShrink: 0 }}>
@@ -121,10 +134,12 @@ const Main = () => {
           <Refresh />
         </IconButton>
       </Box>
-      <Grid container spacing={2}>
+      <Grid container>
         {featuredTracks.map(track => (
           <Grid item xs={6} key={track.id}>
-            <TrackListItem music={track} />
+            <Box sx={{ p: 1 }}>
+              <TrackListItem music={track} />
+            </Box>
           </Grid>
         ))}
       </Grid>
@@ -143,6 +158,7 @@ const Main = () => {
       >
         {popularHashtags.map(hashtag => (
           <Chip
+            size="small"
             key={hashtag.id}
             label={`#${hashtag.name}`}
             onClick={() => handleHashtagClick(hashtag)}
@@ -155,10 +171,12 @@ const Main = () => {
         ))}
       </Box>
 
-      <Grid container spacing={2}>
+      <Grid container sx={{ px: 2 }}>
         {filteredPosts.map(post => (
           <Grid item xs={6} key={post.id}>
-            <PostListItemMini post={post} hashtags={post.hashtags} />
+            <Box sx={{ px: 2, py: 1 }}>
+              <PostListItemMini post={post} hashtags={post.hashtags} />
+            </Box>
           </Grid>
         ))}
       </Grid>
