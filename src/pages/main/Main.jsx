@@ -189,11 +189,21 @@ const Main = () => {
       <Typography variant="title" sx={{ textAlign: 'center', mt: 3 }}>
         요즘 인기있는 태그
       </Typography>
-      <Box sx={{ width: '100%' }}>
+      <Box
+        sx={{
+          width: '100%',
+          display: 'flex',
+          justifyContent: 'center',
+          flexWrap: 'wrap',
+          mb: 3,
+        }}
+      >
         <SingleHashtagChips
           fetchHashtags={fetchPopularHashtags}
           onChipClick={handleHashtagClick}
         />
+
+        <Box sx={{ mb: 10 }} />
         {filteredPosts.length > 0 && (
           <>
             <Grid container spacing={2}>
