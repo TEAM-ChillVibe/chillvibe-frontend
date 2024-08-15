@@ -4,7 +4,7 @@ export const theme = createTheme({
   palette: {
     mode: 'dark', // 다크모드
     primary: {
-      main: '#D8A1F0', // 포인트컬러
+      main: '#CC8DF0',
       light: '#F3E5F5',
     },
     secondary: {
