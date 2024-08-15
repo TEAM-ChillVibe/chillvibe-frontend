@@ -253,7 +253,7 @@ const MainPlaylists = ({
         totalPages={activePages.length}
         onPageChange={handlePageChange}
       />
-      <Box sx={{ position: 'relative', minHeight: '400px' }}>
+      <Box sx={{ position: 'relative', minHeight: '450px' }}>
         <AnimatePresence initial={false} custom={direction}>
           <motion.div
             key={page}
