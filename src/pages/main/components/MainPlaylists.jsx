@@ -10,30 +10,38 @@ const PageIndicator = ({ currentPage, totalPages, onPageChange }) => {
     <Box
       sx={{
         display: 'flex',
-        justifyContent: 'center',
+        justifyContent: 'space-between',
         alignItems: 'center',
         mt: 2,
+        width: '100%',
       }}
     >
-      <IconButton onClick={() => onPageChange(-1)} disabled={currentPage === 0}>
+      <IconButton
+        onClick={() => onPageChange(-1)}
+        disabled={currentPage === 0}
+        size="small"
+        color="primary"
+      >
         <ArrowBackIosNewIcon />
       </IconButton>
-      {[...Array(Math.min(totalPages, 3))].map((_, index) => (
-        <Box
-          key={index}
-          sx={{
-            width: 8,
-            height: 8,
-            borderRadius: '50%',
-            mx: 0.5,
-            bgcolor: index === currentPage ? 'primary.main' : 'grey.300',
-            transition: 'all 0.s ease',
-          }}
-        />
-      ))}
+      {/*{[...Array(Math.min(totalPages, 3))].map((_, index) => (*/}
+      {/*  <Box*/}
+      {/*    key={index}*/}
+      {/*    sx={{*/}
+      {/*      width: 8,*/}
+      {/*      height: 8,*/}
+      {/*      borderRadius: '50%',*/}
+      {/*      mx: 0.5,*/}
+      {/*      bgcolor: index === currentPage ? 'primary.main' : 'grey.300',*/}
+      {/*      transition: 'all 0.s ease',*/}
+      {/*    }}*/}
+      {/*  />*/}
+      {/*))}*/}
       <IconButton
         onClick={() => onPageChange(1)}
         disabled={currentPage === totalPages - 1}
+        size="small"
+        color="primary"
       >
         <ArrowForwardIosIcon />
       </IconButton>
@@ -92,7 +100,12 @@ const MainPlaylists = ({
   };
 
   return (
-    <Box sx={{ width: '100%', overflow: 'hidden' }}>
+    <Box sx={{ width: '100%', height: 'auto', overflow: 'hidden', px: 2 }}>
+      <PageIndicator
+        currentPage={activePages.indexOf(page)}
+        totalPages={activePages.length}
+        onPageChange={handlePageChange}
+      />
       <Box sx={{ position: 'relative', minHeight: '400px' }}>
         <AnimatePresence initial={false} custom={direction}>
           <motion.div
@@ -111,11 +124,11 @@ const MainPlaylists = ({
               width: '100%',
             }}
           >
-            <Grid container spacing={2}>
+            <Grid container>
               {playlists.length > 0 ? (
                 playlists.map(playlist => (
-                  <Grid item xs={12} sm={6} key={playlist.id}>
-                    <Box sx={{ py: 1, px: 3 }}>
+                  <Grid item sm={6} key={playlist.id}>
+                    <Box sx={{ px: 2, py: 1 }}>
                       <PostListItemMini
                         post={playlist}
                         hashtags={playlist.hashtags}
@@ -139,11 +152,6 @@ const MainPlaylists = ({
           </motion.div>
         </AnimatePresence>
       </Box>
-      <PageIndicator
-        currentPage={activePages.indexOf(page)}
-        totalPages={activePages.length}
-        onPageChange={handlePageChange}
-      />
     </Box>
   );
 };
