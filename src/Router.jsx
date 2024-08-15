@@ -29,6 +29,7 @@ const PlaylistDetail = lazy(
   () => import('./pages/mypage/playlist/PlaylistDetail'),
 );
 const Withdraw = lazy(() => import('./pages/mypage/edit/Withdraw'));
+const FeaturedTracks = lazy(() => import('./pages/tracklist/FeaturedTracks'));
 
 const Router = () => {
   return (
@@ -71,6 +72,7 @@ const Router = () => {
           element={<PlaylistDetail />}
         />
         <Route path="/withdraw" element={<Withdraw />} />
+        <Route path="/featured-tracks" element={<FeaturedTracks />} />
       </Routes>
     </Suspense>
   );
