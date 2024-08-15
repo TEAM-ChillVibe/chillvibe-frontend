@@ -54,11 +54,11 @@ export const theme = createTheme({
     modalPoint: {
       fontSize: '1rem',
       fontWeight: 600,
-      color: '#D8A1F0',
+      color: '#CC8DF0',
     },
     searchQuery: {
       fontSize: '1.2rem',
-      color: '#D8A1F0',
+      color: '#CC8DF0',
     },
     trackTitle: {
       fontSize: '1.1rem',
