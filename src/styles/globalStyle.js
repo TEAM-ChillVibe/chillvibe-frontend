@@ -70,6 +70,10 @@ export const theme = createTheme({
       fontSize: '0.8rem',
       color: '#999',
     },
+    ranking: {
+      fontSize: '0.9rem',
+      fontWeight: 700,
+    },
   },
   spacing: 8,
 });

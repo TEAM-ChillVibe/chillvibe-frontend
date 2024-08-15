@@ -16,6 +16,14 @@ const MenuButtons = () => {
         Discover
       </Button>
       <Button
+        color={currentPath === '/featured-tracks' ? 'primary' : 'inherit'}
+        component={Link}
+        to="/featured-tracks"
+        sx={{ textTransform: 'none' }}
+      >
+        Featured Tracks
+      </Button>
+      <Button
         color={currentPath === '/all-tags' ? 'primary' : 'inherit'}
         component={Link}
         to="/all-tags"
