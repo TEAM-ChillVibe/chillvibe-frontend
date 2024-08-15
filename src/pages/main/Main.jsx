@@ -150,7 +150,7 @@ const Main = () => {
               <Box sx={{ py: 1, px: 3 }}>
                 <PostListItemMini
                   post={playlist}
-                  hashtags={playlist.hashtags}
+                  selectedHashtag={selectedHashtag}
                 />
               </Box>
             </Grid>

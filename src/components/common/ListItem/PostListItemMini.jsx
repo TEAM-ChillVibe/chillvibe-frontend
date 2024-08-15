@@ -4,7 +4,7 @@ import SingleHashtagChips from '../HashtagChips/SingleHashtagChips';
 import { useNavigate } from 'react-router-dom';
 import { fetchHashtagsOfPost } from '../../../api/hashtag/hashtagApi';
 
-function PostListItemMini({ post }) {
+function PostListItemMini({ post, selectedHashtag }) {
   const { id, title, user, thumbnailUrl } = post;
   const navigate = useNavigate();
 
@@ -68,6 +68,7 @@ function PostListItemMini({ post }) {
         <SingleHashtagChips
           fetchHashtags={() => fetchHashtagsOfPost(id)}
           onChipClick={handleHashtagClick}
+          selectedHashtag={selectedHashtag}
         />
       </Box>
     </Box>
