@@ -123,6 +123,7 @@ const Main = () => {
           page={page}
           totalPages={totalPages}
           onPageChange={setPage}
+          loadPosts={loadPosts} // 추가: 페이지 변경 시 데이터 로딩을 위한 함수 전달
         />
       </Box>
 
