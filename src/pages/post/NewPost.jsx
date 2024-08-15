@@ -11,7 +11,7 @@ import {
   Grid,
   Typography,
   Pagination,
-  CircularProgress, // ✔️ 로딩 스피너 추가
+  CircularProgress,
 } from '@mui/material';
 import usePostStore from '../../store/usePostStore';
 import BaseContainer from '../../components/layout/BaseContainer';
@@ -19,7 +19,7 @@ import PlaylistListItem from '../../components/common/ListItem/PlaylistListItem'
 import SnackbarAlert from '../../components/common/Alert/SnackbarAlert';
 import MultiHashtagChips from '../../components/common/HashtagChips/MultiHashtagChips';
 
-const itemsPerPage = 10; // 페이지당 표시할 플레이리스트 수
+const itemsPerPage = 10;
 
 const NewPost = () => {
   const [title, setTitle] = useState('');
@@ -36,7 +36,7 @@ const NewPost = () => {
     message: '',
     severity: 'success',
   });
-  const [isSubmitting, setIsSubmitting] = useState(false); // ✔️ 제출 상태 관리
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
     const fetchPlaylists = async () => {
@@ -59,12 +59,37 @@ const NewPost = () => {
   const handleSubmit = async e => {
     e.preventDefault();
 
-    // 🔄 이미 제출 중이면 함수 종료
-    if (isSubmitting) {
+    // 이미 제출 중이면 함수 종료
+    if (isSubmitting) return;
+
+    // 프론트엔드 유효성 검사
+    if (title.length < 1 || title.length > 50) {
+      setSnackbar({
+        open: true,
+        message: '게시글 제목은 1자 이상, 50자 이하로 입력해주세요.',
+        severity: 'warning',
+      });
       return;
     }
 
-    // ✔️ 플레이리스트가 선택되지 않았을 경우
+    if (description.length < 1 || description.length > 10000) {
+      setSnackbar({
+        open: true,
+        message: '게시글 설명은 1자 이상, 10000자 이하로 입력해주세요.',
+        severity: 'warning',
+      });
+      return;
+    }
+
+    if (selectedHashtags.length > 5) {
+      setSnackbar({
+        open: true,
+        message: '해시태그는 최대 5개까지 선택할 수 있습니다.',
+        severity: 'warning',
+      });
+      return;
+    }
+
     if (!selectedPlaylistId) {
       setSnackbar({
         open: true,
@@ -74,9 +99,7 @@ const NewPost = () => {
       return;
     }
 
-    setIsSubmitting(true); // ✔️ 제출 상태 시작
-
-    console.log('Selected Hashtags:', selectedHashtags);
+    setIsSubmitting(true);
 
     const newPost = {
       title,
@@ -95,7 +118,7 @@ const NewPost = () => {
       });
       setTimeout(() => {
         navigate(`/post/${response}`); // 작성한 게시글 페이지로 이동
-      }, 1000); // 1초 후에 페이지 이동
+      }, 1000);
     } catch (error) {
       setSnackbar({
         open: true,
@@ -103,10 +126,9 @@ const NewPost = () => {
         severity: 'error',
       });
     } finally {
-      // 로딩이 끝난 후에도 버튼이 잠시 비활성화되도록 지연 시간을 추가
       setTimeout(() => {
-        setIsSubmitting(false); // ✔️ 제출 상태 종료
-      }, 1500); // 1.5초 지연 시간 추가
+        setIsSubmitting(false);
+      }, 1500);
       setSelectedHashtags([]);
     }
   };
@@ -116,7 +138,7 @@ const NewPost = () => {
   };
 
   const handleCancel = () => {
-    navigate(-1); // 이전 페이지로 이동
+    navigate(-1);
   };
 
   const handlePageChange = (event, newPage) => {
@@ -148,6 +170,10 @@ const NewPost = () => {
             value={title}
             onChange={e => setTitle(e.target.value)}
             required
+            error={title.length > 50}
+            helperText={
+              title.length > 50 ? '제목은 50자 이하로 입력해주세요.' : ''
+            }
           />
           <TextField
             label="플레이리스트 소개글"
@@ -156,6 +182,12 @@ const NewPost = () => {
             required
             multiline
             minRows={4}
+            error={description.length > 10000}
+            helperText={
+              description.length > 10000
+                ? '설명은 10000자 이하로 입력해주세요.'
+                : ''
+            }
           />
           <Typography variant="h6" sx={{ fontSize: '1.2rem', mt: 2 }}>
             해시태그 선택
@@ -165,6 +197,11 @@ const NewPost = () => {
             selectedHashtags={selectedHashtags}
             onSelectionChange={handleSelectionChange}
           />
+          {selectedHashtags.length > 5 && (
+            <Typography color="error">
+              해시태그는 최대 5개까지 선택할 수 있습니다.
+            </Typography>
+          )}
           <Typography variant="h6" sx={{ fontSize: '1.2rem', mt: 3 }}>
             플레이리스트 선택
           </Typography>
@@ -207,14 +244,13 @@ const NewPost = () => {
               type="submit"
               variant="contained"
               color="primary"
-              disabled={isSubmitting} // ✔️ 로딩 중일 때 버튼 비활성화
+              disabled={isSubmitting}
             >
               {isSubmitting ? (
                 <CircularProgress size={24} color="inherit" />
               ) : (
                 '작성'
               )}
-              {/* ✔️ 로딩 중에는 로딩 스피너 표시 */}
             </Button>
           </Box>
         </Box>

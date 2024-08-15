@@ -37,7 +37,6 @@ const EditPost = () => {
         const hashtagIds = hashtags.map(hashtag => hashtag.id);
         setSelectedHashtags(hashtagIds || []);
 
-        // postId를 이용해 연관된 플레이리스트 가져오기
         const playlist = await getPlaylistByPostId(postId);
         setSelectedPlaylist(playlist);
       } catch (error) {
@@ -50,11 +49,41 @@ const EditPost = () => {
 
   const handleSubmit = async e => {
     e.preventDefault();
+
+    // 프론트엔드 유효성 검사
+    if (title.length < 1 || title.length > 50) {
+      setSnackbar({
+        open: true,
+        message: '게시글 제목은 1자 이상, 50자 이하로 입력해주세요.',
+        severity: 'warning',
+      });
+      return;
+    }
+
+    if (description.length < 1 || description.length > 10000) {
+      setSnackbar({
+        open: true,
+        message: '게시글 설명은 1자 이상, 10000자 이하로 입력해주세요.',
+        severity: 'warning',
+      });
+      return;
+    }
+
+    if (selectedHashtags.length > 5) {
+      setSnackbar({
+        open: true,
+        message: '해시태그는 최대 5개까지 선택할 수 있습니다.',
+        severity: 'warning',
+      });
+      return;
+    }
+
     const updatedPost = {
       title,
       description,
       hashtagIds: selectedHashtags,
     };
+
     try {
       await updatePost(postId, updatedPost);
       setSnackbar({
@@ -63,8 +92,8 @@ const EditPost = () => {
         severity: 'success',
       });
       setTimeout(() => {
-        navigate(`/post/${postId}`); // 게시글 상세 페이지로 이동
-      }, 1000); // 1초 후에 페이지 이동
+        navigate(`/post/${postId}`);
+      }, 1000);
     } catch (error) {
       setSnackbar({
         open: true,
@@ -81,7 +110,7 @@ const EditPost = () => {
   };
 
   const handleCancel = () => {
-    navigate(-1); // 이전 페이지로 이동
+    navigate(-1);
   };
 
   return (
@@ -109,6 +138,10 @@ const EditPost = () => {
             value={title}
             onChange={e => setTitle(e.target.value)}
             required
+            error={title.length > 50}
+            helperText={
+              title.length > 50 ? '제목은 50자 이하로 입력해주세요.' : ''
+            }
           />
           <TextField
             label="플레이리스트 소개글"
@@ -117,6 +150,12 @@ const EditPost = () => {
             required
             multiline
             minRows={4}
+            error={description.length > 10000}
+            helperText={
+              description.length > 10000
+                ? '설명은 10000자 이하로 입력해주세요.'
+                : ''
+            }
           />
           <Typography variant="h6" sx={{ fontSize: '1.2rem', mt: 1 }}>
             해시태그 선택
@@ -126,6 +165,11 @@ const EditPost = () => {
             selectedHashtags={selectedHashtags}
             onSelectionChange={handleSelectionChange}
           />
+          {selectedHashtags.length > 5 && (
+            <Typography color="error">
+              해시태그는 최대 5개까지 선택할 수 있습니다.
+            </Typography>
+          )}
           <Box>
             <Typography variant="h6" sx={{ fontSize: '1.2rem', mt: 2 }}>
               플레이리스트
