@@ -167,15 +167,15 @@ export const fetchMyLikedPosts = async (page = 0, size = 10) => {
 };
 
 // 메인화면 인기플레이리스트
-export const fetchPostsInMainPage = async () => {
-  try {
-    const response = await axiosWithToken.get('/api/posts/main');
-    return response.data;
-  } catch (error) {
-    console.error('Error fetching playlists:', error);
-    throw error;
-  }
-};
+// export const fetchPostsInMainPage = async () => {
+//   try {
+//     const response = await axiosWithToken.get('/api/posts/main');
+//     return response.data;
+//   } catch (error) {
+//     console.error('Error fetching playlists:', error);
+//     throw error;
+//   }
+// };
 
 // 메인 페이지 게시글 조회 (좋아요 순으로 정렬, 페이지네이션 지원)
 export const fetchMainPagePosts = async (page = 0, size = 6) => {
