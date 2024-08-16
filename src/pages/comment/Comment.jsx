@@ -10,8 +10,9 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { formatDate } from '../../utils/reusableFn';
 import SimpleModal from '../../components/common/Modal/SimpleModal';
 import SnackbarAlert from '../../components/common/Alert/SnackbarAlert';
+import useUserStore from '../../store/useUserStore';
 
-const Comment = ({ user }) => {
+const Comment = () => {
   const { postId } = useParams(); // URL에서 postId를 가져옴
   const [comments, setComments] = useState([]);
   const [newComment, setNewComment] = useState('');
@@ -24,6 +25,10 @@ const Comment = ({ user }) => {
   const [newCommentError, setNewCommentError] = useState('');
   const [editingCommentError, setEditingCommentError] = useState('');
   const navigate = useNavigate();
+
+  const { user } = useUserStore(state => ({
+    user: state.user,
+  }));
 
   const [snackbar, setSnackbar] = useState({
     open: false,
@@ -319,7 +324,7 @@ const Comment = ({ user }) => {
           my: 5,
         }}
       >
-        <Avatar src={user.profileUrl} sx={{ width: 55, height: 55 }} />
+        <Avatar src={user?.profileUrl} sx={{ width: 55, height: 55 }} />
         <TextField
           multiline
           fullWidth
