@@ -143,7 +143,9 @@ const UserPage = () => {
   if (!isPublic) {
     return (
       <BaseContainer>
-        <UserProfile user={user} />
+        <Card sx={{ width: '100%' }}>
+          <UserProfile user={user} />
+        </Card>
         <Box
           sx={{
             width: '100%',
