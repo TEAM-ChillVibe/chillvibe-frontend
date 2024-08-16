@@ -48,6 +48,7 @@ const MyPage = () => {
         <UserProfile
           user={user}
           noIntroductionMessage="나를 소개하는 한 마디를 추가해보세요!"
+          isMyPage={true}
         />
         <Box
           display="flex"
