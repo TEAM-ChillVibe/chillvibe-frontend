@@ -4,11 +4,11 @@ import PostList from '../../components/common/PostList';
 import React, { useState, useEffect } from 'react';
 import { myInfo } from '../../api/user/userApi';
 import { DriveFileRenameOutline } from '@mui/icons-material';
+import usePostStore from '../../store/usePostStore';
 
 const Discover = () => {
   const [sortOrder, setSortOrder] = useState('latest');
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const likedPosts = usePostStore(state => state.likedPosts);
 
   useEffect(() => {
     const checkUserLoggedIn = async () => {
