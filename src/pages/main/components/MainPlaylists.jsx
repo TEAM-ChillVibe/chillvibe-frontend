@@ -223,12 +223,12 @@ const MainPlaylists = ({
 
   const handlePageChange = async dir => {
     setDirection(dir);
-    const nextPage = activePages.indexOf(page) + dir;
-    if (nextPage >= 0 && nextPage < activePages.length) {
-      const newPage = activePages[nextPage];
-      await loadPosts(newPage); // 페이지 변경 시 새로운 데이터 로드
-      onPageChange(newPage);
-    }
+    const currentIndex = activePages.indexOf(page);
+    const nextIndex =
+      (currentIndex + dir + activePages.length) % activePages.length;
+    const newPage = activePages[nextIndex];
+    await loadPosts(newPage);
+    onPageChange(newPage);
   };
 
   const slideVariants = {
