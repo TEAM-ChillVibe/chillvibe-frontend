@@ -24,6 +24,7 @@ import TrackListEditItem from '../../../components/common/ListItem/TrackListEdit
 import SnackbarAlert from '../../../components/common/Alert/SnackbarAlert';
 import PlaylistRemoveIcon from '@mui/icons-material/PlaylistRemove';
 import ModeEditIcon from '@mui/icons-material/ModeEdit';
+import IconButton from '@mui/material/IconButton';
 
 const PlaylistDetail = () => {
   const { playlistId } = useParams();
@@ -150,7 +151,9 @@ const PlaylistDetail = () => {
   };
 
   const handleTitleSave = async () => {
-    if (newTitleError) return;
+    if (newTitleError) {
+      return;
+    }
 
     try {
       await updatePlaylistTitle(newTitle, playlistId);
@@ -209,36 +212,38 @@ const PlaylistDetail = () => {
                 error={!!newTitleError}
                 helperText={newTitleError}
                 inputProps={{ maxLength: 50 }}
-                sx={{ mr: 2 }}
+                sx={{ mr: 2, mb: 1 }}
+                size="small"
               />
+              <Button
+                variant="outlined"
+                onClick={handleCancelTitleEdit}
+                size="small"
+              >
+                취소
+              </Button>
               <Button
                 variant="contained"
                 color="primary"
                 onClick={handleTitleSave}
+                size="small"
                 disabled={!!newTitleError}
-              >
-                저장
-              </Button>
-              <Button
-                variant="outlined"
-                onClick={handleCancelTitleEdit}
                 sx={{ ml: 1 }}
               >
-                취소
+                저장
               </Button>
             </Box>
           ) : (
             <Box sx={{ display: 'flex', alignItems: 'center' }}>
               <Typography variant="subtitle1">{playlistData.title}</Typography>
-              <Button
-                variant="outlined"
+              <IconButton
                 size="small"
-                startIcon={<ModeEditIcon />}
+                color="primary"
                 onClick={() => setIsEditingTitle(true)}
-                sx={{ ml: 2, mr: 2, width: '80px', minWidth: '80px' }}
+                sx={{ ml: 1 }}
               >
-                수정
-              </Button>
+                <ModeEditIcon />
+              </IconButton>
             </Box>
           )}
           <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
