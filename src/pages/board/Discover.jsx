@@ -8,6 +8,7 @@ import { DriveFileRenameOutline } from '@mui/icons-material';
 const Discover = () => {
   const [sortOrder, setSortOrder] = useState('latest');
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const likedPosts = usePostStore(state => state.likedPosts);
 
   useEffect(() => {
     const checkUserLoggedIn = async () => {
