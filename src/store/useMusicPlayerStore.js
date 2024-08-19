@@ -11,7 +11,7 @@ const useMusicPlayerStore = create((set, get) => ({
   currentTrack: null,
   currentTime: 0,
   duration: 0,
-  volume: 1,
+  volume: 0.3,
   isMuted: false,
   audioRef: useAudio(),
 
@@ -24,13 +24,13 @@ const useMusicPlayerStore = create((set, get) => ({
   setIsMuted: isMuted => set({ isMuted }),
 
   playTrack: track => {
-    const { audioRef } = get();
+    const { audioRef, volume } = get();
 
     // previewUrl null인 경우 알림창을 띄우고 함수 종료
-    if (!track.previewUrl) {
-      alert('미리듣기를 지원하지 않는 트랙입니다.');
-      return;
-    }
+    // if (!track.previewUrl) {
+    //   alert('미리듣기를 지원하지 않는 트랙입니다.');
+    //   return;
+    // }
 
     // 클린업 함수
     const cleanup = () => {
@@ -58,6 +58,9 @@ const useMusicPlayerStore = create((set, get) => ({
     // 오디오 소스 설정 및 로드
     audioRef.src = track.previewUrl;
     audioRef.load();
+
+    // 초기 볼륨 설정
+    audioRef.volume = volume;
 
     // 현재 시간 업데이트 메서드
     const updateCurrentTime = () => {
@@ -96,13 +99,6 @@ const useMusicPlayerStore = create((set, get) => ({
 
     audioRef.addEventListener('ended', onEnded);
 
-    // return () => {
-    //   clearInterval(intervalId);
-    //   audioRef.ontimeupdate = null;
-    //   audioRef.removeEventListener('loadedmetadata', () => {
-    //     onDurationChange(audioRef.duration);
-    //   });
-    // };
     return cleanup;
   },
 
@@ -119,7 +115,8 @@ const useMusicPlayerStore = create((set, get) => ({
   handleVolumeChange: newValue => {
     const { audioRef } = get();
     if (typeof newValue === 'number' && isFinite(newValue)) {
-      const clampedValue = Math.min(Math.max(newValue, 0), 1);
+      const scaledValue = newValue * 0.6;
+      const clampedValue = Math.min(Math.max(scaledValue, 0), 0.6);
       set({ volume: clampedValue, isMuted: clampedValue === 0 });
       if (audioRef) {
         audioRef.volume = clampedValue;
@@ -137,6 +134,12 @@ const useMusicPlayerStore = create((set, get) => ({
     const newMutedState = !isMuted;
     set({ isMuted: newMutedState });
     audioRef.muted = newMutedState;
+  },
+
+  getDisplayVolume: () => {
+    const { volume } = get();
+    // 실제 볼륨(0~0.6)을 표시용 볼륨(0~1)으로 변환
+    return volume / 0.6;
   },
 
   togglePlay: () => {

@@ -4,21 +4,22 @@ export const theme = createTheme({
   palette: {
     mode: 'dark', // 다크모드
     primary: {
-      main: '#D8A1F0', // 포인트컬러
+      main: '#CC8DF0',
       light: '#F3E5F5',
     },
     secondary: {
-      main: '#007BFF',
+      main: '#F3DAF5',
       light: '#F3E5F5',
       contrastText: '#FFFFFF',
     },
     background: {
       default: '#000000', // 기본 배경색
-      paper: '#000000', // 카드와 같은 요소의 배경색
+      paper: '#1f1f1f', // 카드와 같은 요소의 배경색
     },
     text: {
       primary: '#FFFFFF',
-      secondary: '#FFFFFF', // 보조 텍스트 색상
+      secondary: '#DDD', // 보조 텍스트 색상
+      date: '#999', // 보조 텍스트 색상
       dark: '#000',
     },
   },
@@ -36,11 +37,13 @@ export const theme = createTheme({
     body2: {
       fontSize: '0.875rem',
     },
-    body3: {
-      fontSize: '0.75rem',
-    },
     title: {
       fontSize: '2rem',
+      fontWeight: 500,
+    },
+    subtitle1: {
+      fontSize: '1.7rem',
+      fontWeight: 500,
     },
     subtitleMypage: {
       fontSize: '1.6rem',
@@ -48,9 +51,28 @@ export const theme = createTheme({
     modalTitle: {
       fontSize: '1.6rem',
     },
+    modalPoint: {
+      fontSize: '1rem',
+      fontWeight: 600,
+      color: '#CC8DF0',
+    },
     searchQuery: {
       fontSize: '1.2rem',
-      color: '#D8A1F0',
+      color: '#CC8DF0',
+    },
+    trackTitle: {
+      fontSize: '1.1rem',
+    },
+    trackArtist: {
+      fontSize: '0.7rem',
+    },
+    date: {
+      fontSize: '0.8rem',
+      color: '#999',
+    },
+    ranking: {
+      fontSize: '0.9rem',
+      fontWeight: 700,
     },
   },
   spacing: 8,

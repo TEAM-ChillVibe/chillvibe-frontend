@@ -3,8 +3,9 @@ import Router from './Router';
 import Footer from './components/layout/Footer';
 import TopBar from './components/layout/TopBar/TopBar';
 import TopButton from './components/common/Button/TopButton';
-import MusicPlayer from './components/common/MusicPlayer/MusicPlayer';
 import useUserStore from './store/useUserStore';
+import MusicPlayerFloating from './components/common/MusicPlayer/MusicPlayerFloating';
+import SpeedDialButton from './components/common/Button/SpeedDialButton';
 
 function App() {
   const initialize = useUserStore(state => state.initialize);
@@ -32,7 +33,8 @@ function App() {
       <Router />
       <Footer />
       <TopButton />
-      <MusicPlayer />
+      <SpeedDialButton />
+      <MusicPlayerFloating />
     </div>
   );
 }

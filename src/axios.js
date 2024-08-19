@@ -1,11 +1,13 @@
 import axios from 'axios';
 import useUserStore from './store/useUserStore';
-import { signout } from './api/auth/authApi';
-import { useNavigate } from 'react-router-dom';
+import { signout, reissue } from './api/auth/authApi';
+
+const baseURL = '';
 
 // 토큰이 없는 요청을 위한 인스턴스
 const axiosWithoutToken = axios.create({
   baseURL: 'http://localhost:8080',
+  // baseURL: baseURL,
   timeout: 5000,
   withCredentials: true,
   headers: {
@@ -16,6 +18,7 @@ const axiosWithoutToken = axios.create({
 // 기본 인스턴스
 const axiosWithToken = axios.create({
   baseURL: 'http://localhost:8080',
+  // baseURL: baseURL,
   timeout: 5000,
   withCredentials: true,
   headers: {
@@ -55,7 +58,7 @@ axiosWithToken.interceptors.response.use(
 
       try {
         // 토큰 재발급 요청
-        const response = await axiosWithoutToken.post('/api/reissue');
+        const response = await reissue();
 
         // 재발급 응답 헤더에 포함된 access토큰 가져와서
         const newAccessToken = response.headers['authorization'].split(' ')[1];

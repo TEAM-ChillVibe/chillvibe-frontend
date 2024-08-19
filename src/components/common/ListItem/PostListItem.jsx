@@ -1,18 +1,21 @@
 import { Avatar, Box, Typography } from '@mui/material';
-import albumSample from '../albumSample.jpeg';
 import { useNavigate } from 'react-router-dom';
-import HashtagChips from '../HashtagChips';
 import { fetchHashtagsOfPost } from '../../../api/hashtag/hashtagApi';
 import { formatRelativeTime } from '../../../utils/reusableFn';
 import LikeButton from '../Button/LikeButton';
 import { useEffect } from 'react';
-import useLikeStore from '../../../store/useLikeStore';
+import usePostStore from '../../../store/usePostStore';
+import SingleHashtagChips from '../HashtagChips/SingleHashtagChips';
 
-function PostListItem({ post }) {
-  const { id, title, createdAt, trackCount, user, likeCount } = post;
+function PostListItem({ post, selectedHashtag }) {
+  const { id, title, createdAt, trackCount, user, likeCount, thumbnailUrl } =
+    post;
   const navigate = useNavigate();
-  const { initializeLikedPosts } = useLikeStore(state => ({
+
+  // ✔️ 여기서 likedPosts 상태를 가져옵니다.
+  const { initializeLikedPosts, likedPosts } = usePostStore(state => ({
     initializeLikedPosts: state.initializeLikedPosts,
+    likedPosts: state.likedPosts,
   }));
 
   useEffect(() => {
@@ -27,9 +30,8 @@ function PostListItem({ post }) {
     navigate(`/user/${user.id}`);
   };
 
-  const handleChipClick = tagId => {
-    localStorage.setItem('selectedHashtag', tagId);
-    navigate(`/all-tags/`);
+  const handleHashtagClick = hashtag => {
+    navigate(`/all-tags?hashtag=${hashtag.id}`);
   };
 
   return (
@@ -38,7 +40,8 @@ function PostListItem({ post }) {
         display: 'flex',
         width: '100%',
         py: 2,
-        flexWrap: 'wrap',
+        my: 1,
+        alignItems: 'center',
       }}
     >
       <Box
@@ -49,13 +52,13 @@ function PostListItem({ post }) {
           mr: 2,
           borderRadius: 1,
           overflow: 'hidden',
-          order: 1,
           cursor: 'pointer',
+          flexShrink: 0,
         }}
       >
         {/* 이미지 소스 수정 필요 */}
         <img
-          src={albumSample}
+          src={thumbnailUrl}
           alt={'Track img'}
           style={{ width: '100%', height: '100%', objectFit: 'cover' }}
         />
@@ -66,28 +69,31 @@ function PostListItem({ post }) {
           display: 'flex',
           flexDirection: 'column',
           py: 0.5,
-          order: 2,
           alignItems: 'flex-start',
           justifyContent: 'center',
         }}
       >
         <Typography
-          variant="subtitle1"
+          variant="trackTitle"
           onClick={handleNavigateToPost}
-          sx={{ cursor: 'pointer' }}
-          noWrap
+          sx={{
+            cursor: 'pointer',
+            whiteSpace: 'normal',
+            overflowWrap: 'break-word',
+          }}
         >
           {title}
         </Typography>
-        <Typography variant="body3" color="text.secondary" sx={{ mb: 1 }}>
+        <Typography variant="date" sx={{ my: 0.5 }}>
           {formatRelativeTime(createdAt)}
         </Typography>
-        <Typography variant="body2" sx={{ mb: 1 }}>
+        <Typography variant="trackArtist" sx={{ mb: 1 }}>
           트랙 {trackCount}개
         </Typography>
-        <HashtagChips
+        <SingleHashtagChips
           fetchHashtags={() => fetchHashtagsOfPost(id)}
-          onChipClick={handleChipClick}
+          onChipClick={handleHashtagClick}
+          selectedHashtag={selectedHashtag}
         />
       </Box>
       <Box
@@ -95,32 +101,32 @@ function PostListItem({ post }) {
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'flex-end',
-          justifyContent: 'space-between',
-          mt: 0.5,
-          order: 3,
         }}
       >
-        <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
-          <Box
-            onClick={handleNavigateToUserPage}
-            sx={{
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'flex-end',
-              cursor: 'pointer',
-            }}
-          >
-            <Avatar
-              alt={user.nickname || 'Unknown User'}
-              src={user.profileUrl || ''}
-              sx={{ width: 32, height: 32, mb: 1 }}
-            />
-            <Typography variant="body2">
-              {user.nickname || 'Unknown User'}
-            </Typography>
-          </Box>
+        <Box
+          onClick={handleNavigateToUserPage}
+          sx={{
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'flex-end',
+            cursor: 'pointer',
+            mb: 2,
+          }}
+        >
+          <Avatar
+            alt={user.nickname || 'Unknown User'}
+            src={user.profileUrl || ''}
+            sx={{ width: 32, height: 32, mb: 1 }}
+          />
+          <Typography variant="body2">
+            {user.nickname || 'Unknown User'}
+          </Typography>
         </Box>
-        <LikeButton postId={id} initialLikeCount={likeCount} />
+        <LikeButton
+          postId={id}
+          initialLikeCount={likeCount}
+          userLike={likedPosts.includes(id)} // ✔️ likedPosts를 사용하여 userLike 전달
+        />
       </Box>
     </Box>
   );

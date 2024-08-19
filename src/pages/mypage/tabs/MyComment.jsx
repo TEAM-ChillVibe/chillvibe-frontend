@@ -5,15 +5,14 @@ import {
   Avatar,
   Pagination,
   CircularProgress,
-  Snackbar,
-  Alert,
 } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { getCommentsByUser } from '../../../api/comment/commentApi';
 import { formatDate } from '../../../utils/reusableFn';
+import SnackbarAlert from '../../../components/common/Alert/SnackbarAlert';
 
 // 페이지네이션 단위 고정값
-const itemsPerPage = 10;
+const itemsPerPage = 5;
 
 const MyComment = () => {
   // 페이지 이동
@@ -36,7 +35,8 @@ const MyComment = () => {
     const fetchComments = async () => {
       setIsLoading(true);
       try {
-        const data = await getCommentsByUser(); // userId는 axiosWithToken에서 자동으로 처리
+        const data = await getCommentsByUser();
+        console.log(data);
         setComments(data);
       } catch (error) {
         setSnackbar({
@@ -59,7 +59,7 @@ const MyComment = () => {
 
   // 댓글 클릭 핸들러
   const handleCommentClick = postId => {
-    navigate(`/posts/${postId}`); // 해당 게시글 페이지로 이동
+    navigate(`/post/${postId}`); // 해당 게시글 페이지로 이동
   };
 
   // 페이지 인덱스 계산
@@ -105,33 +105,34 @@ const MyComment = () => {
                 onClick={() => handleCommentClick(comment.postId)}
               >
                 <Box sx={{ flexGrow: 1 }}>
-                  <Typography variant="h6" sx={{ marginBottom: 1 }}>
+                  <Typography variant="trackTitle">
                     {comment.postTitle}
                   </Typography>
                   <Box
                     sx={{
                       display: 'flex',
                       alignItems: 'center',
-                      marginBottom: 1,
+                      mb: 2,
+                      mt: 1,
                     }}
                   >
                     <Avatar
                       src={comment.postAuthorProfileUrl}
-                      sx={{ width: 20, height: 20 }}
+                      sx={{ width: 20, height: 20, mr: 1 }}
                     />
-                    <Typography variant="body2" sx={{ marginLeft: 1 }}>
+                    <Typography variant="body2" color="text.secondary">
                       {comment.postAuthor}
                     </Typography>
                   </Box>
-                  <Typography variant="body1">{comment.content}</Typography>
-                  <Typography variant="caption" sx={{ color: '#888' }}>
+                  <Typography variant="body1">"{comment.content}"</Typography>
+                  <Typography variant="date">
                     {formatDate(comment.modifiedAt)}
-                    {comment.createdAt !== comment.modifiedAt && (
-                      <span style={{ marginLeft: '10px', color: '#888' }}>
-                        수정됨
-                      </span>
-                    )}
                   </Typography>
+                  {comment.createdAt !== comment.modifiedAt && (
+                    <Typography variant="date" sx={{ ml: 0.5 }}>
+                      (수정됨)
+                    </Typography>
+                  )}
                 </Box>
                 <Box
                   sx={{
@@ -160,25 +161,19 @@ const MyComment = () => {
                 count={totalPages}
                 page={page}
                 onChange={handlePageChange}
+                color="primary"
               />
             </Box>
           </>
         )}
       </Box>
 
-      <Snackbar
+      <SnackbarAlert
         open={snackbar.open}
-        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
-        autoHideDuration={6000}
         onClose={() => setSnackbar(prev => ({ ...prev, open: false }))}
-      >
-        <Alert
-          onClose={() => setSnackbar(prev => ({ ...prev, open: false }))}
-          severity={snackbar.severity}
-        >
-          {snackbar.message}
-        </Alert>
-      </Snackbar>
+        message={snackbar.message}
+        severity={snackbar.severity}
+      />
     </Box>
   );
 };

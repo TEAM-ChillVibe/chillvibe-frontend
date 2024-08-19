@@ -6,6 +6,7 @@ import SearchTracks from './tabs/SearchTracks';
 import SearchPosts from './tabs/SearchPosts';
 import { searchTracks } from '../..//api/track/trackApi';
 import { searchPosts } from '../..//api/post/postApi';
+import SnackbarAlert from '../../components/common/Alert/SnackbarAlert';
 
 const SearchPage = () => {
   const location = useLocation();
@@ -15,6 +16,13 @@ const SearchPage = () => {
   const [postResults, setPostResults] = useState({ content: [] });
   const [isLoading, setIsLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState(0);
+  const [error, setError] = useState(null); // Spotify API 에러시 스낵바 알림
+
+  const [snackbar, setSnackbar] = useState({
+    open: false,
+    message: '',
+    severity: 'success',
+  });
 
   const fetchSearchResults = useCallback(async () => {
     if (!searchQuery) {
@@ -22,8 +30,8 @@ const SearchPage = () => {
     }
 
     setIsLoading(true);
+    setError(null);
     try {
-      // 트랙 검색 결과일때
       if (searchType === 'track') {
         const response = await searchTracks(searchQuery, currentPage);
         setTrackResults(prev => ({
@@ -34,7 +42,6 @@ const SearchPage = () => {
               : [...prev.content, ...response.content],
         }));
       } else {
-        // 게시글 검색 결과일때
         const response = await searchPosts(searchQuery, currentPage);
         setPostResults(prev => ({
           ...response,
@@ -45,7 +52,11 @@ const SearchPage = () => {
         }));
       }
     } catch (error) {
-      console.error('Search error:', error);
+      setSnackbar({
+        open: true,
+        message: '로딩 중 오류가 발생했습니다. 다시 시도해 주세요.',
+        severity: 'error',
+      });
     } finally {
       setIsLoading(false);
     }
@@ -76,7 +87,7 @@ const SearchPage = () => {
 
   return (
     <BaseContainer>
-      <Typography variant="h6" sx={{ mt: 2, mb: 3 }}>
+      <Typography variant="h6" sx={{ mb: 3 }}>
         <Typography component="span" variant="searchQuery">
           {searchQuery}
         </Typography>{' '}
@@ -95,17 +106,27 @@ const SearchPage = () => {
       </Tabs>
       <Box sx={{ width: '100%' }}>
         {searchType === 'track' && (
-          <SearchTracks results={trackResults} onLoadMore={handleLoadMore} />
+          <SearchTracks
+            results={trackResults}
+            onLoadMore={handleLoadMore}
+            isLoading={isLoading}
+          />
         )}
         {searchType === 'post' && (
-          <SearchPosts results={postResults} onLoadMore={handleLoadMore} />
+          <SearchPosts
+            results={postResults}
+            onLoadMore={handleLoadMore}
+            isLoading={isLoading}
+          />
         )}
       </Box>
-      {isLoading && (
-        <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2 }}>
-          <CircularProgress color="secondary" />
-        </Box>
-      )}
+
+      <SnackbarAlert
+        open={snackbar.open}
+        onClose={() => setSnackbar(prev => ({ ...prev, open: false }))}
+        message={snackbar.message}
+        severity={snackbar.severity}
+      />
     </BaseContainer>
   );
 };

@@ -24,11 +24,28 @@ export const fetchPostById = async postId => {
   }
 };
 
+// 마이페이지 게시글 조회 (페이지네이션 지원)
+export const fetchMyPosts = async (sortBy = 'latest', page = 0, size = 10) => {
+  try {
+    const response = await axiosWithToken.get(`/api/posts/user`, {
+      params: { sortBy, page, size },
+    });
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
 // 특정 유저 게시글 조회 (페이지네이션 지원)
-export const fetchPostsByUserId = async (userId, page = 0, size = 10) => {
+export const fetchPostsByUserId = async (
+  userId,
+  sortBy = 'latest',
+  page = 0,
+  size = 10,
+) => {
   try {
     const response = await axiosWithoutToken.get(`/api/posts/user/${userId}`, {
-      params: { page, size },
+      params: { sortBy, page, size },
     });
     return response.data;
   } catch (error) {
@@ -55,9 +72,10 @@ export const createPost = async postCreateRequestDto => {
 export const updatePost = async (postId, postUpdateRequestDto) => {
   try {
     const response = await axiosWithToken.put(
-      '/api/posts/${postId}',
+      `/api/posts/${postId}`,
       postUpdateRequestDto,
     );
+    console.log('Update successful:', response.data);
     return response.data;
   } catch (error) {
     console.error('Failed to update post:', error);
@@ -160,12 +178,26 @@ export const fetchMyLikedPosts = async (page = 0, size = 10) => {
   }
 };
 
-export const fetchPostsInMainPage = async () => {
+// 메인화면 인기플레이리스트
+// export const fetchPostsInMainPage = async () => {
+//   try {
+//     const response = await axiosWithToken.get('/api/posts/main');
+//     return response.data;
+//   } catch (error) {
+//     console.error('Error fetching playlists:', error);
+//     throw error;
+//   }
+// };
+
+// 메인 페이지 게시글 조회 (좋아요 순으로 정렬, 페이지네이션 지원)
+export const fetchMainPagePosts = async (page = 0, size = 6) => {
   try {
-    const response = await axiosWithToken.get('/api/posts/main');
+    const response = await axiosWithoutToken.get('/api/posts/main', {
+      params: { page, size },
+    });
     return response.data;
   } catch (error) {
-    console.error('Error fetching playlists:', error);
+    console.error('Failed to fetch main page posts:', error);
     throw error;
   }
 };

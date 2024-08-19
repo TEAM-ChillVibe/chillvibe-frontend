@@ -18,7 +18,7 @@ export const signup = async formData => {
 // 로그인
 export const signin = async (email, password) => {
   try {
-    const response = await axiosWithoutToken.post(`/login`, {
+    const response = await axiosWithoutToken.post(`/api/login`, {
       email,
       password,
     });
@@ -31,7 +31,7 @@ export const signin = async (email, password) => {
 // 로그아웃
 export const signout = async () => {
   try {
-    const response = await axiosWithToken.post(`/logout`);
+    const response = await axiosWithToken.post(`/api/logout`);
     return response;
   } catch (error) {
     const { logout } = useUserStore.getState();
@@ -65,6 +65,28 @@ export const reauth = async () => {
   try {
     const response = await axiosWithToken.get(`/api/reauth`);
     return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+// 토큰 재발급
+export const reissue = async () => {
+  try {
+    const response = await axiosWithoutToken.post(`/api/reissue`);
+    return response;
+  } catch (error) {
+    throw error;
+  }
+};
+
+// 탈퇴
+export const withdraw = async password => {
+  try {
+    const response = await axiosWithToken.post(`/api/users/delete`, {
+      password,
+    });
+    return response;
   } catch (error) {
     throw error;
   }

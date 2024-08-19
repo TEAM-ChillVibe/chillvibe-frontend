@@ -1,11 +1,14 @@
 import { Box, Button } from '@mui/material';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 
 const MenuButtons = () => {
+  const location = useLocation();
+  const currentPath = location.pathname;
+
   return (
     <Box sx={{ display: 'flex', gap: 2 }}>
       <Button
-        color="inherit"
+        color={currentPath === '/discover' ? 'primary' : 'inherit'}
         component={Link}
         to="/discover"
         sx={{ textTransform: 'none' }}
@@ -13,7 +16,15 @@ const MenuButtons = () => {
         Discover
       </Button>
       <Button
-        color="inherit"
+        color={currentPath === '/featured-tracks' ? 'primary' : 'inherit'}
+        component={Link}
+        to="/featured-tracks"
+        sx={{ textTransform: 'none' }}
+      >
+        Top 50 Tracks
+      </Button>
+      <Button
+        color={currentPath === '/all-tags' ? 'primary' : 'inherit'}
         component={Link}
         to="/all-tags"
         sx={{ textTransform: 'none' }}
@@ -21,7 +32,7 @@ const MenuButtons = () => {
         All Tags
       </Button>
       <Button
-        color="inherit"
+        color={currentPath === '/popular-tags' ? 'primary' : 'inherit'}
         component={Link}
         to="/popular-tags"
         sx={{ textTransform: 'none' }}

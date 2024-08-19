@@ -27,8 +27,12 @@ function TrackListEditItem({ music, onSelect, isChecked }) {
 
   return (
     <Box sx={{ display: 'flex', alignItems: 'center', width: '100%', p: 2 }}>
-      <Box sx={{ display: 'flex', alignItems: 'center', flexGrow: 1 }}>
-        <IconButton aria-label="play/pause" onClick={handlePlayPause}>
+      <Box sx={{ display: 'flex', alignItems: 'center', flexShrink: 0 }}>
+        <IconButton
+          aria-label="play/pause"
+          color="primary"
+          onClick={handlePlayPause}
+        >
           {isCurrentTrack && isPlaying ? (
             <Pause sx={{ fontSize: 30 }} />
           ) : (
@@ -38,18 +42,24 @@ function TrackListEditItem({ music, onSelect, isChecked }) {
         <Avatar
           alt={name}
           src={thumbnailUrl}
-          sx={{ width: 56, height: 56, mr: 2, borderRadius: 1 }}
+          sx={{ width: 56, height: 56, borderRadius: 1 }}
         />
-        <Box sx={{ display: 'flex', flexDirection: 'column' }}>
-          <Typography variant="subtitle1" noWrap>
+      </Box>
+      <Box sx={{ flexGrow: 1, mx: 2, overflow: 'hidden' }}>
+        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.5 }}>
+          <Typography
+            variant="trackTitle"
+            noWrap
+            sx={{ overflow: 'hidden', textOverflow: 'ellipsis' }}
+          >
             {name}
           </Typography>
-          <Typography variant="body2" color="text.secondary" noWrap>
+          <Typography variant="trackArtist" noWrap>
             {artist}
           </Typography>
         </Box>
       </Box>
-      <Box sx={{ display: 'flex', alignItems: 'center' }}>
+      <Box sx={{ display: 'flex', alignItems: 'center', flexShrink: 0 }}>
         <Typography variant="body2" sx={{ mr: 2 }}>
           {duration}
         </Typography>

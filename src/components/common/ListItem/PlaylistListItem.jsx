@@ -1,7 +1,7 @@
 import { Box, Typography } from '@mui/material';
 
 function PlaylistListItem({ playlist }) {
-  const { title, trackCount, thumbnailUrls = [] } = playlist;
+  const { title, trackCount, thumbnailUrl } = playlist;
 
   return (
     <Box
@@ -9,35 +9,25 @@ function PlaylistListItem({ playlist }) {
         display: 'flex',
         width: '100%',
         py: 2,
-        flexWrap: 'wrap',
+        overflowWrap: 'break-word',
         cursor: 'pointer', // 클릭 가능 표시
       }}
     >
       <Box
         sx={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(2, 1fr)', // 2열 설정
-          gridTemplateRows: 'repeat(2, 1fr)', // 2행 설정
           width: 80,
           height: 80,
           mr: 2,
           borderRadius: 1,
           overflow: 'hidden',
-          order: 1,
+          flexShrink: 0,
         }}
       >
-        {thumbnailUrls.slice(0, 4).map((url, index) => (
-          <Box
-            key={index}
-            sx={{ width: '100%', height: '100%', overflow: 'hidden' }}
-          >
-            <img
-              src={url}
-              alt={index}
-              style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-            />
-          </Box>
-        ))}
+        <img
+          alt="PlaylistThumbnail"
+          src={thumbnailUrl}
+          style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+        />
       </Box>
 
       <Box
@@ -45,16 +35,24 @@ function PlaylistListItem({ playlist }) {
           flexGrow: 1,
           display: 'flex',
           flexDirection: 'column',
-          order: 2,
           alignItems: 'flex-start',
           justifyContent: 'center',
           gap: 1,
+          pr: 1,
         }}
       >
-        <Typography variant="subtitle1" component="div" noWrap>
+        <Typography
+          variant="trackTitle"
+          sx={{
+            wordBreak: 'break-word',
+            overflow: 'hidden',
+            textOverflow: 'ellipsis',
+            whiteSpace: 'normal',
+          }}
+        >
           {title}
         </Typography>
-        <Typography variant="body2">트랙 {trackCount}개</Typography>
+        <Typography variant="trackArtist">트랙 {trackCount}개</Typography>
       </Box>
     </Box>
   );

@@ -4,6 +4,7 @@ import AuthButtons from './AuthButtons';
 import useUserStore from '../../../store/useUserStore';
 import SearchBox from './SearchBox';
 import MenuButtons from './MenuButtons';
+import logoS from '../../../assets/logoImg/ChillVibeT_logoS.png';
 
 const Topbar = () => {
   const user = useUserStore(state => state.user); // 현재 사용자 정보 가져오기
@@ -12,9 +13,10 @@ const Topbar = () => {
     <AppBar
       position="sticky"
       sx={{
-        px: '10%',
+        px: '13%',
         py: theme => theme.spacing(1),
-        backgroundColor: '#000',
+        backgroundColor: 'black',
+        boxShadow: '0px 4px 30px rgba(255, 255, 255, 0.25)',
       }}
     >
       <Toolbar
@@ -27,9 +29,15 @@ const Topbar = () => {
       >
         {/* 로고 */}
         <Link to="/" style={{ textDecoration: 'none', color: 'inherit' }}>
-          <Typography variant="h6" component="div">
-            ChillVibe
-          </Typography>
+          <img
+            src={logoS}
+            alt="Logo"
+            style={{
+              width: '135px',
+              height: 'auto',
+              paddingTop: 3,
+            }}
+          />
         </Link>
 
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 3 }}>

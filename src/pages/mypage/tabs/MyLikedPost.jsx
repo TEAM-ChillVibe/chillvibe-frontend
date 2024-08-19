@@ -1,19 +1,11 @@
-import { useEffect, useState } from 'react';
-import {
-  Alert,
-  Box,
-  CircularProgress,
-  Pagination,
-  Snackbar,
-  Typography,
-} from '@mui/material';
+import React, { useEffect, useState } from 'react';
+import { Box, CircularProgress, Pagination, Typography } from '@mui/material';
 import PostListItem from '../../../components/common/ListItem/PostListItem';
-import usePostStore from '../../../store/usePostStore';
-import useLikeStore from '../../../store/useLikeStore';
 import { fetchMyLikedPosts } from '../../../api/post/postApi';
+import SnackbarAlert from '../../../components/common/Alert/SnackbarAlert';
 
 // 페이지네이션 단위 고정값
-const itemsPerPage = 10;
+const itemsPerPage = 5;
 
 const MyLikedPost = () => {
   // 페이지
@@ -35,10 +27,9 @@ const MyLikedPost = () => {
     const loadLikedPosts = async () => {
       setIsLoading(true);
       try {
-        const response = await fetchMyLikedPosts(page - 1, itemsPerPage);
-        console.log('fetched:::', response);
-        setLikedPosts(response.content);
-        setTotalPages(response.totalPages);
+        const data = await fetchMyLikedPosts(page - 1, itemsPerPage);
+        setLikedPosts(data.content);
+        setTotalPages(data.page.totalPages);
       } catch (error) {
         setSnackbar({
           open: true,
@@ -100,19 +91,12 @@ const MyLikedPost = () => {
         )}
       </Box>
 
-      <Snackbar
+      <SnackbarAlert
         open={snackbar.open}
-        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
-        autoHideDuration={6000}
         onClose={() => setSnackbar(prev => ({ ...prev, open: false }))}
-      >
-        <Alert
-          onClose={() => setSnackbar(prev => ({ ...prev, open: false }))}
-          severity={snackbar.severity}
-        >
-          {snackbar.message}
-        </Alert>
-      </Snackbar>
+        message={snackbar.message}
+        severity={snackbar.severity}
+      />
     </Box>
   );
 };

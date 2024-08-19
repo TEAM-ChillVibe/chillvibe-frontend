@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useState } from 'react';
+import React, { useRef, useEffect, useState, useCallback } from 'react';
 import {
   List,
   ListItem,
@@ -8,59 +8,77 @@ import {
 } from '@mui/material';
 import PostListItem from '../../../components/common/ListItem/PostListItem';
 
-const SearchPosts = ({ results, onLoadMore }) => {
-  const [isLoading, setIsLoading] = useState(false);
+const SearchPosts = ({ results, onLoadMore, isLoading }) => {
   const [isLastPage, setIsLastPage] = useState(false);
   const lastItemRef = useRef(null);
+  const observerRef = useRef(null);
+  const loadingRef = useRef(false);
 
-  useEffect(() => {
-    if (
-      results &&
-      results.content &&
-      results.content.length > 0 &&
-      !isLastPage
-    ) {
-      const observer = new IntersectionObserver(
-        async entries => {
-          if (entries[0].isIntersecting) {
-            setIsLoading(true);
-            await onLoadMore();
-            setIsLoading(false);
-          }
-        },
-        { threshold: 1 },
-      );
-
-      if (lastItemRef.current) {
-        observer.observe(lastItemRef.current);
+  const handleIntersection = useCallback(
+    async entries => {
+      const target = entries[0];
+      if (target.isIntersecting && !loadingRef.current && !isLastPage) {
+        loadingRef.current = true;
+        await onLoadMore();
+        loadingRef.current = false;
       }
+    },
+    [onLoadMore, isLastPage],
+  );
 
-      return () => {
-        if (lastItemRef.current) {
-          observer.unobserve(lastItemRef.current);
-        }
-      };
+  useEffect(() => {
+    const options = {
+      root: null,
+      rootMargin: '20px',
+      threshold: 0.1,
+    };
+
+    observerRef.current = new IntersectionObserver(handleIntersection, options);
+
+    return () => {
+      if (observerRef.current) {
+        observerRef.current.disconnect();
+      }
+    };
+  }, [handleIntersection]);
+
+  useEffect(() => {
+    if (lastItemRef.current && observerRef.current) {
+      observerRef.current.disconnect();
+      observerRef.current.observe(lastItemRef.current);
     }
-  }, [results, onLoadMore, isLastPage]);
+  }, [results]);
 
   useEffect(() => {
     if (
-      results &&
-      results.page &&
-      results.page.totalPages !== undefined &&
-      results.page.number !== undefined
+      results?.page?.totalPages !== undefined &&
+      results?.page?.number !== undefined
     ) {
       setIsLastPage(results.page.number + 1 >= results.page.totalPages);
     }
   }, [results]);
 
-  if (!results || !results.content || results.content.length === 0) {
-    return <Typography>게시글 검색 결과가 없습니다.</Typography>;
+  if (isLoading && (!results?.content || results.content.length === 0)) {
+    return (
+      <Box sx={{ display: 'flex', justifyContent: 'center', mt: 4 }}>
+        <CircularProgress />
+      </Box>
+    );
+  }
+
+  if (!isLoading && results.content.length === 0) {
+    return (
+      <Box
+        sx={{ display: 'flex', justifyContent: 'center', width: '100%', mt: 4 }}
+      >
+        <Typography>게시글 검색 결과가 없습니다.</Typography>
+      </Box>
+    );
   }
 
   return (
-    <Box sx={{ width: '100%' }}>
-      <List sx={{ width: '100%', bgcolor: 'background.paper' }}>
+    <Box sx={{ width: '100%', overflow: 'hidden' }}>
+      <List sx={{ width: '100%' }}>
         {results.content.map((post, index) => (
           <ListItem
             key={post.id}
@@ -68,22 +86,12 @@ const SearchPosts = ({ results, onLoadMore }) => {
             sx={{ mb: 1 }}
             ref={index === results.content.length - 1 ? lastItemRef : null}
           >
-            <PostListItem
-              post={{
-                ...post,
-                user: {
-                  id: post.user.id,
-                  name: post.user.nickname,
-                  avatar: post.user.profileUrl,
-                },
-                likes: post.likeCount,
-              }}
-            />
+            <PostListItem post={post} />
           </ListItem>
         ))}
       </List>
-      {isLoading && !isLastPage && (
-        <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2 }}>
+      {isLoading && (
+        <Box sx={{ display: 'flex', justifyContent: 'center', my: 2 }}>
           <CircularProgress />
         </Box>
       )}

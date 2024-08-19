@@ -6,14 +6,17 @@ import {
   TextField,
   FormControlLabel,
   Switch,
+  Typography,
 } from '@mui/material';
 import IconButton from '@mui/material/IconButton';
 import { AddPhotoAlternate } from '@mui/icons-material';
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { fetchAllHashtags } from '../../../api/hashtag/hashtagApi';
-import HashtagChips from '../../../components/common/HashtagChips';
 import { editProfile, myInfo } from '../../../api/user/userApi';
+import SnackbarAlert from '../../../components/common/Alert/SnackbarAlert';
+import MultiHashtagChips from '../../../components/common/HashtagChips/MultiHashtagChips';
+import SimpleModal from '../../../components/common/Modal/SimpleModal';
 
 const EditProfile = () => {
   const [email, setEmail] = useState('');
@@ -22,7 +25,14 @@ const EditProfile = () => {
   const [profileImage, setProfileImage] = useState('');
   const [isPublic, setIsPublic] = useState(false);
   const [imagePreview, setImagePreview] = useState('');
-  const [hashtagIds, setSelectedHashtags] = useState([]);
+  const [selectedHashtags, setSelectedHashtags] = useState([]);
+  const [openModal, setOpenModal] = useState(false);
+  const [modalAction, setModalAction] = useState(() => () => {});
+  const [snackbar, setSnackbar] = useState({
+    open: false,
+    message: '',
+    severity: 'success',
+  });
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -32,8 +42,6 @@ const EditProfile = () => {
         const response = await myInfo();
         const userData = response;
 
-        console.log(response);
-
         // 사용자 정보 상태 업데이트
         setEmail(userData.email);
         setNickname(userData.nickname);
@@ -42,15 +50,17 @@ const EditProfile = () => {
         setIsPublic(userData.public);
         const userHashtags = userData.hashtags.map(hashtag => hashtag.id);
         setSelectedHashtags(userHashtags);
-      } catch (error) {}
+      } catch (error) {
+        setSnackbar({
+          open: true,
+          message: '사용자 정보를 가져오는 데 실패했습니다.',
+          severity: 'error',
+        });
+      }
     };
 
     fetchUserData();
   }, []);
-
-  const handleHashtagClick = selectedHashtags => {
-    setSelectedHashtags(selectedHashtags);
-  };
 
   const handleImageChange = event => {
     const file = event.target.files[0];
@@ -70,14 +80,19 @@ const EditProfile = () => {
 
   const handleSubmit = async event => {
     event.preventDefault();
+    // 모달 열기
+    setModalAction(() => handleConfirmSubmit);
+    setOpenModal(true);
+  };
 
+  const handleConfirmSubmit = async () => {
     // 사용자 정보 업데이트 API 호출
     try {
       const formData = new FormData();
       const userUpdateDto = {
         nickname,
         introduction,
-        hashtagIds,
+        hashtagIds: selectedHashtags,
         isPublic,
       };
 
@@ -87,20 +102,38 @@ const EditProfile = () => {
         formData.append('profileImg', profileImage);
       }
 
-      if (window.confirm('정말로 회원정보를 수정하시겠습니까?')) {
-        await editProfile(formData);
-        alert('회원정보가 수정되었습니다.');
+      await editProfile(formData);
+      setSnackbar({
+        open: true,
+        message: '회원정보가 수정되었습니다.',
+        severity: 'success',
+      });
+      setTimeout(() => {
         navigate('/my-page');
-      }
+      }, 1500);
     } catch (error) {
-      alert('프로필 업데이트에 실패했습니다. 다시 시도해 주세요.');
+      setSnackbar({
+        open: true,
+        message: '프로필 업데이트에 실패했습니다. 다시 시도해 주세요.',
+        severity: 'error',
+      });
+    } finally {
+      setOpenModal(false); // 모달 닫기
     }
+  };
+
+  const handleModalClose = () => {
+    setOpenModal(false);
   };
 
   const isFormValid = email && nickname;
 
-  const handleChangePassword = () => {
-    navigate('/edit-password'); // 비밀번호 변경 페이지로 이동
+  const handleSelectionChange = newSelection => {
+    setSelectedHashtags(newSelection);
+  };
+
+  const handleWithdraw = () => {
+    navigate('/withdraw');
   };
 
   return (
@@ -154,20 +187,21 @@ const EditProfile = () => {
           </Box>
           {/* 회원정보 입력 필드 */}
           <TextField
-            label="닉네임"
-            fullWidth
-            required
-            value={nickname}
-            onChange={e => setNickname(e.target.value)}
-            margin="normal"
-          />
-          <TextField
             label="이메일"
             fullWidth
             value={email}
             InputProps={{
               readOnly: true,
             }}
+            margin="normal"
+            disabled
+          />
+          <TextField
+            label="닉네임"
+            fullWidth
+            required
+            value={nickname}
+            onChange={e => setNickname(e.target.value)}
             margin="normal"
           />
           <TextField
@@ -179,19 +213,22 @@ const EditProfile = () => {
             onChange={e => setIntroduction(e.target.value)}
             margin="normal"
           />
-          <HashtagChips
+          <Typography variant="body1" sx={{ mt: 2, mb: 1 }}>
+            해시태그 선택
+          </Typography>
+          <MultiHashtagChips
             fetchHashtags={fetchAllHashtags}
-            onChipClick={handleHashtagClick}
-            multiSelectMode={true}
+            selectedHashtags={selectedHashtags}
+            onSelectionChange={handleSelectionChange}
           />
           <Box
             display="flex"
-            justifyContent="center"
+            flexDirection="column"
             alignItems="center"
             sx={{ mt: 5 }}
           >
             <FormControlLabel
-              label="게시글 공개"
+              label="내 게시글 공개"
               labelPlacement="start"
               control={
                 <Switch
@@ -202,7 +239,7 @@ const EditProfile = () => {
             />
           </Box>
           {/* 버튼 */}
-          <Box sx={{ width: '100%', display: 'flex', mt: 5, gap: 2 }}>
+          <Box sx={{ width: '100%', display: 'flex', mt: 8, gap: 2 }}>
             <Button
               variant="outlined"
               onClick={handleCancel}
@@ -223,15 +260,33 @@ const EditProfile = () => {
           </Box>
         </form>
         <Button
-          variant="text"
-          fullWidth
-          onClick={handleChangePassword}
-          sx={{ flex: 1, my: 5 }}
+          variant="outlined"
+          color="error"
+          onClick={handleWithdraw}
+          sx={{ flex: 1, mt: 20, width: '100%' }}
           size="large"
         >
-          비밀번호 변경
+          회원 탈퇴하기
         </Button>
       </Box>
+
+      <SnackbarAlert
+        open={snackbar.open}
+        onClose={() => setSnackbar(prev => ({ ...prev, open: false }))}
+        message={snackbar.message}
+        severity={snackbar.severity}
+      />
+
+      <SimpleModal
+        open={openModal}
+        onClose={handleModalClose}
+        title="회원정보 수정 확인"
+        description="회원정보를 수정하시겠습니까?"
+        primaryButtonText="확인"
+        secondaryButtonText="취소"
+        onPrimaryClick={modalAction} // 이곳에 회원정보 수정 함수
+        onSecondaryClick={handleModalClose}
+      />
     </BaseContainer>
   );
 };

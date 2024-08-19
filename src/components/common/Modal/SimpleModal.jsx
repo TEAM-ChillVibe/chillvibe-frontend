@@ -10,6 +10,8 @@ const SimpleModal = ({
   secondaryButtonText,
   onPrimaryClick,
   onSecondaryClick,
+  primaryButtonStyle = 'primary',
+  disablePrimaryButton = false, // 버튼 비활성화 (저장 시)
 }) => {
   return (
     <Modal
@@ -25,7 +27,7 @@ const SimpleModal = ({
           left: '50%',
           transform: 'translate(-50%, -50%)',
           width: 400,
-          bgcolor: 'background.paper',
+          bgcolor: '#1f1f1f',
           borderRadius: 1,
           boxShadow: 24,
           p: 4,
@@ -50,11 +52,16 @@ const SimpleModal = ({
         >
           {description}
         </Typography>
-        <Box sx={{ display: 'flex', justifyContent: 'center', mt: 4, gap: 1 }}>
+        <Box sx={{ display: 'flex', justifyContent: 'center', mt: 5, gap: 1 }}>
           <Button onClick={onSecondaryClick} color="inherit">
             {secondaryButtonText}
           </Button>
-          <Button onClick={onPrimaryClick} variant="contained" color="primary">
+          <Button
+            onClick={onPrimaryClick}
+            variant="contained"
+            color={primaryButtonStyle}
+            disabled={disablePrimaryButton} // 비활성화 상태 적용
+          >
             {primaryButtonText}
           </Button>
         </Box>

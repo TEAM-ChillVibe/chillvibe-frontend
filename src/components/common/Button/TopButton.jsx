@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Fab, Zoom } from '@mui/material';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
+import useMusicPlayerStore from '../../../store/useMusicPlayerStore';
 
 function TopButton() {
   const [showButton, setShowButton] = useState(false);
@@ -26,8 +27,13 @@ function TopButton() {
     <Zoom in={showButton}>
       <Fab
         size="medium"
+        color="primary"
         onClick={scrollToTop}
-        sx={{ position: 'fixed', bottom: 24, right: 24 }}
+        sx={{
+          position: 'fixed',
+          bottom: 24,
+          left: 24,
+        }}
       >
         <KeyboardArrowUpIcon />
       </Fab>

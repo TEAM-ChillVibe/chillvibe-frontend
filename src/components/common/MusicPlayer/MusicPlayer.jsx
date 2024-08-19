@@ -3,6 +3,7 @@ import {
   AppBar,
   Avatar,
   Box,
+  keyframes,
   Slider,
   Toolbar,
   Typography,
@@ -15,6 +16,8 @@ import {
   VolumeOff,
   VolumeUp,
 } from '@mui/icons-material';
+import { styled } from '@mui/material/styles';
+import { useEffect, useRef, useState } from 'react';
 
 // 시간을 MM:SS 형식으로 포맷
 const formatTime = time => {
@@ -23,7 +26,30 @@ const formatTime = time => {
   return `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
 };
 
+// 애니메이션 정의
+const scrollLeft = keyframes`
+  0% {
+    transform: translateX(100%);
+  }
+  100% {
+    transform: translateX(-100%);
+  }
+`;
+
+// 스크롤 애니메이션을 적용한 Typography 스타일 정의
+const ScrollingTypography = styled(Typography)(({ theme, animate }) => ({
+  display: 'block',
+  whiteSpace: 'nowrap',
+  overflow: 'hidden',
+  animation: animate ? `${scrollLeft} 10s linear infinite` : 'none',
+  minWidth: '100%', // 너비를 조정하여 스크롤 효과가 보이도록 설정
+}));
+
 const MusicPlayer = () => {
+  // 텍스트 길이 측정
+  const [isScrolling, setIsScrolling] = useState(false);
+  const textRef = useRef(null);
+
   const {
     isPlaying,
     currentTrack,
@@ -39,8 +65,28 @@ const MusicPlayer = () => {
     isVisible,
   } = useMusicPlayerStore();
 
+  useEffect(() => {
+    if (!currentTrack || !isVisible) {
+      return;
+    }
+
+    const checkTextOverflow = () => {
+      if (textRef.current) {
+        setIsScrolling(
+          textRef.current.scrollWidth > textRef.current.clientWidth,
+        );
+      }
+    };
+
+    checkTextOverflow();
+    window.addEventListener('resize', checkTextOverflow);
+    return () => window.removeEventListener('resize', checkTextOverflow);
+  }, [currentTrack?.name, isVisible]);
+
   // 현재 트랙이 없거나 플레이어가 숨겨진 경우, 컴포넌트를 렌더링하지 않음
-  if (!currentTrack || !isVisible) return null;
+  if (!currentTrack || !isVisible) {
+    return null;
+  }
 
   return (
     <AppBar
@@ -61,16 +107,28 @@ const MusicPlayer = () => {
         }}
       >
         {/* 앨범아트, 제목, 아티스트*/}
-        <Box sx={{ display: 'flex', alignItems: 'center', flexGrow: 1, mr: 2 }}>
+        <Box
+          sx={{
+            display: 'flex',
+            alignItems: 'center',
+            flexGrow: 1, // 이 영역이 가변적인 공간을 차지합니다.
+            mr: 2,
+          }}
+        >
           <Avatar
             src={currentTrack.thumbnailUrl}
             alt={currentTrack.name}
             sx={{ width: 56, height: 56, mr: 2, borderRadius: 1 }}
           />
           <Box sx={{ display: 'flex', flexDirection: 'column', minWidth: 0 }}>
-            <Typography variant="subtitle1" noWrap sx={{ maxWidth: '200px' }}>
+            <ScrollingTypography
+              variant="subtitle1"
+              ref={textRef}
+              animate={isScrolling}
+              sx={{ overflow: 'hidden' }}
+            >
               {currentTrack.name}
-            </Typography>
+            </ScrollingTypography>
             <Typography variant="caption" noWrap sx={{ maxWidth: '200px' }}>
               {currentTrack.artist}
             </Typography>
@@ -84,7 +142,7 @@ const MusicPlayer = () => {
             flexDirection: 'column',
             justifyContent: 'center',
             alignItems: 'center',
-            flexGrow: 3,
+            flexGrow: 1, // 이 영역이 가변적인 공간을 차지합니다.
             mx: 2,
             height: '100%',
           }}
@@ -117,7 +175,7 @@ const MusicPlayer = () => {
           sx={{
             display: 'flex',
             alignItems: 'center',
-            flexGrow: 1,
+            flexShrink: 0, // 볼륨 영역은 줄어들 수 있습니다.
             maxWidth: '200px',
             marginLeft: '10px',
           }}

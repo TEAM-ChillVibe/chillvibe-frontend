@@ -13,7 +13,7 @@ const BaseContainer = ({ children, ...props }) => {
         my: '60px',
         px: '16px',
         py: '24px',
-        gap: 4,
+        gap: 7,
       }}
     >
       {children}

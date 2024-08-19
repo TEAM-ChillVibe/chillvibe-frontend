@@ -26,6 +26,27 @@ export const getUserPlaylistsForSelection = async () => {
   }
 };
 
+// 플레이리스트 제목 수정
+export const updatePlaylistTitle = async (newTitle, playlistId) => {
+  try {
+    // 서버에 전송할 데이터 객체
+    const playlistCreateRequestDto = { title: newTitle };
+
+    // PUT 요청으로 제목을 업데이트
+    const response = await axiosWithToken.put(
+      '/api/playlists/edit/title',
+      playlistCreateRequestDto,
+      {
+        params: { playlistId },
+      },
+    );
+
+    return response;
+  } catch (error) {
+    throw error;
+  }
+};
+
 // 플레이리스트 수정(상세) 페이지 조회
 export const getPlaylistForEditing = async playlistId => {
   try {

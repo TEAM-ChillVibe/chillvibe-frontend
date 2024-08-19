@@ -1,20 +1,20 @@
 import {
-  Alert,
   Box,
   Button,
   CircularProgress,
   Grid,
   Pagination,
-  Snackbar,
   Typography,
 } from '@mui/material';
 import PlaylistListItemMini from '../../../components/common/ListItem/PlaylistListItemMini';
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import FormModal from '../../../components/common/Modal/FormModal';
 import {
   createEmptyPlaylist,
   getUserPlaylists,
 } from '../../../api/playlist/playlistApi';
+import SnackbarAlert from '../../../components/common/Alert/SnackbarAlert';
+import QueueMusicIcon from '@mui/icons-material/QueueMusic';
 
 // 페이지네이션 단위 고정값
 const itemsPerPage = 10;
@@ -36,6 +36,10 @@ const MyPlaylist = () => {
     message: '',
     severity: 'success',
   });
+  // 생성 상태 관리
+  const [isCreating, setIsCreating] = useState(false);
+  // 플레이리스트 글자 수 에러 표시 위해
+  const [titleError, setTitleError] = useState('');
 
   // 플레이리스트 데이터 로드
   useEffect(() => {
@@ -43,7 +47,7 @@ const MyPlaylist = () => {
       try {
         const data = await getUserPlaylists(page - 1, itemsPerPage);
         setPlaylists(data.content);
-        setTotalPages(data.totalPages);
+        setTotalPages(data.page.totalPages);
       } catch (error) {
         setSnackbar({
           open: true,
@@ -65,32 +69,49 @@ const MyPlaylist = () => {
 
   // 모달 버튼 이벤트
   const handlePrimaryClick = async () => {
+    // 유효성 검사
     if (!playlistTitle.trim()) {
       return;
     } // 제목이 비어있으면 처리하지 않음
 
+    if (playlistTitle.length < 1 || playlistTitle.length > 50) {
+      setTitleError('플레이리스트의 제목은 1자 이상, 50자 이하여야 합니다. ');
+      return;
+    } // 플레이리스트 글자 수 제한
+
+    setIsCreating(true);
     try {
       await createEmptyPlaylist(playlistTitle);
       handleClose();
       setPage(1); // 생성 후 첫페이지로 이동
       const data = await getUserPlaylists(0, itemsPerPage); // 첫 페이지의 플레이리스트를 가져옵니다.
       setPlaylists(data.content); // 업데이트된 플레이리스트 설정
-      setTotalPages(data.totalPages); // 업데이트된 총 페이지 수 설정
-    } catch (e) {
+      setTotalPages(data.page.totalPages); // 업데이트된 총 페이지 수 설정
+      setSnackbar({
+        open: true,
+        message: '새 플레이리스트가 생성되었습니다.',
+        severity: 'success',
+      });
+    } catch (error) {
       setSnackbar({
         open: true,
         message: '플레이리스트 생성에 실패했습니다. 다시 시도해 주세요.',
         severity: 'error',
       });
+    } finally {
+      setIsCreating(false);
     }
   };
+
   const handleSecondaryClick = () => {
     handleClose();
   };
 
   // 플레이리스트 제목 폼 핸들러
   const handleTitleChange = e => {
-    setPlaylistTitle(e.target.value);
+    const newTitle = e.target.value;
+    setPlaylistTitle(newTitle);
+    setTitleError('');
   };
 
   // 페이지 핸들러
@@ -110,7 +131,12 @@ const MyPlaylist = () => {
       >
         <Typography variant="subtitleMypage">My Playlists</Typography>
         <Box>
-          <Button variant="contained" onClick={handleOpen}>
+          <Button
+            variant="contained"
+            size="small"
+            startIcon={<QueueMusicIcon />}
+            onClick={handleOpen}
+          >
             새 플레이리스트
           </Button>
           <FormModal
@@ -130,7 +156,8 @@ const MyPlaylist = () => {
             secondaryButtonText="취소"
             onPrimaryClick={handlePrimaryClick}
             onSecondaryClick={handleSecondaryClick}
-            isPrimaryButtonDisabled={!playlistTitle.trim()}
+            isPrimaryButtonDisabled={!playlistTitle.trim() || isCreating}
+            errorMessage={titleError} // 에러 메시지 전달
           />
         </Box>
       </Box>
@@ -171,19 +198,12 @@ const MyPlaylist = () => {
         )}
       </Box>
 
-      <Snackbar
+      <SnackbarAlert
         open={snackbar.open}
-        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
-        autoHideDuration={6000}
         onClose={() => setSnackbar(prev => ({ ...prev, open: false }))}
-      >
-        <Alert
-          onClose={() => setSnackbar(prev => ({ ...prev, open: false }))}
-          severity={snackbar.severity}
-        >
-          {snackbar.message}
-        </Alert>
-      </Snackbar>
+        message={snackbar.message}
+        severity={snackbar.severity}
+      />
     </Box>
   );
 };
