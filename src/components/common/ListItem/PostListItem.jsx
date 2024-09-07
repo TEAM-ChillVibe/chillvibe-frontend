@@ -6,10 +6,19 @@ import LikeButton from '../Button/LikeButton';
 import { useEffect } from 'react';
 import usePostStore from '../../../store/usePostStore';
 import SingleHashtagChips from '../HashtagChips/SingleHashtagChips';
+import ModeCommentIcon from '@mui/icons-material/ModeComment';
 
 function PostListItem({ post, selectedHashtag }) {
-  const { id, title, createdAt, trackCount, user, likeCount, thumbnailUrl } =
-    post;
+  const {
+    id,
+    title,
+    createdAt,
+    trackCount,
+    user,
+    likeCount,
+    thumbnailUrl,
+    commentCount,
+  } = post;
   const navigate = useNavigate();
 
   // ✔️ 여기서 likedPosts 상태를 가져옵니다.
@@ -122,11 +131,23 @@ function PostListItem({ post, selectedHashtag }) {
             {user.nickname || 'Unknown User'}
           </Typography>
         </Box>
-        <LikeButton
-          postId={id}
-          initialLikeCount={likeCount}
-          userLike={likedPosts.includes(id)} // ✔️ likedPosts를 사용하여 userLike 전달
-        />
+        <Box
+          sx={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: 2,
+          }}
+        >
+          <LikeButton
+            postId={id}
+            initialLikeCount={likeCount}
+            userLike={likedPosts.includes(id)} // ✔️ likedPosts를 사용하여 userLike 전달
+          />
+          <Box display="flex" alignItems="center">
+            <ModeCommentIcon sx={{ fontSize: 14, mr: 1 }} />
+            <Typography variant="body2">{commentCount}</Typography>
+          </Box>
+        </Box>
       </Box>
     </Box>
   );
