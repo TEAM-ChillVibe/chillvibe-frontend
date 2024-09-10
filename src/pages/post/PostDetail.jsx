@@ -1,8 +1,18 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { fetchPostById, deletePost } from '../../api/post/postApi';
+import { fetchPostById, deletePost, reportPost } from '../../api/post/postApi';
 import { myInfo } from '../../api/user/userApi';
-import { Box, Typography, List, ListItem, Button, Card } from '@mui/material';
+
+import {
+  Box,
+  Typography,
+  List,
+  ListItem,
+  Button,
+  Card,
+  Menu,
+  MenuItem,
+} from '@mui/material';
 import BaseContainer from '../../components/layout/BaseContainer';
 import Comment from '../../pages/comment/Comment';
 import TrackListItem from '../../components/common/ListItem/TrackListItem';
@@ -10,11 +20,15 @@ import LikeButton from '../../components/common/Button/LikeButton';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import SimpleModal from '../../components/common/Modal/SimpleModal';
+import SnackbarAlert from '../../components/common/Alert/SnackbarAlert';
 import { formatDate } from '../../utils/reusableFn';
 import UserProfile from '../../components/common/UserProfile';
 import SingleHashtagChips from '../../components/common/HashtagChips/SingleHashtagChips';
 import { fetchHashtagsOfPost } from '../../api/hashtag/hashtagApi';
 import usePostStore from '../../store/usePostStore';
+import MoreVertIcon from '@mui/icons-material/MoreVert'; // morevert 아이콘 추가
+import ReportIcon from '@mui/icons-material/Report';
+import IconButton from '@mui/material/IconButton'; // 신고 아이콘 추가
 
 const PostDetail = () => {
   const { postId } = useParams();
@@ -23,6 +37,11 @@ const PostDetail = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [reportModalOpen, setReportModalOpen] = useState(false); // 신고 모달 상태 추가
+  const [menuAnchorEl, setMenuAnchorEl] = useState(null); // 메뉴 상태 추가
+  const [snackbarOpen, setSnackbarOpen] = useState(false); // 성공적으로 신고한 후의 스낵바 상태 추가
+  const [alreadyReportedSnackbarOpen, setAlreadyReportedSnackbarOpen] =
+    useState(false); // 이미 신고한 게시글 알림 스낵바
 
   const [userLike, setUserLike] = useState(false);
   const { likedPosts, loadPostById } = usePostStore(state => ({
@@ -32,11 +51,18 @@ const PostDetail = () => {
 
   // 현재 사용자가 포스트의 작성자인지 여부를 확인하는 상태
   const [isOwner, setIsOwner] = useState(false);
-
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => setIsModalOpen(false);
+  const openMenu = event => setMenuAnchorEl(event.currentTarget); // 메뉴 열기 함수 추가
+  const closeMenu = () => setMenuAnchorEl(null); // 메뉴 닫기 함수 추가
+  const openReportModal = () => setReportModalOpen(true);
+  const closeReportModal = () => setReportModalOpen(false);
+
+  const handleSnackbarClose = () => setSnackbarOpen(false); // 스낵바 닫기
+  const closeAlreadyReportedSnackbar = () =>
+    setAlreadyReportedSnackbarOpen(false); // 이미 신고한 게시글 모달 닫기
 
   useEffect(() => {
     const getPost = async () => {
@@ -117,6 +143,23 @@ const PostDetail = () => {
     ));
   };
 
+  // 신고 기능
+  const handleReportConfirm = async () => {
+    try {
+      await reportPost(postId); // 신고 API 호출
+      setReportModalOpen(false); // 신고 완료 후 모달 닫기
+      setSnackbarOpen(true);
+    } catch (error) {
+      if (error.response && error.response.status === 400) {
+        // 이미 신고한 경우
+        setReportModalOpen(false);
+        setAlreadyReportedSnackbarOpen(true); // 이미 신고한 경우 모달 열기
+      } else {
+        console.error('Error reporting post: ', error);
+      }
+    }
+  };
+
   return (
     <BaseContainer>
       <Box sx={{ mb: 2, width: '100%', p: 2 }}>
@@ -143,6 +186,52 @@ const PostDetail = () => {
                   userLike={likedPosts.includes(post.id)}
                 />
               </Box>
+
+              {/*신고 버튼: 게시글 소유자가 아닐 때만 노출*/}
+              {!isOwner && (
+                <IconButton onClick={openMenu} sx={{ mr: 0 }}>
+                  <MoreVertIcon />
+                </IconButton>
+              )}
+
+              <Menu
+                anchorEl={menuAnchorEl}
+                open={Boolean(menuAnchorEl)}
+                onClose={closeMenu}
+                PaperProps={{
+                  sx: {
+                    borderRadius: 1,
+                    marginTop: 1.5,
+                    paddingX: 1,
+                  },
+                }}
+                anchorOrigin={{
+                  vertical: 'bottom',
+                  horizontal: 'right',
+                }}
+                transformOrigin={{
+                  vertical: 'top',
+                  horizontal: 'right',
+                }}
+              >
+                {!isOwner && (
+                  <MenuItem
+                    onClick={() => {
+                      openReportModal(); // 신고 모달 열기
+                      closeMenu();
+                    }}
+                    sx={{
+                      fontSize: '0.8rem',
+                      justifyContent: 'flex-end',
+                      padding: '3px 5px',
+                    }}
+                  >
+                    <ReportIcon fontSize="small" sx={{ marginRight: '4px' }} />
+                    신고
+                  </MenuItem>
+                )}
+              </Menu>
+
               {isOwner && (
                 <Box
                   sx={{
@@ -220,6 +309,36 @@ const PostDetail = () => {
         Comments
       </Typography>
       <Comment postId={postId} user={post.user} />
+
+      {/* 신고 모달 */}
+      <SimpleModal
+        open={reportModalOpen}
+        onClose={closeReportModal}
+        title="Report Post"
+        description="이 게시글을 신고하시겠습니까?"
+        primaryButtonText="신고"
+        secondaryButtonText="취소"
+        onPrimaryClick={handleReportConfirm} // 신고 확인 함수 연결
+        onSecondaryClick={closeReportModal}
+        primaryButtonStyle="error"
+      />
+
+      {/* 이미 신고한 경우의 스낵바 */}
+      <SnackbarAlert
+        open={alreadyReportedSnackbarOpen}
+        onClose={closeAlreadyReportedSnackbar}
+        message="이미 신고한 게시글입니다."
+        severity="error"
+      />
+
+      {/* 신고 완료 스낵바 */}
+      <SnackbarAlert
+        open={snackbarOpen}
+        onClose={handleSnackbarClose}
+        message="성공적으로 신고되었습니다."
+        severity="success"
+      />
+
       {/* postId를 prop으로 전달 */}
       {/* 삭제 모달 */}
       {isOwner && ( // isOwner가 true일 때만 모달 관련 코드를 렌더링

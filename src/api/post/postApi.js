@@ -30,6 +30,7 @@ export const fetchMyPosts = async (sortBy = 'latest', page = 0, size = 10) => {
     const response = await axiosWithToken.get(`/api/posts/user`, {
       params: { sortBy, page, size },
     });
+    console.log('My posts data:', response.data);
     return response.data;
   } catch (error) {
     throw error;
@@ -200,4 +201,9 @@ export const fetchMainPagePosts = async (page = 0, size = 6) => {
     console.error('Failed to fetch main page posts:', error);
     throw error;
   }
+};
+
+// 게시글 신고 기능
+export const reportPost = async postId => {
+  return await axiosWithToken.post(`/api/posts/report/${postId}`);
 };
