@@ -7,6 +7,7 @@ import { formatDate } from '../../../utils/reusableFn';
 import SingleHashtagChips from '../HashtagChips/SingleHashtagChips';
 import SimpleModal from '../../../components/common/Modal/SimpleModal';
 import PriorityHighIcon from '@mui/icons-material/PriorityHigh';
+import ModeCommentIcon from '@mui/icons-material/ModeComment';
 
 function MyPostListItem({ post }) {
   const {
@@ -14,10 +15,10 @@ function MyPostListItem({ post }) {
     title,
     createdAt,
     trackCount,
-    hashtags,
     likeCount,
     thumbnailUrl,
     deleted, // 게시글이 삭제되었는지 여부
+    commentCount,
   } = post;
   const navigate = useNavigate();
   const [modalOpen, setModalOpen] = useState(false);
@@ -109,7 +110,19 @@ function MyPostListItem({ post }) {
             }}
           >
             <Typography variant="date">{formatDate(createdAt)}</Typography>
-            <LikeButton postId={id} initialLikeCount={likeCount} />
+            <Box
+              sx={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: 2,
+              }}
+            >
+              <LikeButton postId={id} initialLikeCount={likeCount} />
+              <Box display="flex" alignItems="center">
+                <ModeCommentIcon sx={{ fontSize: 14, mr: 1 }} />
+                <Typography variant="body2">{commentCount}</Typography>
+              </Box>
+            </Box>
           </Box>
         </Box>
       </Box>
