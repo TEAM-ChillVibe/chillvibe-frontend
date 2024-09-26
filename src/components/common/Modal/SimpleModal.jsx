@@ -53,9 +53,11 @@ const SimpleModal = ({
           {description}
         </Typography>
         <Box sx={{ display: 'flex', justifyContent: 'center', mt: 5, gap: 1 }}>
-          <Button onClick={onSecondaryClick} color="inherit">
-            {secondaryButtonText}
-          </Button>
+          {secondaryButtonText && (
+            <Button onClick={onSecondaryClick} color="inherit">
+              {secondaryButtonText}
+            </Button>
+          )}
           <Button
             onClick={onPrimaryClick}
             variant="contained"
