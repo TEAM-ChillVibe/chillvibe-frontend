@@ -305,9 +305,15 @@ const PostDetail = () => {
         <UserProfile user={post.user} />
       </Card>
       {/* 댓글 섹션 */}
-      <Typography variant="subtitle1" sx={{ my: 2 }}>
-        Comments
-      </Typography>
+      <Box sx={{ display: 'flex', alignItems: 'center', my: 2 }}>
+        <Typography variant="subtitle1">Comments</Typography>
+        <Typography
+          variant="subtitle1"
+          sx={{ fontWeight: 'normal', fontSize: '1.2rem', ml: 1 }}
+        >
+          ({post.commentCount})
+        </Typography>
+      </Box>
       <Comment postId={postId} user={post.user} />
 
       {/* 신고 모달 */}
